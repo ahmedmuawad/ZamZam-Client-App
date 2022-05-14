@@ -13,6 +13,9 @@ import 'package:flutter_grocery/view/base/title_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
+import '../../../../data/model/response/category_model.dart';
+import '../../product/category_product_screen.dart';
+
 class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class CategoryView extends StatelessWidget {
                 ),
 
                 GridView.builder(
-                    itemCount: category.categoryList.length > 5 ? 6 : category.categoryList.length,
+                    itemCount: category.categoryList.length /*> 5 ? 6 : category.categoryList.length*/,
                     padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -41,7 +44,14 @@ class CategoryView extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
-                          if (index == 5) {
+                          Navigator.of(context).pushNamed(
+                            RouteHelper.getCategoryProductsRoute(category.categoryList[index].id),
+                            arguments: CategoryProductScreen(categoryModel: CategoryModel(
+                              id: category.categoryList[index].id,
+                              name: category.categoryList[index].name,
+                            )),
+                          );
+                          /*if (index == 5) {
                            ResponsiveHelper.isMobilePhone() ? Provider.of<SplashProvider>(context, listen: false).setPageIndex(1) : SizedBox();
                            ResponsiveHelper.isWeb() ? Navigator.pushNamed(context, RouteHelper.categorys) : SizedBox();
 
@@ -49,7 +59,7 @@ class CategoryView extends StatelessWidget {
                             Navigator.of(context).pushNamed(
                               RouteHelper.getCategoryProductsRoute(category.categoryList[index].id),
                             );
-                          }
+                          }*/
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -70,7 +80,7 @@ class CategoryView extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   color: ColorResources.getCardBgColor(context),
                                 ),
-                                child: index != 5 ? ClipRRect(
+                                child:ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
                                   child: FadeInImage.assetNetwork(
                                     placeholder: Images.placeholder,
@@ -78,15 +88,7 @@ class CategoryView extends StatelessWidget {
                                     fit: BoxFit.cover, height: 100, width: 100,
                                     imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder, height: 100, width: 100, fit: BoxFit.cover),
                                   ),
-                                ) : Container(
-                                  height: 100, width: 100,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text('${category.categoryList.length - 5}+', style: poppinsRegular.copyWith(color: Theme.of(context).cardColor)),
-                                ),
+                                )
                               ),
                             ),
                             Expanded(
@@ -94,7 +96,7 @@ class CategoryView extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
                                 child: Text(
-                                  index != 5 ? category.categoryList[index].name : getTranslated('view_all', context),
+                                   category.categoryList[index].name ,
                                   style: poppinsRegular,
                                   textAlign: TextAlign.center,
                                   maxLines: 2,

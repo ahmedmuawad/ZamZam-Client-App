@@ -82,7 +82,7 @@ class ProductWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 10),
-                    Text('${product.capacity} ${product.unit}',
+                    Text('${product.capacity}  ${product.unit}',
                         style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: ColorResources.getTextColor(context))),
                   ]),
                 ),

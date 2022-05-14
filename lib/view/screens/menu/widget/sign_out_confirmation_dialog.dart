@@ -58,12 +58,12 @@ class SignOutConfirmationDialog extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.only(bottomRight: Radius.circular(10))),
+                  decoration: BoxDecoration(color: ColorResources.getGreen(context), borderRadius: BorderRadius.only(bottomRight: Radius.circular(10))),
                   child: Text(getTranslated('no', context), style: poppinsBold.copyWith(color: Colors.white)),
                 ),
               )),
 
-            ]) : Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor))),
+            ]) : Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(ColorResources.getGreen(context)))),
           ]),
         )
       ),

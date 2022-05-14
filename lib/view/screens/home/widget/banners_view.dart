@@ -15,6 +15,8 @@ import 'package:flutter_grocery/view/screens/product/product_details_screen.dart
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
+import '../../menu/widget/menu_button.dart';
+
 class BannersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,11 @@ class BannersView extends StatelessWidget {
                 itemBuilder: (context, index, _) {
                   return InkWell(
                     onTap: () {
-                      if(banner.bannerList[index].productId != null) {
+                      if(banner.bannerList[index].id == 2){
+                        Navigator.pushNamed(context, RouteHelper.coupon);
+
+                      }
+                      /*if(banner.bannerList[index].productId != null) {
                         Product product;
                         for(Product prod in banner.productList) {
                           if(prod.id == banner.bannerList[index].productId) {
@@ -71,7 +77,7 @@ class BannersView extends StatelessWidget {
                             RouteHelper.getCategoryProductsRoute(category.id),
                           );
                         }
-                      }
+                      }*/
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 10),

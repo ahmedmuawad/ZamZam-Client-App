@@ -26,11 +26,11 @@
     </queries>
 
     <application
-        android:name=".Application"
+        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
-        android:label="Rozalia">
+        android:label="ZamZam">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ" />

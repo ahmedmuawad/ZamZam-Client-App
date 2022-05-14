@@ -20,7 +20,7 @@ class Images {
   static const String terms_and_conditions = 'assets/image/terms_and_conditions.png';
 
   // Image
-  static const String app_logo = 'assets/image/logo.png';
+  static const String app_logo = 'assets/image/zamzam_logo.png';
   static const String on_boarding_1 = 'assets/image/on_boarding_1.png';
   static const String on_boarding_2 = 'assets/image/on_boarding_2.png';
   static const String on_boarding_3 = 'assets/image/on_boarding_3.png';

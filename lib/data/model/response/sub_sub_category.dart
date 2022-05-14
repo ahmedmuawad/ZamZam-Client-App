@@ -1,6 +1,4 @@
-import 'package:flutter_grocery/data/model/response/sub_sub_category.dart';
-
-class CategoryModel {
+class SubSubCate {
   int _id;
   String _name;
   String _image;
@@ -9,19 +7,16 @@ class CategoryModel {
   int _status;
   String _createdAt;
   String _updatedAt;
-  List<SubSubCate> _subCate ;
 
-
-  CategoryModel(
+  SubSubCate(
       {int id,
-        String name,
-        String image,
-        int parentId,
-        int position,
-        int status,
-        String createdAt,
-        String updatedAt ,
-      List<SubSubCate> subCate}) {
+      String name,
+      String image,
+      int parentId,
+      int position,
+      int status,
+      String createdAt,
+      String updatedAt}) {
     this._id = id;
     this._name = name;
     this._image = image;
@@ -30,7 +25,6 @@ class CategoryModel {
     this._status = status;
     this._createdAt = createdAt;
     this._updatedAt = updatedAt;
-    this._subCate = subCate;
   }
 
   int get id => _id;
@@ -41,9 +35,8 @@ class CategoryModel {
   int get status => _status;
   String get createdAt => _createdAt;
   String get updatedAt => _updatedAt;
-  List<SubSubCate> get subCate => _subCate;
 
-  CategoryModel.fromJson(Map<String, dynamic> json) {
+  SubSubCate.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
     _name = json['name'];
     _image = json['image'];
@@ -52,13 +45,6 @@ class CategoryModel {
     _status = json['status'];
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
-    if (json['subsubcategories'] != null) {
-      _subCate = [];
-      json['subsubcategories'].forEach((v) {
-        _subCate.add(new SubSubCate.fromJson(v));
-      });
-      print('LENNNNNNNNNNNNNNNNNNNNNNN = ${_subCate.length}');
-    }
   }
 
   Map<String, dynamic> toJson() {
@@ -71,10 +57,6 @@ class CategoryModel {
     data['status'] = this._status;
     data['created_at'] = this._createdAt;
     data['updated_at'] = this._updatedAt;
-    if (this._subCate != null) {
-      data['subsubcategories'] = this._subCate.map((v) => v.toJson()).toList();
-    }
-
     return data;
   }
 }

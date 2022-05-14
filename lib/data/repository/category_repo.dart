@@ -41,4 +41,25 @@ class CategoryRepo {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));
     }
   }
+  Future<ApiResponse> getSubCategory(String languageCode) async {
+    try {
+      final response = await dioClient.get(AppConstants.GET_SUBCATEGORY,
+        options: Options(headers: {'X-localization': languageCode}),
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+  Future<ApiResponse> getSubSubCategory(String languageCode) async {
+    try {
+      final response = await dioClient.get(AppConstants.GET_SUBSUBCATEGORY,
+        options: Options(headers: {'X-localization': languageCode}),
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
 }
