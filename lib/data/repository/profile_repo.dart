@@ -61,5 +61,15 @@ class ProfileRepo{
     return response;
   }
 
-
+  Future<http.StreamedResponse> updateBalance(double balance , String token) async {
+    http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse('${AppConstants.BASE_URL}${AppConstants.UPDATE_BALANCE}'));
+    request.headers.addAll(<String,String>{'Authorization': 'Bearer $token'});
+    Map<String, String> _fields = Map();
+    _fields.addAll(<String, String>{
+       'balance': '$balance',
+    });
+    request.fields.addAll(_fields);
+    http.StreamedResponse response = await request.send();
+    return response;
+  }
 }

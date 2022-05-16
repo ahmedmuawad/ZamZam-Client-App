@@ -259,5 +259,6 @@
   "delivery_fee_not_set_yet": "رسوم التوصيل لم تحدد بعد",
   "continue_checkout": "مواصلة الخروج",
   "failed_to_fetch_distance": "فشل في إحضار المسافة",
-  "delivery_fee_from_your_selected_address_to_branch": "رسوم التوصيل من العنوان الذي اخترته إلى الفرع"
+  "delivery_fee_from_your_selected_address_to_branch": "رسوم التوصيل من العنوان الذي اخترته إلى الفرع",
+  "balance":"الرصيد"
 }

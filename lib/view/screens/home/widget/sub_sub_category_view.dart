@@ -95,7 +95,7 @@ class SubSubCategory extends StatelessWidget {
                               padding: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
                               child: Text(
                                 category.ssHomecate[index].subSubList[index1].name ,
-                                style: poppinsRegular,
+                                style: poppinsLight,
                                 textAlign: TextAlign.center,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,

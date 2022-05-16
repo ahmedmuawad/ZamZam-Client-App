@@ -87,4 +87,22 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
     return _responseModel;
   }
+  Future<ResponseModel> updateUserBalance(double balance, String token) async {
+    _isLoading = true;
+    notifyListeners();
+    ResponseModel _responseModel;
+    http.StreamedResponse response = await profileRepo.updateBalance(balance, token);
+    _isLoading = false;
+    if (response.statusCode == 200) {
+      Map map = jsonDecode(await response.stream.bytesToString());
+      String message = map["message"];
+      _responseModel = ResponseModel(true, message);
+      print(message);
+    } else {
+      _responseModel = ResponseModel(false, '${response.statusCode} ${response.reasonPhrase}');
+      print('${response.statusCode} ${response.reasonPhrase}');
+    }
+    notifyListeners();
+    return _responseModel;
+  }
 }

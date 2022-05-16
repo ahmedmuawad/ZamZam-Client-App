@@ -114,7 +114,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           '${profileProvider.userInfoModel.fName ?? ''} ${profileProvider.userInfoModel.lName ?? ''}',
                           style: poppinsMedium.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE),
                         )),
-
                         //mobileNumber,email,gender
                         SizedBox(height: 30),
                         Padding(

@@ -37,6 +37,7 @@ class AppConstants {
 
   static const String GET_SUBCATEGORY = '/api/v1/categories/get_subcategories' ;
   static const String GET_SUBSUBCATEGORY = '/api/v1/categories/get_subsubcategories' ;
+  static const String UPDATE_BALANCE = '/api/v1/customer/balance';
 
   //
 

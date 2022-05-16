@@ -166,52 +166,9 @@ class AllCategoryScreen extends StatelessWidget {
                                                         )),
                                                       );
                                                     },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        color: Colors.white.withOpacity(Provider.of<ThemeProvider>(context).darkTheme ? 0.05 : 1),
-                                                        boxShadow: Provider.of<ThemeProvider>(context).darkTheme
-                                                            ? null
-                                                            : [BoxShadow(color: Colors.grey[200], spreadRadius: 1, blurRadius: 5)],
-                                                      ),
-                                                      child: Column(children: [
-                                                        Expanded(
-                                                          flex: ResponsiveHelper.isDesktop(context) ? 7 : 6,
-                                                          child: Container(
-                                                              margin: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                                                              padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_DEFAULT),
-                                                              alignment: Alignment.center,
-                                                              decoration: BoxDecoration(
-                                                                shape: BoxShape.circle,
-                                                                color: ColorResources.getCardBgColor(context),
-                                                              ),
-                                                              child:ClipRRect(
-                                                                borderRadius: BorderRadius.circular(50),
-                                                                child: FadeInImage.assetNetwork(
-                                                                  placeholder: Images.placeholder,
-                                                                  image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.categoryImageUrl}/${categoryProvider
-                                                                      .subCategoryList[index].subCate[index1].image}',
-                                                                  fit: BoxFit.cover, height: 100, width: 100,
-                                                                  imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder, height: 100, width: 100, fit: BoxFit.cover),
-                                                                ),
-                                                              )
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          flex: ResponsiveHelper.isDesktop(context) ? 3 : 4,
-                                                          child: Padding(
-                                                            padding: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                                                            child: Text(
-                                                              categoryProvider
-                                                                  .subCategoryList[index].subCate[index1].name ,
-                                                              style: poppinsRegular,
-                                                              textAlign: TextAlign.center,
-                                                              maxLines: 2,
-                                                              overflow: TextOverflow.ellipsis,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ]),
+                                                    child:AllSubCategoryItem(
+                                                      name: categoryProvider.subCategoryList[index].subCate[index1].name,
+                                                      image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.categoryImageUrl}/${categoryProvider.subCategoryList[index].subCate[index1].image}',
                                                     ),
                                                   );
                                             },

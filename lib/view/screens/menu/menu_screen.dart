@@ -128,6 +128,12 @@ class MenuWidget extends StatelessWidget {
                                           ? ColorResources.getTextColor(context)
                                           : ResponsiveHelper.isDesktop(context)? ColorResources.getDarkColor(context): ColorResources.getBackgroundColor(context),),
                                     ),
+                                    _isLoggedIn ? profileProvider.userInfoModel != null ? Text(
+                                        '${getTranslated('balance', context)} ' ' ${profileProvider.userInfoModel.balance ?? ''}',
+                                        style: poppinsRegular.copyWith(color: Provider.of<ThemeProvider>(context).darkTheme
+                                            ? ColorResources.getTextColor(context)
+                                            : ResponsiveHelper.isDesktop(context)? ColorResources.getDarkColor(context): ColorResources.getBackgroundColor(context),)
+                                    ) : SizedBox() : SizedBox()
                                   ]),
                                 ),
                               ),

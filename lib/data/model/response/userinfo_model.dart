@@ -11,6 +11,7 @@ class UserInfoModel {
   String emailVerificationToken;
   String phone;
   String cmFirebaseToken;
+  String balance ;
 
   UserInfoModel(
       {this.id,
@@ -24,7 +25,8 @@ class UserInfoModel {
         this.updatedAt,
         this.emailVerificationToken,
         this.phone,
-        this.cmFirebaseToken});
+        this.cmFirebaseToken,
+      this.balance});
 
   UserInfoModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -38,6 +40,7 @@ class UserInfoModel {
     updatedAt = json['updated_at'];
     emailVerificationToken = json['email_verification_token'];
     phone = json['phone'];
+    balance = json['balance'];
     cmFirebaseToken = json['cm_firebase_token'];
   }
 
@@ -54,6 +57,7 @@ class UserInfoModel {
     data['updated_at'] = this.updatedAt;
     data['email_verification_token'] = this.emailVerificationToken;
     data['phone'] = this.phone;
+    data['balance'] = this.balance ;
     data['cm_firebase_token'] = this.cmFirebaseToken;
     return data;
   }
