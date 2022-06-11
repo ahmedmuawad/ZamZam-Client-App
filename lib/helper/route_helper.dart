@@ -41,8 +41,11 @@ import 'package:flutter_grocery/view/screens/profile/profile_edit_screen.dart';
 import 'package:flutter_grocery/view/screens/profile/profile_screen.dart';
 import 'package:flutter_grocery/view/screens/search/search_result_screen.dart';
 import 'package:flutter_grocery/view/screens/search/search_screen.dart';
+import 'package:flutter_grocery/view/screens/set_Language/language_screen.dart';
 import 'package:flutter_grocery/view/screens/settings/setting_screen.dart';
 import 'package:flutter_grocery/view/screens/splash/splash_screen.dart';
+
+import '../view/screens/select_address/select_Address_Screen.dart';
 
 class RouteHelper {
   static final FluroRouter router = FluroRouter();
@@ -81,18 +84,22 @@ class RouteHelper {
   static String coupon = '/coupon';
   static String chat = '/chat';
   static String settings = '/settings';
+  static String set_lang = '/lang';
+  static String set_address = '/addresss';
   static const String TERMS_SCREEN = '/terms';
   static const String POLICY_SCREEN = '/privacy-policy';
   static const String ABOUT_US_SCREEN = '/about-us';
   static const String DAILY_ITEM = '/daily-item';
   static const String MAINTENANCE = '/maintenance';
 
+
   static String getMainRoute() => menu;
   static String getLoginRoute() => login;
   static String getTermsRoute() => TERMS_SCREEN;
   static String getPolicyRoute() => POLICY_SCREEN;
   static String getAboutUsRoute() => ABOUT_US_SCREEN;
-
+  static String getLangRoute() => set_lang;
+  static String getSelectAddressRoute() => set_address;
   static String getOrderDetailsRoute(int id) => '$orderDetails?id=$id';
   static String getVerifyRoute(String page, String email) => '$verification?page=$page&email=$email';
   static String getNewPassRoute(String email, String token) => '$resetPassword?email=$email&token=$token';
@@ -267,6 +274,7 @@ class RouteHelper {
     String _data = utf8.decode(_decode);
     return SearchResultScreen(searchString: _data);
   });
+  static Handler _address2Handler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => SelectAddressScreen());
   static Handler _cartHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => CartScreen());
   static Handler _categorysHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => AllCategoryScreen());
   static Handler _profileMenusHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => MenuWidget());
@@ -283,10 +291,13 @@ class RouteHelper {
 
   static Handler _dailyItemHandler = Handler(handlerFunc: (context, Map<String, dynamic> params) => DailyItemScreen());
   static Handler _maintenanceHandler = Handler(handlerFunc: (context, Map<String, dynamic> params) => MaintenanceScreen());
+  static Handler _set_langHandler = Handler(handlerFunc: (context, Map<String, dynamic> params) => LanguageScreen());
+
 
   //static Handler _routeHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => ModalRoute.of(context).settings.arguments);
 
   static void setupRouter(){
+
     router.define(splash, handler: _splashHandler, transitionType: TransitionType.fadeIn);
     router.define(orderDetails, handler: _orderDetailsHandler, transitionType: TransitionType.fadeIn);
     router.define(onBoarding, handler: _onBoardingHandler, transitionType: TransitionType.fadeIn);
@@ -326,5 +337,7 @@ class RouteHelper {
     router.define(ABOUT_US_SCREEN, handler: _aboutUsHandler, transitionType: TransitionType.fadeIn);
     router.define(DAILY_ITEM, handler: _dailyItemHandler, transitionType: TransitionType.fadeIn);
     router.define(MAINTENANCE, handler: _maintenanceHandler, transitionType: TransitionType.fadeIn);
+    router.define(set_lang, handler: _set_langHandler , transitionType: TransitionType.fadeIn);
+    router.define(set_address, handler: _address2Handler, transitionType: TransitionType.fadeIn);
   }
 }

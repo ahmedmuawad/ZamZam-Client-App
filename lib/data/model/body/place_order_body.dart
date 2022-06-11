@@ -12,21 +12,24 @@ class PlaceOrderBody {
   String _orderNote;
   String _couponCode;
   double _distance;
+  double _balance;
 
-  PlaceOrderBody(
-      {List<Cart> cart,
-        double couponDiscountAmount,
-        String couponDiscountTitle,
-        double orderAmount,
-        String orderType,
-        int branchId,
-        int deliveryAddressId,
-        int timeSlotId,
-        String deliveryDate,
-        String paymentMethod,
-        String orderNote,
-        String couponCode,
-        double distance}) {
+  PlaceOrderBody({
+    List<Cart> cart,
+    double couponDiscountAmount,
+    String couponDiscountTitle,
+    double orderAmount,
+    String orderType,
+    int branchId,
+    int deliveryAddressId,
+    int timeSlotId,
+    String deliveryDate,
+    String paymentMethod,
+    String orderNote,
+    String couponCode,
+    double distance,
+    double balance,
+  }) {
     this._cart = cart;
     this._couponDiscountAmount = couponDiscountAmount;
     this._couponDiscountTitle = couponDiscountTitle;
@@ -40,21 +43,36 @@ class PlaceOrderBody {
     this._orderNote = orderNote;
     this._couponCode = couponCode;
     this._distance = distance;
+    this._balance = balance;
   }
 
   List<Cart> get cart => _cart;
+
   double get couponDiscountAmount => _couponDiscountAmount;
+
   String get couponDiscountTitle => _couponDiscountTitle;
+
   double get orderAmount => _orderAmount;
+
   String get orderType => _orderType;
+
   int get branchId => _branchId;
+
   int get deliveryAddressId => _deliveryAddressId;
+
   int get timeSlotId => _timeSlotId;
+
   String get deliveryDate => _deliveryDate;
+
   String get paymentMethod => _paymentMethod;
+
   String get orderNote => _orderNote;
+
   String get couponCode => _couponCode;
+
   double get distance => _distance;
+
+  double get balance => _balance;
 
   PlaceOrderBody.fromJson(Map<String, dynamic> json) {
     if (json['cart'] != null) {
@@ -75,6 +93,7 @@ class PlaceOrderBody {
     _orderNote = json['order_note'];
     _couponCode = json['coupon_code'];
     _distance = json['distance'];
+    _balance = json['balance'];
   }
 
   Map<String, dynamic> toJson() {
@@ -94,6 +113,7 @@ class PlaceOrderBody {
     data['order_note'] = this._orderNote;
     data['coupon_code'] = this._couponCode;
     data['distance'] = this._distance;
+    data['balance'] = this._balance;
     return data;
   }
 }
@@ -109,12 +129,12 @@ class Cart {
 
   Cart(
       {int productId,
-        double price,
-        String variant,
-        List<Variation> variation,
-        double discountAmount,
-        int quantity,
-        double taxAmount}) {
+      double price,
+      String variant,
+      List<Variation> variation,
+      double discountAmount,
+      int quantity,
+      double taxAmount}) {
     this._productId = productId;
     this._price = price;
     this._variant = variant;
@@ -125,11 +145,17 @@ class Cart {
   }
 
   int get productId => _productId;
+
   double get price => _price;
+
   String get variant => _variant;
+
   List<Variation> get variation => _variation;
+
   double get discountAmount => _discountAmount;
+
   int get quantity => _quantity;
+
   double get taxAmount => _taxAmount;
 
   Cart.fromJson(Map<String, dynamic> json) {

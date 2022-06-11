@@ -36,14 +36,14 @@ class ProductDescription extends StatelessWidget {
         productDescription.isNotEmpty ? Center(
           child: Container(
             width: 1170,
-            height: 100,
+            height: MediaQuery.of(context).size.height * 0.5,
             color: Colors.white,
             child: ResponsiveHelper.isWeb() ? Column(
               children: [
                 Expanded(child: IgnorePointer(child: HtmlElementView(viewType: _viewID, key: Key(id)))),
               ],
             ) : Center(
-              child: SizedBox(width: 1170, height: 100, child: HtmlWidget(
+              child: SizedBox(width: 1170, height: MediaQuery.of(context).size.height * 0.5, child: HtmlWidget(
                 productDescription,
                 textStyle: poppinsRegular.copyWith(color: Colors.black),
                 onTapUrl: (String url) {

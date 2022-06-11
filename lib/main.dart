@@ -59,7 +59,8 @@ Future<void> main() async {
     }
   } catch (e) {}
 
-  runApp(MultiProvider(
+  runApp(
+      MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => di.sl<ThemeProvider>()),
       ChangeNotifierProvider(

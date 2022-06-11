@@ -260,5 +260,9 @@
   "continue_checkout": "Continue Checkout",
   "failed_to_fetch_distance": "Failed to fetch distance",
   "delivery_fee_from_your_selected_address_to_branch": "Delivery fee from your selected address to branch",
-  "balance":"Balance"
+  "balance":"Wallet",
+  "select_lang": "Please Select Language",
+  "languageAr": "Arabic" ,
+  "languageEn": "English",
+  "order_not_availble": "the Product not available"
 }

@@ -25,7 +25,7 @@ class BannersView extends StatelessWidget {
       builder: (context, banner, child) {
         return Container(
           width: MediaQuery.of(context).size.width,
-         height: ResponsiveHelper.isDesktop(context) ? 300 : MediaQuery.of(context).size.width * 0.4,
+         height: ResponsiveHelper.isDesktop(context) ? 300 : MediaQuery.of(context).size.width * 0.5,
          // height: MediaQuery.of(context).size.width * 0.4,
           padding: EdgeInsets.only(top: Dimensions.PADDING_SIZE_LARGE, bottom: Dimensions.PADDING_SIZE_SMALL),
           child: banner.bannerList != null ? banner.bannerList.length != 0 ? Stack(

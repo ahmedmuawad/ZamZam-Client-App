@@ -18,6 +18,8 @@ class Images {
   static const String about_us = 'assets/image/about_us.png';
   static const String privacy = 'assets/image/privacy.png';
   static const String terms_and_conditions = 'assets/image/terms_and_conditions.png';
+  //
+  static const String splash_animation = 'assets/image/splash_anim.gif';
 
   // Image
   static const String app_logo = 'assets/image/zamzam_logo.png';

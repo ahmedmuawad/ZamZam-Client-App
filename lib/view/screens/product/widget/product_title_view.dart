@@ -65,7 +65,7 @@ class ProductTitleView extends StatelessWidget {
             product.discount > 0 ? Text(
               '${PriceConverter.convertPrice(context, _startingPrice)}'
                   '${_endingPrice!= null ? ' - ${PriceConverter.convertPrice(context, _endingPrice)}' : ''}',
-              style: poppinsBold.copyWith(color: ColorResources.getHintColor(context), fontSize: Dimensions.FONT_SIZE_SMALL, decoration: TextDecoration.lineThrough),
+              style: poppinsBold.copyWith(color: Colors.red, fontSize: Dimensions.FONT_SIZE_SMALL, decoration: TextDecoration.lineThrough),
             ): SizedBox(),
 
             Row(children: [

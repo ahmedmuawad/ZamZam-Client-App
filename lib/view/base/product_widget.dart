@@ -97,6 +97,7 @@ class ProductWidget extends StatelessWidget {
                   style: poppinsRegular.copyWith(
                     fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
                     decoration: TextDecoration.lineThrough,
+                    color: Colors.red,
                   ),
                 ) : SizedBox(),
                 Expanded(child: SizedBox()),

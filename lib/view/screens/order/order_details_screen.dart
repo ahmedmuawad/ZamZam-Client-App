@@ -60,6 +60,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     Provider.of<OrderProvider>(context, listen: false)
         .getOrderDetails(widget.orderId.toString(), context);
 
+    Provider.of<OrderProvider>(context, listen: false)
+        .getOrderBalance(widget.orderId.toString(),Provider.of<AuthProvider>(context, listen: false).getUserToken(), context);
+
   }
 
   @override
@@ -90,8 +93,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   double _discount = 0;
                   double _tax = 0;
                   TimeSlotModel _timeSlot;
-                  String balance = profileProvider.userInfoModel.balance ;
-                  double _balance = double.parse(balance);
+                  String balance = order.balance ;
+                  double _balance ;
+                  if(balance != null ){
+                    _balance = double.parse(balance);
+                  }else{
+                    _balance = 0.00;
+                  }
+
                   if (order.orderDetails != null) {
                     _deliveryCharge = order.trackModel.deliveryCharge;
                     for (OrderDetailsModel orderDetails in order.orderDetails) {
@@ -115,11 +124,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           ? order.trackModel.couponDiscountAmount
                           : 0);
                   if(_balance > _total ){
-                    _balance = _balance - _total ;
                     _total = 0.00 ;
                   }else{
                     _total = _total - _balance ;
-                    _balance = 0.00 ;
+
                   }
                   return order.orderDetails != null
                       ? Column(
@@ -728,7 +736,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                   fontSize: Dimensions
                                                       .FONT_SIZE_LARGE)),
                                           Text(
-                                              '(-) ${profileProvider.userInfoModel.balance}',
+                                              '(-) ${_balance}',
                                               style: poppinsRegular.copyWith(
                                                   fontSize: Dimensions
                                                       .FONT_SIZE_LARGE)),

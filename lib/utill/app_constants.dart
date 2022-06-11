@@ -48,6 +48,9 @@ class AppConstants {
   static const String ORDER_CANCEL_URI = '/api/v1/customer/order/cancel';
   static const String ORDER_DETAILS_URI =
       '/api/v1/customer/order/details?order_id=';
+  static const String ORDER_Balance_URI =
+      '/api/v1/customer/order/get_order?order_id=';
+  //
   static const String TRACK_URI = '/api/v1/customer/order/track?order_id=';
   static const String PLACE_ORDER_URI = '/api/v1/customer/order/place';
   static const String LAST_LOCATION_URI =

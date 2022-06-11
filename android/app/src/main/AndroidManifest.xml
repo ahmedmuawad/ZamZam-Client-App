@@ -33,7 +33,7 @@
         android:label="ZamZam">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ" />
+            android:value="AIzaSyBp951iVBzSiIUtPfSBmNwcaf90kRY3PoA" />
 
         <activity
             android:name=".MainActivity"

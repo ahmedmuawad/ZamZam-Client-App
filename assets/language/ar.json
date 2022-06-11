@@ -260,5 +260,9 @@
   "continue_checkout": "مواصلة الخروج",
   "failed_to_fetch_distance": "فشل في إحضار المسافة",
   "delivery_fee_from_your_selected_address_to_branch": "رسوم التوصيل من العنوان الذي اخترته إلى الفرع",
-  "balance":"الرصيد"
+  "balance":"المحفظة",
+  "select_lang": "برجاء اختيار اللغة" ,
+  "languageAr": "العربية" ,
+  "languageEn": "الانجليزية",
+  "order_not_availble": "المنتج غير متاح"
 }

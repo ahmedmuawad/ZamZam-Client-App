@@ -57,7 +57,8 @@ class CartScreen extends StatelessWidget {
               return Consumer<CartProvider>(
                 builder: (context, cart, child) {
                   String balance = profileProvider.userInfoModel.balance ;
-                  double _balance = double.parse(balance);
+                  double _oldBalance = double.parse(balance);
+                  double disBalance  = 0.00;
                   double deliveryCharge = 0;
                   (Provider.of<OrderProvider>(context).orderType == 'delivery' && !_kmWiseCharge)
                       ? deliveryCharge = Provider.of<SplashProvider>(context, listen: false).configModel.deliveryCharge : deliveryCharge = 0;
@@ -72,12 +73,18 @@ class CartScreen extends StatelessWidget {
                   double _subTotal = _itemPrice + _tax;
 
                   double _total = _subTotal - _discount - Provider.of<CouponProvider>(context).discount + deliveryCharge;
-                  if(_balance > _total ){
-                    _balance = _balance - _total ;
+                  if(_oldBalance > _total ){
+                    disBalance = _total ;
+                    _oldBalance = _oldBalance - _total ;
                     _total = 0.00 ;
-                  }else{
-                    _total = _total - _balance ;
-                    _balance = 0.00 ;
+                  }else if(_oldBalance < _total && _oldBalance == 0){
+                    disBalance = _oldBalance ;
+                    _total = _total - _oldBalance ;
+                    _oldBalance = 0.00 ;
+                  }else if(_oldBalance < _total){
+                    _total = _total - _oldBalance ;
+                    disBalance = _oldBalance ;
+                    _oldBalance = 0.00 ;
                   }
                   return cart.cartList.length > 0
                       ? Column(
@@ -277,10 +284,11 @@ class CartScreen extends StatelessWidget {
                                 arguments: CheckoutScreen(
                                   amount: _total, orderType: _orderType, discount: _discount,
                                   couponCode: Provider.of<CouponProvider>(context, listen: false).code,
+                                  balance: disBalance,
                                 ),
                               );
                             }
-                            Provider.of<ProfileProvider>(context , listen: false).updateUserBalance(_balance,Provider.of<AuthProvider>(context, listen: false).getUserToken() );
+                            Provider.of<ProfileProvider>(context , listen: false).updateUserBalance(_oldBalance,Provider.of<AuthProvider>(context, listen: false).getUserToken() );
                           },
                         ),
                       ),
@@ -496,6 +504,7 @@ class CartScreen extends StatelessWidget {
                           arguments: CheckoutScreen(
                             amount: _total, orderType: _orderType, discount: _discount,
                             couponCode: Provider.of<CouponProvider>(context, listen: false).code,
+
                           ),
                         );
                       }

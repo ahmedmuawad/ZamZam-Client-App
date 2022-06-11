@@ -31,6 +31,18 @@ class OrderRepo {
     }
   }
 
+  Future<ApiResponse> getOrderBalance(String orderID ,String token) async {
+    try {
+      final response = await dioClient.get('${AppConstants.ORDER_Balance_URI}$orderID',
+        options: Options(headers: { 'Authorization': 'Bearer $token'})
+      );
+      return ApiResponse.withSuccess(response);
+    } catch (e) {
+      return ApiResponse.withError(ApiErrorHandler.getMessage(e));
+    }
+  }
+
+
   Future<ApiResponse> cancelOrder(String orderID) async {
     try {
       Map<String, dynamic> data = Map<String, dynamic>();
@@ -54,7 +66,9 @@ class OrderRepo {
 
   Future<ApiResponse> placeOrder(PlaceOrderBody orderBody) async {
     try {
+      print('place order ============ $orderBody');
       final response = await dioClient.post(AppConstants.PLACE_ORDER_URI, data: orderBody.toJson());
+
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));

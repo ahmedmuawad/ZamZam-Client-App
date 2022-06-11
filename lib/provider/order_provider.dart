@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/body/place_order_body.dart';
 import 'package:flutter_grocery/data/model/body/review_body.dart';
+import 'package:flutter_grocery/data/model/get_order_balance.dart';
 import 'package:flutter_grocery/data/model/response/base/api_response.dart';
 import 'package:flutter_grocery/data/model/response/base/error_response.dart';
 import 'package:flutter_grocery/data/model/response/distance_model.dart';
@@ -13,14 +14,22 @@ import 'package:flutter_grocery/data/repository/order_repo.dart';
 import 'package:flutter_grocery/helper/api_checker.dart';
 import 'package:flutter_grocery/data/model/response/delivery_man_model.dart';
 import 'package:flutter_grocery/helper/date_converter.dart';
+import 'package:flutter_grocery/localization/language_constrants.dart';
+import 'package:flutter_grocery/view/screens/cart/cart_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../helper/route_helper.dart';
+import 'cart_provider.dart';
 
 class
 OrderProvider extends ChangeNotifier {
   final OrderRepo orderRepo;
   OrderProvider({@required this.orderRepo});
 
+
+  String _balance ;
   List<OrderModel> _runningOrderList;
   List<OrderModel> _historyOrderList;
   List<OrderDetailsModel> _orderDetails;
@@ -54,6 +63,8 @@ OrderProvider extends ChangeNotifier {
   ResponseModel get responseModel => _responseModel;
   DeliveryManModel get deliveryManModel => _deliveryManModel;
   double get distance => _distance;
+  String get balance => _balance ;
+
 
   Future<void> getOrderList(BuildContext context) async {
     ApiResponse apiResponse = await orderRepo.getOrderList();
@@ -164,7 +175,20 @@ OrderProvider extends ChangeNotifier {
     notifyListeners();
     return _orderDetails;
   }
+  Future<void> getOrderBalance(String orderID ,String token, BuildContext context) async {
 
+    ApiResponse apiResponse = await orderRepo.getOrderBalance(orderID , token);
+    _isLoading = false;
+    if (apiResponse.response != null && apiResponse.response.statusCode == 200) {
+      _balance = GetOrderBalance.fromJson(apiResponse.response.data).balance;
+
+      print('Balance ======================================= $_balance');
+
+    } else {
+      ApiChecker.checkApi(context, apiResponse);
+    }
+    notifyListeners();
+  }
   void setPaymentMethod(int index) {
     _paymentMethodIndex = index;
     notifyListeners();
@@ -211,7 +235,7 @@ OrderProvider extends ChangeNotifier {
     return _responseModel;
   }
 
-  Future<void> placeOrder(PlaceOrderBody placeOrderBody, Function callback) async {
+  Future<void> placeOrder(BuildContext context ,PlaceOrderBody placeOrderBody, Function callback) async {
     _isLoading = true;
     notifyListeners();
     print(placeOrderBody.toJson());
@@ -222,7 +246,11 @@ OrderProvider extends ChangeNotifier {
       String orderID = apiResponse.response.data['order_id'].toString();
       callback(true, message, orderID);
       print('-------- Order placed successfully $orderID ----------');
-    } else {
+    } else if (apiResponse.error is String){
+      print('-------- Order placed Notsuccessfully ----------');
+      //callback(false , getTranslated('order_not_availble', context),0);
+      callback(false ,getTranslated('order_not_availble', context) , '-1' );
+    }else {
       String errorMessage;
       if (apiResponse.error is String) {
         print(apiResponse.error.toString());
