@@ -10,6 +10,7 @@ import '../../../../helper/price_converter.dart';
 import '../../../../helper/responsive_helper.dart';
 import '../../../../helper/route_helper.dart';
 import '../../../../localization/language_constrants.dart';
+import '../../../../provider/auth_provider.dart';
 import '../../../../provider/cart_provider.dart';
 import '../../../../provider/localization_provider.dart';
 import '../../../../provider/splash_provider.dart';
@@ -28,7 +29,6 @@ class CategoryDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<CategoryProvider>(builder: (context, category, child) {
-
       return Column(children: [
         category.subCategoryData.length > 0
             ? ListView.builder(
@@ -61,16 +61,31 @@ class CategoryDetails extends StatelessWidget {
                                       itemBuilder: (context, index) {
                                         double _startingPrice;
                                         double _endingPrice;
-                                        if(category.subCategoryData[index1].products[index].variations.length != 0) {
+                                        if (category
+                                                .subCategoryData[index1]
+                                                .products[index]
+                                                .variations
+                                                .length !=
+                                            0) {
                                           List<double> _priceList = [];
-                                          category.subCategoryData[index1].products[index].variations.forEach((variation) => _priceList.add(variation.price));
-                                          _priceList.sort((a, b) => a.compareTo(b));
+                                          category.subCategoryData[index1]
+                                              .products[index].variations
+                                              .forEach((variation) => _priceList
+                                                  .add(variation.price));
+                                          _priceList
+                                              .sort((a, b) => a.compareTo(b));
                                           _startingPrice = _priceList[0];
-                                          if(_priceList[0] < _priceList[_priceList.length-1]) {
-                                            _endingPrice = _priceList[_priceList.length-1];
+                                          if (_priceList[0] <
+                                              _priceList[
+                                                  _priceList.length - 1]) {
+                                            _endingPrice = _priceList[
+                                                _priceList.length - 1];
                                           }
-                                        }else {
-                                          _startingPrice = category.subCategoryData[index1].products[index].price;
+                                        } else {
+                                          _startingPrice = category
+                                              .subCategoryData[index1]
+                                              .products[index]
+                                              .price;
                                         }
                                         return Padding(
                                           padding: EdgeInsets.only(
@@ -195,7 +210,15 @@ class CategoryDetails extends StatelessWidget {
                                                                         .start,
                                                                 children: [
                                                                   Text(
-                                                                    PriceConverter.convertPrice(context, category.subCategoryData[index1].products[index].price,
+                                                                    PriceConverter
+                                                                        .convertPrice(
+                                                                      context,
+                                                                      category
+                                                                          .subCategoryData[
+                                                                              index1]
+                                                                          .products[
+                                                                              index]
+                                                                          .price,
                                                                       discount: category
                                                                           .subCategoryData[
                                                                               index1]
@@ -213,12 +236,17 @@ class CategoryDetails extends StatelessWidget {
                                                                         fontSize:
                                                                             Dimensions.FONT_SIZE_SMALL),
                                                                   ),
-                                                                  category.subCategoryData[index1].products[index].discount > 0
+                                                                  category.subCategoryData[index1].products[index]
+                                                                              .discount >
+                                                                          0
                                                                       ? Text(
-                                                                    '${PriceConverter.convertPrice(context, _startingPrice)}'
-                                                                        '${_endingPrice!= null ? '  ${PriceConverter.convertPrice(context, _endingPrice)}' : ''}',
-                                                                    style: poppinsBold.copyWith(color: Colors.red, fontSize: Dimensions.FONT_SIZE_SMALL, decoration: TextDecoration.lineThrough),
-                                                                  )
+                                                                          '${PriceConverter.convertPrice(context, _startingPrice)}'
+                                                                          '${_endingPrice != null ? '  ${PriceConverter.convertPrice(context, _endingPrice)}' : ''}',
+                                                                          style: poppinsBold.copyWith(
+                                                                              color: Colors.red,
+                                                                              fontSize: Dimensions.FONT_SIZE_SMALL,
+                                                                              decoration: TextDecoration.lineThrough),
+                                                                        )
                                                                       : SizedBox(),
                                                                 ],
                                                               ),
@@ -344,6 +372,18 @@ class CategoryDetails extends StatelessWidget {
                                                                         .isExistInCart(
                                                                             _cartModel);
                                                                     if (!isExistInCart) {
+                                                                      Provider.of<CartProvider>(context, listen: false).addToMyCart(
+                                                                          context,
+                                                                          Provider.of<AuthProvider>(context, listen: false)
+                                                                              .getUserToken(),
+                                                                          Provider.of<LocalizationProvider>(context, listen: false)
+                                                                              .locale
+                                                                              .languageCode,
+                                                                          category
+                                                                              .subCategoryData[index1]
+                                                                              .products[index]
+                                                                              .id,
+                                                                          1);
                                                                       Provider.of<CartProvider>(
                                                                               context,
                                                                               listen:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_grocery/data/model/response/cart_api_model.dart';
 import 'package:flutter_grocery/data/model/response/cart_model.dart';
 import 'package:flutter_grocery/helper/price_converter.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
@@ -13,36 +14,63 @@ import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../provider/auth_provider.dart';
+import '../../../../provider/localization_provider.dart';
+
 class CartProductWidget extends StatelessWidget {
-  final CartModel cart;
+  final CartApiModel cart;
   final int index;
   CartProductWidget({@required this.cart, @required this.index});
 
   @override
   Widget build(BuildContext context) {
+    void reload() {
+      Provider.of<CartProvider>(context, listen: false).getMyCartData(
+        context,
+        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+        Provider.of<LocalizationProvider>(context, listen: false)
+            .locale
+            .languageCode,
+      );
+    }
+
     return Container(
       margin: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_DEFAULT),
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(10)),
       child: Stack(children: [
         Positioned(
-          top: 0, bottom: 0, right: 0, left: 0,
+          top: 0,
+          bottom: 0,
+          right: 0,
+          left: 0,
           child: Icon(Icons.delete, color: Colors.white, size: 50),
         ),
         Dismissible(
           key: UniqueKey(),
           onDismissed: (DismissDirection direction) {
-            Provider.of<CouponProvider>(context, listen: false).removeCouponData(false);
-            Provider.of<CartProvider>(context, listen: false).removeFromCart(index, context);
+            Provider.of<CouponProvider>(context, listen: false)
+                .removeCouponData(false);
+
+            Provider.of<CartProvider>(context, listen: false)
+                .removeFromCart(index, context);
+            reload();
           },
           child: Container(
             height: 95,
-            padding: EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL, horizontal: Dimensions.PADDING_SIZE_SMALL),
+            padding: EdgeInsets.symmetric(
+                vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL,
+                horizontal: Dimensions.PADDING_SIZE_SMALL),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 700 : 300],
+                  color: Colors.grey[
+                      Provider.of<ThemeProvider>(context).darkTheme
+                          ? 700
+                          : 300],
                   blurRadius: 5,
                   spreadRadius: 1,
                 )
@@ -53,9 +81,12 @@ class CartProductWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: FadeInImage.assetNetwork(
                   placeholder: Images.placeholder,
-                  image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${cart.image}',
-                  height: 70, width: 85,
-                  imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder, height: 70, width: 85),
+                  image:
+                      '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${cart.cartProduct.image}',
+                  height: 70,
+                  width: 85,
+                  imageErrorBuilder: (c, o, s) =>
+                      Image.asset(Images.placeholder, height: 70, width: 85),
                 ),
               ),
               SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
@@ -69,60 +100,165 @@ class CartProductWidget extends StatelessWidget {
                     children: [
                       Expanded(
                           flex: 2,
-                          child: Text(cart.name,
-                              style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL), maxLines: 2, overflow: TextOverflow.ellipsis)),
+                          child: Text(cart.cartProduct.name,
+                              style: poppinsRegular.copyWith(
+                                  fontSize: Dimensions.FONT_SIZE_SMALL),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis)),
                       Text(
-                        PriceConverter.convertPrice(context, cart.price),
-                        style: poppinsSemiBold.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
+                        PriceConverter.convertPrice(
+                            context, cart.cartProduct.price),
+                        style: poppinsSemiBold.copyWith(
+                            fontSize: Dimensions.FONT_SIZE_SMALL),
                       ),
                       SizedBox(width: 10),
                     ],
                   ),
                   SizedBox(height: 5),
                   Row(children: [
-                    Expanded(child: Text('${cart.capacity} ${cart.unit}', style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL))),
+                    Expanded(
+                        child: Text(
+                            '${cart.cartProduct.capacity} ${cart.cartProduct.unit}',
+                            style: poppinsRegular.copyWith(
+                                fontSize: Dimensions.FONT_SIZE_SMALL))),
                     InkWell(
                       onTap: () {
-                        Provider.of<CouponProvider>(context, listen: false).removeCouponData(false);
+                        Provider.of<CouponProvider>(context, listen: false)
+                            .removeCouponData(false);
                         if (cart.quantity > 1) {
-                          Provider.of<CartProvider>(context, listen: false).setQuantity(false, index);
-                        }else if(cart.quantity == 1){
-                          Provider.of<CartProvider>(context, listen: false).removeFromCart(index, context);
+                          Provider.of<CartProvider>(context, listen: false)
+                              .decreamentProduct(
+                                  context,
+                                  Provider.of<AuthProvider>(context,
+                                          listen: false)
+                                      .getUserToken(),
+                                  Provider.of<LocalizationProvider>(context,
+                                          listen: false)
+                                      .locale
+                                      .languageCode,
+                                  cart.id);
+                          Provider.of<CartProvider>(context, listen: false)
+                              .setQuantity(false, index);
+                          reload();
+                        } else if (cart.quantity == 1) {
+                          /* Provider.of<CartProvider>(context, listen: false)
+                              .delete(
+                                  context,
+                                  Provider.of<AuthProvider>(context,
+                                          listen: false)
+                                      .getUserToken(),
+                                  Provider.of<LocalizationProvider>(context,
+                                          listen: false)
+                                      .locale
+                                      .languageCode,
+                                  cart.id); */
+
+                          Provider.of<CartProvider>(context, listen: false)
+                              .removeFromCart(index, context);
+                          reload();
                         }
                       },
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                        child: Icon(Icons.remove, size: 20,color: Theme.of(context).primaryColor),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.PADDING_SIZE_SMALL,
+                            vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                        child: Icon(Icons.remove,
+                            size: 20, color: Theme.of(context).primaryColor),
                       ),
                     ),
-                    Text(cart.quantity.toString(), style: poppinsSemiBold.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE,color: Theme.of(context).primaryColor)),
+                    Text(cart.quantity.toString(),
+                        style: poppinsSemiBold.copyWith(
+                            fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE,
+                            color: Theme.of(context).primaryColor)),
                     InkWell(
                       onTap: () {
-                        if(cart.quantity < cart.stock) {
-                          Provider.of<CouponProvider>(context, listen: false).removeCouponData(false);
-                          Provider.of<CartProvider>(context, listen: false).setQuantity(true, index);
-                        }else {
-                          showCustomSnackBar(getTranslated('out_of_stock', context), context);
+                        /* if (isExistInCart) {
+                            showCustomSnackBar(
+                                getTranslated('already_added', context),
+                                context);
+                          } else if (_stock < 1) {
+                            showCustomSnackBar(
+                                getTranslated('out_of_stock', context),
+                                context);
+                          } else {
+                            Provider.of<CartProvider>(context, listen: false)
+                                .addToCart(_cartModel);
+                            Provider.of<CartProvider>(context, listen: false)
+                                .addToMyCart(
+                                    context,
+                                    Provider.of<AuthProvider>(context,
+                                            listen: false)
+                                        .getUserToken(),
+                                    Provider.of<LocalizationProvider>(context,
+                                            listen: false)
+                                        .locale
+                                        .languageCode,
+                                    product.id,
+                                    1);
+
+                            showCustomSnackBar(
+                                getTranslated('added_to_cart', context),
+                                context,
+                                isError: false);
+                          } */
+                        if (cart.quantity < cart.cartProduct.totalStock) {
+                          Provider.of<CartProvider>(context, listen: false)
+                              .increamentProduct(
+                                  context,
+                                  Provider.of<AuthProvider>(context,
+                                          listen: false)
+                                      .getUserToken(),
+                                  Provider.of<LocalizationProvider>(context,
+                                          listen: false)
+                                      .locale
+                                      .languageCode,
+                                  cart.id);
+                          Provider.of<CouponProvider>(context, listen: false)
+                              .removeCouponData(false);
+                          Provider.of<CartProvider>(context, listen: false)
+                              .setQuantity(true, index);
+                          reload();
+                        } else {
+                          showCustomSnackBar(
+                              getTranslated('out_of_stock', context), context);
                         }
                       },
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                        child: Icon(Icons.add, size: 20,color: Theme.of(context).primaryColor),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: Dimensions.PADDING_SIZE_SMALL,
+                            vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                        child: Icon(Icons.add,
+                            size: 20, color: Theme.of(context).primaryColor),
                       ),
                     ),
                   ]),
                 ],
               )),
-              !ResponsiveHelper.isMobile(context) ? Padding(
-                padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL),
-                child: IconButton(
-                  onPressed: () {
-                    Provider.of<CartProvider>(context, listen: false).removeFromCart(index, context);
-                  },
-                  icon: Icon(Icons.delete, color: Colors.red),
-                ),
-              ) : SizedBox(),
-
+              !ResponsiveHelper.isMobile(context)
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.PADDING_SIZE_SMALL),
+                      child: IconButton(
+                        onPressed: () {
+                          /* Provider.of<CartProvider>(context, listen: false)
+                              .delete(
+                                  context,
+                                  Provider.of<AuthProvider>(context,
+                                          listen: false)
+                                      .getUserToken(),
+                                  Provider.of<LocalizationProvider>(context,
+                                          listen: false)
+                                      .locale
+                                      .languageCode,
+                                  cart.id); */
+                          Provider.of<CartProvider>(context, listen: false)
+                              .removeFromCart(index, context);
+                          reload();
+                        },
+                        icon: Icon(Icons.delete, color: Colors.red),
+                      ),
+                    )
+                  : SizedBox(),
             ]),
           ),
         ),

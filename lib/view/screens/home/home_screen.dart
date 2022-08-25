@@ -17,8 +17,17 @@ import 'package:flutter_grocery/view/screens/home/widget/product_view.dart';
 import 'package:flutter_grocery/view/screens/home/widget/sub_sub_category_view.dart';
 import 'package:provider/provider.dart';
 
+import '../../../provider/auth_provider.dart';
+import '../../../provider/cart_provider.dart';
+
 class HomeScreen extends StatelessWidget {
   Future<void> _loadData(BuildContext context, bool reload) async {
+    await Provider.of<CartProvider>(context, listen: false).getMyCartData(
+        context,
+        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+        Provider.of<LocalizationProvider>(context, listen: false)
+            .locale
+            .languageCode);
     // await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(context, reload);
 
     await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
@@ -57,7 +66,8 @@ class HomeScreen extends StatelessWidget {
           .languageCode,
       reload,
     );
-    await Provider.of<CategoryProvider>(context, listen: false).getSubSubCategory(
+    await Provider.of<CategoryProvider>(context, listen: false)
+        .getSubSubCategory(
       context,
       Provider.of<LocalizationProvider>(context, listen: false)
           .locale
@@ -72,7 +82,6 @@ class HomeScreen extends StatelessWidget {
     _loadData(context, false);
     print('');
     return RefreshIndicator(
-
       onRefresh: () async {
         await _loadData(context, true);
       },
@@ -109,7 +118,6 @@ class HomeScreen extends StatelessWidget {
 
                       Consumer<CategoryProvider>(
                           builder: (context, category, child) {
-
                         return category.subCategoryData == null
                             ? CategoryDetails()
                             : category.subCategoryData.length == 0
@@ -118,13 +126,12 @@ class HomeScreen extends StatelessWidget {
                       }),
                       Consumer<CategoryProvider>(
                           builder: (context, category, child) {
-
-                            return category.ssHomecate == null
-                                ? SubSubCategory()
-                                : category.ssHomecate.length == 0
+                        return category.ssHomecate == null
+                            ? SubSubCategory()
+                            : category.ssHomecate.length == 0
                                 ? SizedBox()
                                 : SubSubCategory();
-                          }),
+                      }),
                       // Category
                       Consumer<ProductProvider>(
                           builder: (context, product, child) {

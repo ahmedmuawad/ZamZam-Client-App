@@ -35,12 +35,20 @@ class AppConstants {
   static const String REMOVE_ADDRESS_URI =
       '/api/v1/customer/address/delete?address_id=';
 
-  static const String GET_SUBCATEGORY = '/api/v1/categories/get_subcategories' ;
-  static const String GET_SUBSUBCATEGORY = '/api/v1/categories/get_subsubcategories' ;
+  static const String GET_SUBCATEGORY = '/api/v1/categories/get_subcategories';
+  static const String GET_SUBSUBCATEGORY =
+      '/api/v1/categories/get_subsubcategories';
   static const String UPDATE_BALANCE = '/api/v1/customer/balance';
 
-  //
+  //Cart Feature
 
+  static const String GET_CART = '/api/v1/customer/cart/my_cart';
+  static const String ADD_TO_CART = '/api/v1/customer/cart/add';
+  static const String INCREAMENT = '/api/v1/customer/cart/increament';
+  static const String DECREAMENT = '/api/v1/customer/cart/decreament';
+  static const String DELETE = '/api/v1/customer/cart/delete';
+
+  // End Cart Feature
 
   static const String ADD_ADDRESS_URI = '/api/v1/customer/address/add';
   static const String UPDATE_ADDRESS_URI = '/api/v1/customer/address/update/';
