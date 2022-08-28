@@ -14,7 +14,7 @@ import 'localization_provider.dart';
 class CartProvider extends ChangeNotifier {
   final CartRepo cartRepo;
   CartProvider({@required this.cartRepo});
-  List<CartApiModel> _cartApiList;
+  List<CartApiModel> _cartApiList = [];
 
   List<CartModel> _cartList = [];
   double _amount = 0.0;
@@ -32,8 +32,6 @@ class CartProvider extends ChangeNotifier {
       _cartApiList = [];
       apiResponse.response.data.forEach(
           (category) => _cartApiList.add(CartApiModel.fromJson(category)));
-      print(
-          'CART LIST ============================== ${_cartApiList.length} =============================================');
     } else {
       ApiChecker.checkApi(context, apiResponse);
     }
@@ -121,7 +119,7 @@ class CartProvider extends ChangeNotifier {
         Provider.of<LocalizationProvider>(context, listen: false)
             .locale
             .languageCode,
-        _cartApiList[index].id);
+        _cartApiList[index].cartProduct.id);
     _amount =
         _amount - (cartList[index].discountedPrice * cartList[index].quantity);
     showCustomSnackBar(getTranslated('remove_from_cart', context), context);

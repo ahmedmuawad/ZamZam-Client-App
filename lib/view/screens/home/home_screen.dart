@@ -22,12 +22,6 @@ import '../../../provider/cart_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   Future<void> _loadData(BuildContext context, bool reload) async {
-    await Provider.of<CartProvider>(context, listen: false).getMyCartData(
-        context,
-        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
-        Provider.of<LocalizationProvider>(context, listen: false)
-            .locale
-            .languageCode);
     // await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(context, reload);
 
     await Provider.of<CategoryProvider>(context, listen: false).getCategoryList(
@@ -74,6 +68,12 @@ class HomeScreen extends StatelessWidget {
           .languageCode,
       reload,
     );
+    await Provider.of<CartProvider>(context, listen: false).getMyCartData(
+        context,
+        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+        Provider.of<LocalizationProvider>(context, listen: false)
+            .locale
+            .languageCode);
   }
 
   @override

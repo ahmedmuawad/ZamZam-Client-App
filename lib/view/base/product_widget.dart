@@ -212,7 +212,8 @@ class ProductWidget extends StatelessWidget {
                                                 listen: false)
                                             .locale
                                             .languageCode,
-                                        cart.cartApiList[cardIndex].id);
+                                        cart.cartApiList[cardIndex].cartProduct
+                                            .id);
                               } else {
                                 Provider.of<CartProvider>(context,
                                         listen: false)
@@ -229,7 +230,8 @@ class ProductWidget extends StatelessWidget {
                                                 listen: false)
                                             .locale
                                             .languageCode,
-                                        cart.cartApiList[cardIndex].id);
+                                        cart.cartApiList[cardIndex].cartProduct
+                                            .id);
                               }
                             },
                             child: Padding(
@@ -242,14 +244,15 @@ class ProductWidget extends StatelessWidget {
                                   color: Theme.of(context).primaryColor),
                             ),
                           ),
-                          Text(cart.cartList[cardIndex].quantity.toString(),
+                          Text(cart.cartApiList[cardIndex].quantity.toString(),
                               style: poppinsSemiBold.copyWith(
                                   fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE,
                                   color: Theme.of(context).primaryColor)),
                           InkWell(
                             onTap: () {
-                              if (cart.cartList[cardIndex].quantity <
-                                  cart.cartList[cardIndex].stock) {
+                              if (cart.cartApiList[cardIndex].quantity <
+                                  cart.cartApiList[cardIndex].cartProduct
+                                      .totalStock) {
                                 Provider.of<CartProvider>(context,
                                         listen: false)
                                     .setQuantity(true, cardIndex);
@@ -265,7 +268,8 @@ class ProductWidget extends StatelessWidget {
                                                 listen: false)
                                             .locale
                                             .languageCode,
-                                        cart.cartApiList[cardIndex].id);
+                                        cart.cartApiList[cardIndex].cartProduct
+                                            .id);
                               } else {
                                 showCustomSnackBar(
                                     getTranslated('out_of_stock', context),

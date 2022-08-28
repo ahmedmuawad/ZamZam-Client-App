@@ -28,23 +28,20 @@ class CartScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _couponController = TextEditingController();
   bool _isLogged;
+  String balance;
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<CartProvider>(context, listen: false).getMyCartData(
-        context,
-        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
-        Provider.of<LocalizationProvider>(context, listen: false)
-            .locale
-            .languageCode);
-    void reload(){
+    void reload() {
       Provider.of<CartProvider>(context, listen: false).getMyCartData(
-        context,
-        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
-        Provider.of<LocalizationProvider>(context, listen: false)
-            .locale
-            .languageCode);
+          context,
+          Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+          Provider.of<LocalizationProvider>(context, listen: false)
+              .locale
+              .languageCode);
     }
+
+    print('first of screen ======================== ');
     Provider.of<CouponProvider>(context, listen: false).removeCouponData(false);
     bool _isSelfPickupActive =
         Provider.of<SplashProvider>(context, listen: false)
@@ -56,11 +53,21 @@ class CartScreen extends StatelessWidget {
             .deliveryManagement
             .status ==
         1;
+    print('after kmWise ================================');
     _isLogged = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
     if (_isLogged) {
       Provider.of<ProfileProvider>(context, listen: false).getUserInfo(context);
-      
     }
+    print('after user info ===============================');
+
+    Provider.of<CartProvider>(context, listen: false).getMyCartData(
+        context,
+        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+        Provider.of<LocalizationProvider>(context, listen: false)
+            .locale
+            .languageCode);
+
+    print('after cart info ===============================');
 
     return Scaffold(
       key: _scaffoldKey,
@@ -75,10 +82,22 @@ class CartScreen extends StatelessWidget {
                 builder: (context, profileProvider, child) {
                 return Consumer<CartProvider>(
                   builder: (context, cart, child) {
-                    String balance = profileProvider.userInfoModel.balance;
+                    print(
+                        'after cart Consumer ===============================');
+
+                    balance = profileProvider.userInfoModel.balance;
+                    print(
+                        'after cart foreach =============================== $balance');
+                    if (balance == null) {
+                      balance = '0.0';
+                    } else {
+                      balance = balance;
+                    }
                     double _oldBalance = double.parse(balance);
+
                     double disBalance = 0.00;
                     double deliveryCharge = 0;
+
                     (Provider.of<OrderProvider>(context).orderType ==
                                 'delivery' &&
                             !_kmWiseCharge)
@@ -90,13 +109,16 @@ class CartScreen extends StatelessWidget {
                     double _itemPrice = 0;
                     double _discount = 0;
                     double _tax = 0;
+
                     cart.cartApiList.forEach((cartModel) {
-                      _itemPrice =
-                          _itemPrice + (cartModel.cartProduct.price * cartModel.quantity);
-                      _discount =
-                          _discount + (cartModel.cartProduct.discount * cartModel.quantity);
-                      _tax = _tax + (cartModel.cartProduct.tax * cartModel.quantity);
+                      _itemPrice = _itemPrice +
+                          (cartModel.cartProduct.price * cartModel.quantity);
+                      _discount = _discount +
+                          (cartModel.cartProduct.discount * cartModel.quantity);
+                      _tax = _tax +
+                          (cartModel.cartProduct.tax * cartModel.quantity);
                     });
+
                     double _subTotal = _itemPrice + _tax;
 
                     double _total = _subTotal -
@@ -116,7 +138,7 @@ class CartScreen extends StatelessWidget {
                       disBalance = _oldBalance;
                       _oldBalance = 0.00;
                     }
-                    return cart.cartApiList.length > 0
+                    return cart.cartApiList != null
                         ? Column(
                             children: [
                               Expanded(
@@ -137,10 +159,12 @@ class CartScreen extends StatelessWidget {
                                                 physics:
                                                     NeverScrollableScrollPhysics(),
                                                 shrinkWrap: true,
-                                                itemCount: cart.cartApiList.length,
+                                                itemCount:
+                                                    cart.cartApiList.length,
                                                 itemBuilder: (context, index) {
                                                   return CartProductWidget(
-                                                    cart: cart.cartApiList[index],
+                                                    cart:
+                                                        cart.cartApiList[index],
                                                     index: index,
                                                   );
                                                 },
@@ -597,12 +621,13 @@ class CartScreen extends StatelessWidget {
                   double _itemPrice = 0;
                   double _discount = 0;
                   double _tax = 0;
-                  cart.cartList.forEach((cartModel) {
-                    _itemPrice =
-                        _itemPrice + (cartModel.price * cartModel.quantity);
-                    _discount =
-                        _discount + (cartModel.discount * cartModel.quantity);
-                    _tax = _tax + (cartModel.tax * cartModel.quantity);
+                  cart.cartApiList.forEach((cartModel) {
+                    _itemPrice = _itemPrice +
+                        (cartModel.cartProduct.price * cartModel.quantity);
+                    _discount = _discount +
+                        (cartModel.cartProduct.discount * cartModel.quantity);
+                    _tax =
+                        _tax + (cartModel.cartProduct.tax * cartModel.quantity);
                   });
                   double _subTotal = _itemPrice + _tax;
                   double _total = _subTotal -
@@ -610,7 +635,7 @@ class CartScreen extends StatelessWidget {
                       Provider.of<CouponProvider>(context).discount +
                       deliveryCharge;
 
-                  return cart.cartList.length > 0
+                  return cart.cartApiList.length > 0
                       ? Column(
                           children: [
                             Expanded(
@@ -631,7 +656,8 @@ class CartScreen extends StatelessWidget {
                                               physics:
                                                   NeverScrollableScrollPhysics(),
                                               shrinkWrap: true,
-                                              itemCount: cart.cartList.length,
+                                              itemCount:
+                                                  cart.cartApiList.length,
                                               itemBuilder: (context, index) {
                                                 return CartProductWidget(
                                                   cart: cart.cartApiList[index],

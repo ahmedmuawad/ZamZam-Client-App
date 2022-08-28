@@ -136,7 +136,7 @@ class CartProductWidget extends StatelessWidget {
                                           listen: false)
                                       .locale
                                       .languageCode,
-                                  cart.id);
+                                  cart.cartProduct.id);
                           Provider.of<CartProvider>(context, listen: false)
                               .setQuantity(false, index);
                           reload();
@@ -212,7 +212,7 @@ class CartProductWidget extends StatelessWidget {
                                           listen: false)
                                       .locale
                                       .languageCode,
-                                  cart.id);
+                                  cart.cartProduct.id);
                           Provider.of<CouponProvider>(context, listen: false)
                               .removeCouponData(false);
                           Provider.of<CartProvider>(context, listen: false)

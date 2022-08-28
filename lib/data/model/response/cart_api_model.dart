@@ -149,7 +149,7 @@ class CartProduct {
     _id = json['id'];
     _name = json['name'];
     _description = json['description'];
-    _image = json['image'];
+    _image = json['img'];
     _price = json['price'].toDouble();
     /* if (json['variations'] != null) {
       _variations = [];
@@ -195,7 +195,7 @@ class CartProduct {
     data['id'] = this._id;
     data['name'] = this._name;
     data['description'] = this._description;
-    data['image'] = this._image;
+    data['img'] = this._image;
     data['price'] = this._price;
     /* if (this._variations != null) {
       data['variations'] = this._variations.map((v) => v.toJson()).toList();

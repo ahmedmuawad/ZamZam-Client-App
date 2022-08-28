@@ -145,22 +145,25 @@ class _MainScreenState extends State<MainScreen> {
                                             .color,
                                         width: 25),
                                     Positioned(
-                                      top: -7,
-                                      right: -2,
-                                      child: Container(
-                                        padding: EdgeInsets.all(3),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                        child: Text(
-                                            '${Provider.of<CartProvider>(context).cartApiList.length}',
-                                            style: TextStyle(
-                                                color:
-                                                    Theme.of(context).cardColor,
-                                                fontSize: 10)),
-                                      ),
-                                    ),
+                                        top: -7,
+                                        right: -2,
+                                        child: Consumer<CartProvider>(
+                                          builder: (context, cart, child) {
+                                            return Container(
+                                              padding: EdgeInsets.all(3),
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              child: Text(
+                                                  '${cart.cartApiList.length}',
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .cardColor,
+                                                      fontSize: 10)),
+                                            );
+                                          },
+                                        )),
                                   ]),
                                   onPressed: () {
                                     ResponsiveHelper.isMobilePhone()
@@ -182,12 +185,15 @@ class _MainScreenState extends State<MainScreen> {
                             ]
                           : splash.pageIndex == 2
                               ? [
-                                  Center(
-                                      child: Text(
-                                          '${Provider.of<CartProvider>(context, listen: false).cartApiList.length} ${getTranslated('items', context)}',
+                                  Center(child: Consumer<CartProvider>(
+                                    builder: (context, cart, child) {
+                                      return Text(
+                                          '${cart.cartApiList.length} ${getTranslated('items', context)}',
                                           style: poppinsMedium.copyWith(
                                               color: Theme.of(context)
-                                                  .primaryColor))),
+                                                  .primaryColor));
+                                    },
+                                  )),
                                   SizedBox(width: 20)
                                 ]
                               : null,
