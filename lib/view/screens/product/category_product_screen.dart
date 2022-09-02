@@ -68,7 +68,7 @@ class CategoryProductScreen extends StatelessWidget {
                                     .categoryModel
                                     .name
                                 : 'name',*/
-                            categoryModel.name,
+                                categoryModel.name,
                             isCenter: false,
                             isElevation: true,
                           ),
@@ -210,8 +210,8 @@ class CategoryProductScreen extends StatelessWidget {
                                             : ResponsiveHelper.isTab(context)
                                                 ? 2
                                                 : 1,
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 4,
+                                crossAxisSpacing: 4,
                               ),
                               padding: EdgeInsets.symmetric(
                                   horizontal: Dimensions.PADDING_SIZE_SMALL),

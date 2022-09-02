@@ -93,7 +93,7 @@ class HomeScreen extends StatelessWidget {
             controller: _scrollController,
             child: Center(
               child: SizedBox(
-                width: 1170,
+                width: MediaQuery.of(context).size.width,
                 child: Column(
                     // controller: _scrollController,
                     children: [
