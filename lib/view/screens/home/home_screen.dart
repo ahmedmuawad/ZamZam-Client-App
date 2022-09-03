@@ -68,12 +68,16 @@ class HomeScreen extends StatelessWidget {
           .languageCode,
       reload,
     );
-    await Provider.of<CartProvider>(context, listen: false).getMyCartData(
-        context,
-        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
-        Provider.of<LocalizationProvider>(context, listen: false)
-            .locale
-            .languageCode);
+    bool _isLogged =
+        Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
+    if (_isLogged) {
+      await Provider.of<CartProvider>(context, listen: false).getMyCartData(
+          context,
+          Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+          Provider.of<LocalizationProvider>(context, listen: false)
+              .locale
+              .languageCode);
+    }
   }
 
   @override

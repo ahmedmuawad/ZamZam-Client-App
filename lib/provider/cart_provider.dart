@@ -45,7 +45,7 @@ class CartProvider extends ChangeNotifier {
     if (apiResponse.response != null &&
         apiResponse.response.statusCode == 200) {
     } else {
-      ApiChecker.checkApi(context, apiResponse);
+      //ApiChecker.checkApi(context, apiResponse);
     }
     notifyListeners();
   }
@@ -56,7 +56,7 @@ class CartProvider extends ChangeNotifier {
     if (apiResponse.response != null &&
         apiResponse.response.statusCode == 200) {
     } else {
-      ApiChecker.checkApi(context, apiResponse);
+      //ApiChecker.checkApi(context, apiResponse);
     }
     notifyListeners();
   }
@@ -78,7 +78,7 @@ class CartProvider extends ChangeNotifier {
     if (apiResponse.response != null &&
         apiResponse.response.statusCode == 200) {
     } else {
-      ApiChecker.checkApi(context, apiResponse);
+      //ApiChecker.checkApi(context, apiResponse);
     }
     notifyListeners();
   }
@@ -113,13 +113,18 @@ class CartProvider extends ChangeNotifier {
   }
 
   void removeFromCart(int index, BuildContext context) async {
-    await Provider.of<CartProvider>(context, listen: false).delete(
-        context,
-        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
-        Provider.of<LocalizationProvider>(context, listen: false)
-            .locale
-            .languageCode,
-        _cartApiList[index].cartProduct.id);
+    bool isLoged =
+        Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
+    if (isLoged) {
+      await Provider.of<CartProvider>(context, listen: false).delete(
+          context,
+          Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+          Provider.of<LocalizationProvider>(context, listen: false)
+              .locale
+              .languageCode,
+          _cartApiList[index].cartProduct.id);
+    }
+
     _amount =
         _amount - (cartList[index].discountedPrice * cartList[index].quantity);
     showCustomSnackBar(getTranslated('remove_from_cart', context), context);

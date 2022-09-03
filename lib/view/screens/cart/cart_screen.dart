@@ -33,12 +33,15 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void reload() {
-      Provider.of<CartProvider>(context, listen: false).getMyCartData(
-          context,
-          Provider.of<AuthProvider>(context, listen: false).getUserToken(),
-          Provider.of<LocalizationProvider>(context, listen: false)
-              .locale
-              .languageCode);
+
+      if (_isLogged) {
+        Provider.of<CartProvider>(context, listen: false).getMyCartData(
+            context,
+            Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+            Provider.of<LocalizationProvider>(context, listen: false)
+                .locale
+                .languageCode);
+      }
     }
 
     print('first of screen ======================== ');
@@ -59,14 +62,16 @@ class CartScreen extends StatelessWidget {
       Provider.of<ProfileProvider>(context, listen: false).getUserInfo(context);
     }
     print('after user info ===============================');
-
-    Provider.of<CartProvider>(context, listen: false).getMyCartData(
+    if( _isLogged){
+Provider.of<CartProvider>(context, listen: false).getMyCartData(
         context,
         Provider.of<AuthProvider>(context, listen: false).getUserToken(),
         Provider.of<LocalizationProvider>(context, listen: false)
             .locale
             .languageCode);
 
+    }
+    
     print('after cart info ===============================');
 
     return Scaffold(
@@ -111,13 +116,14 @@ class CartScreen extends StatelessWidget {
                     double _tax = 0;
 
                     cart.cartApiList.forEach((cartModel) {
-                      _itemPrice = _itemPrice +
-                          (cartModel.cartProduct.price * cartModel.quantity);
-                      _discount = _discount +
-                          (cartModel.cartProduct.discount * cartModel.quantity);
-                      _tax = _tax +
-                          (cartModel.cartProduct.tax * cartModel.quantity);
-                    });
+                        _itemPrice = _itemPrice +
+                            (cartModel.cartProduct.price * cartModel.quantity);
+                        _discount = _discount +
+                            (cartModel.cartProduct.discount *
+                                cartModel.quantity);
+                        _tax = _tax +
+                            (cartModel.cartProduct.tax * cartModel.quantity);
+                      });
 
                     double _subTotal = _itemPrice + _tax;
 
@@ -138,7 +144,7 @@ class CartScreen extends StatelessWidget {
                       disBalance = _oldBalance;
                       _oldBalance = 0.00;
                     }
-                    return cart.cartApiList != null
+                    return cart.cartApiList.length > 0
                         ? Column(
                             children: [
                               Expanded(
@@ -163,6 +169,7 @@ class CartScreen extends StatelessWidget {
                                                     cart.cartApiList.length,
                                                 itemBuilder: (context, index) {
                                                   return CartProductWidget(
+                                                    cartL: null,
                                                     cart:
                                                         cart.cartApiList[index],
                                                     index: index,
@@ -621,13 +628,13 @@ class CartScreen extends StatelessWidget {
                   double _itemPrice = 0;
                   double _discount = 0;
                   double _tax = 0;
-                  cart.cartApiList.forEach((cartModel) {
+                  cart.cartList.forEach((cartModel) {
                     _itemPrice = _itemPrice +
-                        (cartModel.cartProduct.price * cartModel.quantity);
+                        (cartModel.price * cartModel.quantity);
                     _discount = _discount +
-                        (cartModel.cartProduct.discount * cartModel.quantity);
+                        (cartModel.discount * cartModel.quantity);
                     _tax =
-                        _tax + (cartModel.cartProduct.tax * cartModel.quantity);
+                        _tax + (cartModel.tax * cartModel.quantity);
                   });
                   double _subTotal = _itemPrice + _tax;
                   double _total = _subTotal -
@@ -635,7 +642,7 @@ class CartScreen extends StatelessWidget {
                       Provider.of<CouponProvider>(context).discount +
                       deliveryCharge;
 
-                  return cart.cartApiList.length > 0
+                  return cart.cartList.length > 0
                       ? Column(
                           children: [
                             Expanded(
@@ -657,10 +664,10 @@ class CartScreen extends StatelessWidget {
                                                   NeverScrollableScrollPhysics(),
                                               shrinkWrap: true,
                                               itemCount:
-                                                  cart.cartApiList.length,
+                                                  cart.cartList.length,
                                               itemBuilder: (context, index) {
                                                 return CartProductWidget(
-                                                  cart: cart.cartApiList[index],
+                                                  cartL: cart.cartList[index],
                                                   index: index,
                                                 );
                                               },

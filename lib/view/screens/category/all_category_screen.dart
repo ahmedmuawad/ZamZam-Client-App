@@ -117,9 +117,12 @@ class AllCategoryScreen extends StatelessWidget {
                                           Row(
                                             children: [
                                               Padding(
-                                                padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                                child: TitleWidget(title: categoryProvider
-                                                    .subCategoryList[index].name),
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 10, 10, 0),
+                                                child: TitleWidget(
+                                                    title: categoryProvider
+                                                        .subCategoryList[index]
+                                                        .name),
                                               ),
                                               /*Spacer(),
                                               InkWell(
@@ -143,34 +146,73 @@ class AllCategoryScreen extends StatelessWidget {
                                           ),
                                           GridView.builder(
                                             itemCount: categoryProvider
-                                                .subCategoryList[index].subCate.length /*> 5 ? 6 : category.categoryList.length*/,
-                                            padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-                                            physics: NeverScrollableScrollPhysics(),
+                                                .subCategoryList[index]
+                                                .subCate
+                                                .length /*> 5 ? 6 : category.categoryList.length*/,
+                                            padding: EdgeInsets.all(
+                                                Dimensions.PADDING_SIZE_SMALL),
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
-                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                              childAspectRatio: ResponsiveHelper.isDesktop(context) ? (1 / 1.1) : (1 / 1.2),
-                                              crossAxisCount: ResponsiveHelper.isDesktop(context)?6:ResponsiveHelper.isMobilePhone()?3:ResponsiveHelper.isTab(context)?4:3,
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                              childAspectRatio:
+                                                  ResponsiveHelper.isDesktop(
+                                                          context)
+                                                      ? (1 / 1.1)
+                                                      : (1 / 1.2),
+                                              crossAxisCount: ResponsiveHelper
+                                                      .isDesktop(context)
+                                                  ? 6
+                                                  : ResponsiveHelper
+                                                          .isMobilePhone()
+                                                      ? 3
+                                                      : ResponsiveHelper.isTab(
+                                                              context)
+                                                          ? 4
+                                                          : 3,
                                               mainAxisSpacing: 10,
                                               crossAxisSpacing: 10,
                                             ),
-                                            itemBuilder:  (context, index1) {
-                                                  return InkWell(
-                                                    onTap: (){
-                                                      Navigator.of(context).pushNamed(
-                                                        RouteHelper.getCategoryProductsRoute(
-                                                          categoryProvider.subCategoryList[index].subCate[index1].id,
-                                                        ),
-                                                        arguments: CategoryProductScreen(categoryModel: CategoryModel(
-                                                          id: categoryProvider.subCategoryList[index].subCate[index1].id,
-                                                          name: categoryProvider.subCategoryList[index].subCate[index1].name,
-                                                        )),
-                                                      );
-                                                    },
-                                                    child:AllSubCategoryItem(
-                                                      name: categoryProvider.subCategoryList[index].subCate[index1].name,
-                                                      image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.categoryImageUrl}/${categoryProvider.subCategoryList[index].subCate[index1].image}',
+                                            itemBuilder: (context, index1) {
+                                              return InkWell(
+                                                onTap: () {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                    RouteHelper
+                                                        .getCategoryProductsRoute(
+                                                      categoryProvider
+                                                          .subCategoryList[
+                                                              index]
+                                                          .subCate[index1]
+                                                          .id,
                                                     ),
+                                                    arguments:
+                                                        CategoryProductScreen(
+                                                            categoryModel:
+                                                                CategoryModel(
+                                                      id: categoryProvider
+                                                          .subCategoryList[
+                                                              index]
+                                                          .subCate[index1]
+                                                          .id,
+                                                      name: categoryProvider
+                                                          .subCategoryList[
+                                                              index]
+                                                          .subCate[index1]
+                                                          .name,
+                                                    )),
                                                   );
+                                                },
+                                                child: AllSubCategoryItem(
+                                                  name: categoryProvider
+                                                      .subCategoryList[index]
+                                                      .subCate[index1]
+                                                      .name,
+                                                  image:
+                                                      '${Provider.of<SplashProvider>(context, listen: false).baseUrls.categoryImageUrl}/${categoryProvider.subCategoryList[index].subCate[index1].image}',
+                                                ),
+                                              );
                                             },
                                           )
                                         ],
@@ -287,8 +329,8 @@ class AllSubCategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 100,
-      height: 110,
+      width: 120,
+      height: 120,
       margin: EdgeInsets.symmetric(
           vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL, horizontal: 2),
       decoration: BoxDecoration(
@@ -298,8 +340,8 @@ class AllSubCategoryItem extends StatelessWidget {
         child:
             Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           Container(
-            height: 60,
-            width: 60,
+            height: 50,
+            width: 50,
             alignment: Alignment.center,
             //padding: EdgeInsets.all(5),
             decoration: BoxDecoration(

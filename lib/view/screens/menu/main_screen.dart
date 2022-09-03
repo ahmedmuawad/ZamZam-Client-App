@@ -36,12 +36,13 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List<Widget> _screens = [];
   List<String> _keys = [];
+  bool _isLoggedIn;
 
   @override
   void initState() {
     super.initState();
 
-    final bool _isLoggedIn =
+    _isLoggedIn =
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
     if (_isLoggedIn) {
       Provider.of<ProfileProvider>(context, listen: false).getUserInfo(context);
@@ -156,7 +157,9 @@ class _MainScreenState extends State<MainScreen> {
                                                   color: Theme.of(context)
                                                       .primaryColor),
                                               child: Text(
-                                                  '${cart.cartApiList.length}',
+                                                  _isLoggedIn
+                                                      ? '${cart.cartApiList.length}'
+                                                      : '${cart.cartList.length}',
                                                   style: TextStyle(
                                                       color: Theme.of(context)
                                                           .cardColor,
@@ -188,7 +191,9 @@ class _MainScreenState extends State<MainScreen> {
                                   Center(child: Consumer<CartProvider>(
                                     builder: (context, cart, child) {
                                       return Text(
-                                          '${cart.cartApiList.length} ${getTranslated('items', context)}',
+                                          _isLoggedIn
+                                              ? '${cart.cartApiList.length} ${getTranslated('items', context)}'
+                                              : '${cart.cartList.length} ${getTranslated('items', context)}',
                                           style: poppinsMedium.copyWith(
                                               color: Theme.of(context)
                                                   .primaryColor));
