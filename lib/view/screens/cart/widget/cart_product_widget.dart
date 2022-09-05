@@ -25,6 +25,8 @@ class CartProductWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _isLogged =
+        Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
     void reload() {
       Provider.of<CartProvider>(context, listen: false).getMyCartData(
         context,
@@ -375,19 +377,21 @@ class CartProductWidget extends StatelessWidget {
                                       listen: false)
                                   .removeCouponData(false);
                               if (cartL.quantity > 1) {
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .decreamentProduct(
-                                        context,
-                                        Provider.of<AuthProvider>(context,
-                                                listen: false)
-                                            .getUserToken(),
-                                        Provider.of<LocalizationProvider>(
-                                                context,
-                                                listen: false)
-                                            .locale
-                                            .languageCode,
-                                        cartL.id);
+                                if (_isLogged) {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .decreamentProduct(
+                                          context,
+                                          Provider.of<AuthProvider>(context,
+                                                  listen: false)
+                                              .getUserToken(),
+                                          Provider.of<LocalizationProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .locale
+                                              .languageCode,
+                                          cartL.id);
+                                }
                                 Provider.of<CartProvider>(context,
                                         listen: false)
                                     .setQuantity(false, index);
@@ -407,7 +411,6 @@ class CartProductWidget extends StatelessWidget {
                                 Provider.of<CartProvider>(context,
                                         listen: false)
                                     .removeFromCart(index, context);
-                                reload();
                               }
                             },
                             child: Padding(
@@ -456,19 +459,21 @@ class CartProductWidget extends StatelessWidget {
                                 isError: false);
                           } */
                               if (cartL.quantity < cartL.stock) {
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .increamentProduct(
-                                        context,
-                                        Provider.of<AuthProvider>(context,
-                                                listen: false)
-                                            .getUserToken(),
-                                        Provider.of<LocalizationProvider>(
-                                                context,
-                                                listen: false)
-                                            .locale
-                                            .languageCode,
-                                        cartL.id);
+                                if (_isLogged) {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .increamentProduct(
+                                          context,
+                                          Provider.of<AuthProvider>(context,
+                                                  listen: false)
+                                              .getUserToken(),
+                                          Provider.of<LocalizationProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .locale
+                                              .languageCode,
+                                          cartL.id);
+                                }
                                 Provider.of<CouponProvider>(context,
                                         listen: false)
                                     .removeCouponData(false);
