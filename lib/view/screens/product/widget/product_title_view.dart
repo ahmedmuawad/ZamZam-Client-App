@@ -20,6 +20,8 @@ class ProductTitleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isLogged =
+        Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
     double _startingPrice;
     double _endingPrice;
     if (product.variations.length != 0) {
@@ -93,21 +95,21 @@ class ProductTitleView extends StatelessWidget {
                   Expanded(child: SizedBox.shrink()),
                   Row(children: [
                     QuantityButton(
-                      isIncrement: false,
-                      quantity: productProvider.quantity,
-                      stock: stock,
-                      id: product.id,
-                    ),
+                        isIncrement: false,
+                        quantity: productProvider.quantity,
+                        stock: stock,
+                        id: product.id,
+                        isLogged: isLogged),
                     SizedBox(width: 15),
                     Text(productProvider.quantity.toString(),
                         style: poppinsSemiBold),
                     SizedBox(width: 15),
                     QuantityButton(
-                      isIncrement: true,
-                      quantity: productProvider.quantity,
-                      stock: stock,
-                      id: product.id,
-                    ),
+                        isIncrement: true,
+                        quantity: productProvider.quantity,
+                        stock: stock,
+                        id: product.id,
+                        isLogged: isLogged),
                   ]),
                 ]),
               ]);
@@ -123,13 +125,14 @@ class QuantityButton extends StatelessWidget {
   final bool isCartWidget;
   final int stock;
   final int id;
-  QuantityButton({
-    @required this.id,
-    @required this.isIncrement,
-    @required this.quantity,
-    @required this.stock,
-    this.isCartWidget = false,
-  });
+  final bool isLogged;
+  QuantityButton(
+      {@required this.id,
+      @required this.isIncrement,
+      @required this.quantity,
+      @required this.stock,
+      this.isCartWidget = false,
+      @required this.isLogged});
 
   @override
   Widget build(BuildContext context) {
@@ -138,18 +141,8 @@ class QuantityButton extends StatelessWidget {
         if (!isIncrement && quantity > 1) {
           Provider.of<ProductProvider>(context, listen: false)
               .setQuantity(false);
-          Provider.of<CartProvider>(context, listen: false).decreamentProduct(
-              context,
-              Provider.of<AuthProvider>(context, listen: false).getUserToken(),
-              Provider.of<LocalizationProvider>(context, listen: false)
-                  .locale
-                  .languageCode,
-              id);
-        } else if (isIncrement) {
-          if (quantity < stock) {
-            Provider.of<ProductProvider>(context, listen: false)
-                .setQuantity(true);
-            Provider.of<CartProvider>(context, listen: false).increamentProduct(
+          if (isLogged) {
+            Provider.of<CartProvider>(context, listen: false).decreamentProduct(
                 context,
                 Provider.of<AuthProvider>(context, listen: false)
                     .getUserToken(),
@@ -157,6 +150,22 @@ class QuantityButton extends StatelessWidget {
                     .locale
                     .languageCode,
                 id);
+          }
+        } else if (isIncrement) {
+          if (quantity < stock) {
+            Provider.of<ProductProvider>(context, listen: false)
+                .setQuantity(true);
+            if (isLogged) {
+              Provider.of<CartProvider>(context, listen: false)
+                  .increamentProduct(
+                      context,
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .getUserToken(),
+                      Provider.of<LocalizationProvider>(context, listen: false)
+                          .locale
+                          .languageCode,
+                      id);
+            }
           } else {
             showCustomSnackBar(getTranslated('out_of_stock', context), context);
           }
