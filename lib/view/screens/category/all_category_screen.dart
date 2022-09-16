@@ -368,7 +368,7 @@ class AllSubCategoryItem extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 horizontal: Dimensions.PADDING_SIZE_EXTRA_SMALL),
             child: Text(name,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: poppinsSemiBold.copyWith(

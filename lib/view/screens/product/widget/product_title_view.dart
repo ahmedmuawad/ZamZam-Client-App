@@ -7,6 +7,7 @@ import 'package:flutter_grocery/utill/color_resources.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../provider/auth_provider.dart';
@@ -16,7 +17,8 @@ import '../../../../provider/localization_provider.dart';
 class ProductTitleView extends StatelessWidget {
   final Product product;
   final int stock;
-  ProductTitleView({@required this.product, @required this.stock});
+  final int index;
+  ProductTitleView({@required this.product, this.index, @required this.stock});
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +101,8 @@ class ProductTitleView extends StatelessWidget {
                         quantity: productProvider.quantity,
                         stock: stock,
                         id: product.id,
-                        isLogged: isLogged),
+                        isLogged: isLogged,
+                        index: index),
                     SizedBox(width: 15),
                     Text(productProvider.quantity.toString(),
                         style: poppinsSemiBold),
@@ -109,7 +112,8 @@ class ProductTitleView extends StatelessWidget {
                         quantity: productProvider.quantity,
                         stock: stock,
                         id: product.id,
-                        isLogged: isLogged),
+                        isLogged: isLogged,
+                        index: index),
                   ]),
                 ]),
               ]);
@@ -126,8 +130,10 @@ class QuantityButton extends StatelessWidget {
   final int stock;
   final int id;
   final bool isLogged;
+  final index;
   QuantityButton(
-      {@required this.id,
+      {@required this.index,
+      @required this.id,
       @required this.isIncrement,
       @required this.quantity,
       @required this.stock,
@@ -139,6 +145,8 @@ class QuantityButton extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (!isIncrement && quantity > 1) {
+          Provider.of<CartProvider>(context, listen: false)
+              .setQuantity(false, index);
           Provider.of<ProductProvider>(context, listen: false)
               .setQuantity(false);
           if (isLogged) {
@@ -153,6 +161,8 @@ class QuantityButton extends StatelessWidget {
           }
         } else if (isIncrement) {
           if (quantity < stock) {
+            Provider.of<CartProvider>(context, listen: false)
+                .setQuantity(true, index);
             Provider.of<ProductProvider>(context, listen: false)
                 .setQuantity(true);
             if (isLogged) {

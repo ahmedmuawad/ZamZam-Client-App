@@ -65,6 +65,7 @@ class ProductWidget extends StatelessWidget {
                 RouteHelper.getProductDetailsRoute(product.id),
                 arguments: ProductDetailsScreen(
                     product: product,
+                    index: cardIndex,
                     cart: isExistInCart
                         ? Provider.of<CartProvider>(context, listen: false)
                             .cartList[cardIndex]

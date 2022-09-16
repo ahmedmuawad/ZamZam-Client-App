@@ -365,7 +365,7 @@ class CartProductWidget extends StatelessWidget {
                             SizedBox(width: 10),
                           ],
                         ),
-                        SizedBox(height: 5),
+                        SizedBox(height: 3),
                         Row(children: [
                           Expanded(
                               child: Text('${cartL.capacity} ${cartL.unit}',

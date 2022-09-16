@@ -29,7 +29,8 @@ import '../../../provider/auth_provider.dart';
 class ProductDetailsScreen extends StatelessWidget {
   final Product product;
   final CartModel cart;
-  ProductDetailsScreen({@required this.product, this.cart});
+  final int index;
+  ProductDetailsScreen({@required this.product, this.index, this.cart});
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +61,7 @@ class ProductDetailsScreen extends StatelessWidget {
           double priceWithQuantity = 0;
           bool isExistInCart = false;
           CartModel _cartModel;
+          int cardIndex;
 
           if (productProvider.product != null) {
             List<String> _variationList = [];
@@ -129,6 +131,8 @@ class ProductDetailsScreen extends StatelessWidget {
             isExistInCart =
                 Provider.of<CartProvider>(context).isExistInCart(_cartModel) !=
                     -1;
+            cardIndex = Provider.of<CartProvider>(context, listen: false)
+                .isExistInCart(_cartModel);
           }
 
           return productProvider.product != null
@@ -149,6 +153,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                       productModel: productProvider.product),
 
                                   ProductTitleView(
+                                      index: cardIndex,
                                       product: productProvider.product,
                                       stock: _stock),
 
@@ -254,23 +259,31 @@ class ProductDetailsScreen extends StatelessWidget {
                             onPressed: (!isExistInCart && _stock > 0)
                                 ? () async {
                                     if (!isExistInCart && _stock > 0) {
-                                      await Provider.of<CartProvider>(context,
-                                              listen: false)
-                                          .addToMyCart(
+                                      bool isLogged = Provider.of<AuthProvider>(
                                               context,
-                                              Provider.of<AuthProvider>(context,
-                                                      listen: false)
-                                                  .getUserToken(),
-                                              Provider.of<LocalizationProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .locale
-                                                  .languageCode,
-                                              product.id,
-                                              1);
+                                              listen: false)
+                                          .isLoggedIn();
                                       Provider.of<CartProvider>(context,
                                               listen: false)
                                           .addToCart(_cartModel);
+
+                                      if (isLogged) {
+                                        Provider.of<CartProvider>(context,
+                                                listen: false)
+                                            .addToMyCart(
+                                                context,
+                                                Provider.of<AuthProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .getUserToken(),
+                                                Provider.of<LocalizationProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .locale
+                                                    .languageCode,
+                                                product.id,
+                                                1);
+                                      }
 
                                       _key.currentState.shake();
 
