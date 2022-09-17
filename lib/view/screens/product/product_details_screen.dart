@@ -153,6 +153,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                       productModel: productProvider.product),
 
                                   ProductTitleView(
+                                      isExistInCart: isExistInCart,
                                       index: cardIndex,
                                       product: productProvider.product,
                                       stock: _stock),

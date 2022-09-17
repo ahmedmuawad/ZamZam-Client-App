@@ -18,7 +18,12 @@ class ProductTitleView extends StatelessWidget {
   final Product product;
   final int stock;
   final int index;
-  ProductTitleView({@required this.product, this.index, @required this.stock});
+  final bool isExistInCart;
+  ProductTitleView(
+      {@required this.product,
+      this.isExistInCart,
+      this.index,
+      @required this.stock});
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +102,7 @@ class ProductTitleView extends StatelessWidget {
                   Expanded(child: SizedBox.shrink()),
                   Row(children: [
                     QuantityButton(
+                        isExistInCart: isExistInCart,
                         isIncrement: false,
                         quantity: productProvider.quantity,
                         stock: stock,
@@ -108,6 +114,7 @@ class ProductTitleView extends StatelessWidget {
                         style: poppinsSemiBold),
                     SizedBox(width: 15),
                     QuantityButton(
+                        isExistInCart: isExistInCart,
                         isIncrement: true,
                         quantity: productProvider.quantity,
                         stock: stock,
@@ -131,8 +138,10 @@ class QuantityButton extends StatelessWidget {
   final int id;
   final bool isLogged;
   final index;
+  final bool isExistInCart;
   QuantityButton(
-      {@required this.index,
+      {@required this.isExistInCart,
+      @required this.index,
       @required this.id,
       @required this.isIncrement,
       @required this.quantity,
@@ -145,29 +154,14 @@ class QuantityButton extends StatelessWidget {
     return InkWell(
       onTap: () {
         if (!isIncrement && quantity > 1) {
-          Provider.of<CartProvider>(context, listen: false)
-              .setQuantity(false, index);
-          Provider.of<ProductProvider>(context, listen: false)
-              .setQuantity(false);
-          if (isLogged) {
-            Provider.of<CartProvider>(context, listen: false).decreamentProduct(
-                context,
-                Provider.of<AuthProvider>(context, listen: false)
-                    .getUserToken(),
-                Provider.of<LocalizationProvider>(context, listen: false)
-                    .locale
-                    .languageCode,
-                id);
-          }
-        } else if (isIncrement) {
-          if (quantity < stock) {
+          if (isExistInCart) {
             Provider.of<CartProvider>(context, listen: false)
-                .setQuantity(true, index);
+                .setQuantity(false, index);
             Provider.of<ProductProvider>(context, listen: false)
-                .setQuantity(true);
+                .setQuantity(false);
             if (isLogged) {
               Provider.of<CartProvider>(context, listen: false)
-                  .increamentProduct(
+                  .decreamentProduct(
                       context,
                       Provider.of<AuthProvider>(context, listen: false)
                           .getUserToken(),
@@ -175,6 +169,56 @@ class QuantityButton extends StatelessWidget {
                           .locale
                           .languageCode,
                       id);
+            }
+          } else {
+            Provider.of<ProductProvider>(context, listen: false)
+                .setQuantity(false);
+            if (isLogged) {
+              Provider.of<CartProvider>(context, listen: false)
+                  .decreamentProduct(
+                      context,
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .getUserToken(),
+                      Provider.of<LocalizationProvider>(context, listen: false)
+                          .locale
+                          .languageCode,
+                      id);
+            }
+          }
+        } else if (isIncrement) {
+          if (quantity < stock) {
+            if (isExistInCart) {
+              Provider.of<CartProvider>(context, listen: false)
+                  .setQuantity(true, index);
+              Provider.of<ProductProvider>(context, listen: false)
+                  .setQuantity(true);
+              if (isLogged) {
+                Provider.of<CartProvider>(context, listen: false)
+                    .increamentProduct(
+                        context,
+                        Provider.of<AuthProvider>(context, listen: false)
+                            .getUserToken(),
+                        Provider.of<LocalizationProvider>(context,
+                                listen: false)
+                            .locale
+                            .languageCode,
+                        id);
+              }
+            } else {
+              Provider.of<ProductProvider>(context, listen: false)
+                  .setQuantity(true);
+              if (isLogged) {
+                Provider.of<CartProvider>(context, listen: false)
+                    .increamentProduct(
+                        context,
+                        Provider.of<AuthProvider>(context, listen: false)
+                            .getUserToken(),
+                        Provider.of<LocalizationProvider>(context,
+                                listen: false)
+                            .locale
+                            .languageCode,
+                        id);
+              }
             }
           } else {
             showCustomSnackBar(getTranslated('out_of_stock', context), context);
