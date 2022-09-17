@@ -283,7 +283,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                     .locale
                                                     .languageCode,
                                                 product.id,
-                                                1);
+                                                _cartModel.quantity);
                                       }
 
                                       _key.currentState.shake();
