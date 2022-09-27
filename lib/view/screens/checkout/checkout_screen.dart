@@ -212,7 +212,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                   padding: EdgeInsets.symmetric(
                                                                       vertical:
                                                                           Dimensions
-                                                                              .PADDING_SIZE_EXTRA_SMALL,
+                                                                              .PADDING_SIZE_EXTRA_SMALL5,
                                                                       horizontal:
                                                                           Dimensions
                                                                               .PADDING_SIZE_SMALL),
@@ -1137,11 +1137,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     } else if (orderID == '-1') {
       ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(
         SnackBar(
-            content: Text(getTranslated('order_not_availble', _scaffoldKey.currentContext)),
+            content: Text(getTranslated(
+                'order_not_availble', _scaffoldKey.currentContext)),
             duration: Duration(milliseconds: 2000),
             backgroundColor: Colors.red),
       );
-      Provider.of<CartProvider>(_scaffoldKey.currentContext, listen: false).clearCartList();
+      Provider.of<CartProvider>(_scaffoldKey.currentContext, listen: false)
+          .clearCartList();
       Navigator.of(_scaffoldKey.currentContext).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

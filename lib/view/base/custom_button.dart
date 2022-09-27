@@ -7,7 +7,8 @@ class CustomButton extends StatelessWidget {
   final String buttonText;
   final Function onPressed;
   final double margin;
-  CustomButton({@required this.buttonText, @required this.onPressed, this.margin = 0});
+  CustomButton(
+      {@required this.buttonText, @required this.onPressed, this.margin = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +17,18 @@ class CustomButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
-          backgroundColor: onPressed == null ? ColorResources.getHintColor(context) : Theme.of(context).primaryColor,
+          backgroundColor: onPressed == null
+              ? ColorResources.getHintColor(context)
+              : Theme.of(context).primaryColor,
           minimumSize: Size(MediaQuery.of(context).size.width, 50),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
-        child: Text(buttonText, style: poppinsMedium.copyWith(color: Theme.of(context).cardColor, fontSize: Dimensions.FONT_SIZE_LARGE)),
+        child: Text(buttonText,
+            textAlign: TextAlign.center,
+            style: poppinsMedium.copyWith(
+                color: Theme.of(context).cardColor,
+                fontSize: Dimensions.FONT_SIZE_LARGE)),
       ),
     );
   }

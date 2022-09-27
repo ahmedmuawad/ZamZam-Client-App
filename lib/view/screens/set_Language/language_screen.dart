@@ -21,7 +21,7 @@ class LanguageScreen extends StatefulWidget {
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
-  int selected_index = -1;
+  int selected_index = 0;
 
   void set_Ar_Lang() {
     Provider.of<LocalizationProvider>(context, listen: false)
@@ -51,9 +51,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
         centerTitle: true,
         title: Text(
           getTranslated('select_lang', context),
-          style: TextStyle(color: Theme
-              .of(context)
-              .primaryColor),
+          style: TextStyle(color: Theme.of(context).primaryColor),
         ),
         elevation: 0,
         backgroundColor: Colors.white,
@@ -62,20 +60,14 @@ class _LanguageScreenState extends State<LanguageScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.1,
+              height: MediaQuery.of(context).size.height * 0.1,
             ),
             Text(
               getTranslated('choose_language', context),
               style: TextStyle(
-                  color: Theme
-                      .of(context)
-                      .primaryColor,
+                  color: Theme.of(context).primaryColor,
                   fontSize: Dimensions.FONT_SIZE_OVER_LARGE),
             ),
-
             SizedBox(
               height: 15,
             ),
@@ -93,17 +85,12 @@ class _LanguageScreenState extends State<LanguageScreen> {
                           set_Ar_Lang();
                         },
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.5,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: selected_index == 0
                                 ? ColorResources.getHintColor(context)
-                                : Theme
-                                .of(context)
-                                .primaryColor,
+                                : Theme.of(context).primaryColor,
                             boxShadow: [
                               BoxShadow(color: Colors.white, spreadRadius: 3),
                             ],
@@ -114,7 +101,9 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.asset('assets/image/egypt.png'),
-                                SizedBox(width: 5,),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Text(getTranslated('languageAr', context),
                                     style: poppinsMedium.copyWith(
                                         color: Colors.white,
@@ -141,21 +130,20 @@ class _LanguageScreenState extends State<LanguageScreen> {
                             borderRadius: BorderRadius.circular(10),
                             color: selected_index == 1
                                 ? ColorResources.getHintColor(context)
-                                : Theme
-                                .of(context)
-                                .primaryColor,
+                                : Theme.of(context).primaryColor,
                             boxShadow: [
                               BoxShadow(color: Colors.white, spreadRadius: 3),
                             ],
                           ),
                           height: 40,
                           child: Center(
-
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.asset('assets/image/united_kingdom.png'),
-                                SizedBox(width: 5,),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Text(getTranslated('languageEn', context),
                                     style: poppinsMedium.copyWith(
                                         color: Colors.white,
@@ -174,12 +162,10 @@ class _LanguageScreenState extends State<LanguageScreen> {
             SizedBox(
               height: 30,
             ),
-            Container(
-                child: Image.asset('assets/image/na_january_20.png')),
-            SizedBox(height: MediaQuery
-                .of(context)
-                .size
-                .height * 0.1,),
+            Container(child: Image.asset('assets/image/na_january_20.png')),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: InkWell(
@@ -187,29 +173,33 @@ class _LanguageScreenState extends State<LanguageScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            SelectAddressScreen(isFirst: widget.isFirst,)),
+                        builder: (context) => SelectAddressScreen(
+                              isFirst: widget.isFirst,
+                            )),
                   );
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.9,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color:  Theme
-                        .of(context)
-                        .primaryColor,
+                    color: Theme.of(context).primaryColor,
                     boxShadow: [
                       BoxShadow(color: Colors.white, spreadRadius: 3),
                     ],
                   ),
                   height: 40,
                   child: Center(
-
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset('assets/image/location_zamzam.png' , width: 30, height: 25,),
-                        SizedBox(width: 5,),
+                        Image.asset(
+                          'assets/image/location_zamzam.png',
+                          width: 30,
+                          height: 25,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
                         Text(getTranslated('select_delivery_address', context),
                             style: poppinsMedium.copyWith(
                                 color: Colors.white,
@@ -235,7 +225,8 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       .size
                       .width, 40),
                 ),
-              )*/,
+              )*/
+              ,
             ),
           ],
         ),

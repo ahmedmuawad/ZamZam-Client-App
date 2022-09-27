@@ -27,7 +27,7 @@ class CouponScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBarBase() ,
+      /* appBar: AppBarBase() , */
       body: _isLoggedIn
           ? Consumer<CouponProvider>(
               builder: (context, coupon, child) {
