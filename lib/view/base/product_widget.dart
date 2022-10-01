@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/cart_model.dart';
 import 'package:flutter_grocery/data/model/response/product_model.dart';
@@ -56,6 +58,8 @@ class ProductWidget extends StatelessWidget {
           -1;
       int cardIndex = Provider.of<CartProvider>(context, listen: false)
           .isExistInCart(_cartModel);
+      bool _isLogged =
+          Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
 
       return Padding(
         padding: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_SMALL),
@@ -158,25 +162,35 @@ class ProductWidget extends StatelessWidget {
                                 getTranslated('out_of_stock', context),
                                 context);
                           } else {
-                            Provider.of<CartProvider>(context, listen: false)
-                                .addToMyCart(
-                                    context,
-                                    Provider.of<AuthProvider>(context,
-                                            listen: false)
-                                        .getUserToken(),
-                                    Provider.of<LocalizationProvider>(context,
-                                            listen: false)
-                                        .locale
-                                        .languageCode,
-                                    product.id,
-                                    1);
-                            Provider.of<CartProvider>(context, listen: false)
-                                .addToCart(_cartModel);
+                            if (_isLogged) {
+                              Provider.of<CartProvider>(context, listen: false)
+                                  .addToMyCart(
+                                      context,
+                                      Provider.of<AuthProvider>(context,
+                                              listen: false)
+                                          .getUserToken(),
+                                      Provider.of<LocalizationProvider>(context,
+                                              listen: false)
+                                          .locale
+                                          .languageCode,
+                                      product.id,
+                                      1);
+                              Provider.of<CartProvider>(context, listen: false)
+                                  .addToCart(_cartModel);
 
-                            showCustomSnackBar(
-                                getTranslated('added_to_cart', context),
-                                context,
-                                isError: false);
+                              showCustomSnackBar(
+                                  getTranslated('added_to_cart', context),
+                                  context,
+                                  isError: false);
+                            } else {
+                              Provider.of<CartProvider>(context, listen: false)
+                                  .addToCart(_cartModel);
+
+                              showCustomSnackBar(
+                                  getTranslated('added_to_cart', context),
+                                  context,
+                                  isError: false);
+                            }
                           }
                         },
                         child: Container(
@@ -197,41 +211,73 @@ class ProductWidget extends StatelessWidget {
                         builder: (context, cart, child) => Row(children: [
                           InkWell(
                             onTap: () {
-                              if (cart.cartList[cardIndex].quantity > 1) {
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .setQuantity(false, cardIndex);
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .decreamentProduct(
-                                        context,
-                                        Provider.of<AuthProvider>(context,
-                                                listen: false)
-                                            .getUserToken(),
-                                        Provider.of<LocalizationProvider>(
-                                                context,
-                                                listen: false)
-                                            .locale
-                                            .languageCode,
-                                        cart.cartList[cardIndex].id);
+                              if (_isLogged) {
+                                if (cart.cartList[cardIndex].quantity > 1) {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .setQuantity(false, cardIndex);
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .decreamentProduct(
+                                          context,
+                                          Provider.of<AuthProvider>(context,
+                                                  listen: false)
+                                              .getUserToken(),
+                                          Provider.of<LocalizationProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .locale
+                                              .languageCode,
+                                          cart.cartList[cardIndex].id);
+                                } else {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .removeFromCart(cardIndex, context);
+                                  (context as Element).markNeedsBuild();
+                                }
                               } else {
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .removeFromCart(cardIndex, context);
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .delete(
-                                        context,
-                                        Provider.of<AuthProvider>(context,
-                                                listen: false)
-                                            .getUserToken(),
-                                        Provider.of<LocalizationProvider>(
-                                                context,
-                                                listen: false)
-                                            .locale
-                                            .languageCode,
-                                        cart.cartList[cardIndex].id);
+                                if (cart.cartList[cardIndex].quantity > 1) {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .setQuantity(false, cardIndex);
+                                  /* Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .decreamentProduct(
+                                          context,
+                                          Provider.of<AuthProvider>(context,
+                                                  listen: false)
+                                              .getUserToken(),
+                                          Provider.of<LocalizationProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .locale
+                                              .languageCode,
+                                          cart.cartList[cardIndex].id); */
+
+                                } else if (cart.cartList[cardIndex].quantity ==
+                                    1) {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .removeFromCart(cardIndex, context);
+                                  /* if (_isLogged) {
+                                    Provider.of<CartProvider>(context,
+                                            listen: false)
+                                        .delete(
+                                            context,
+                                            Provider.of<AuthProvider>(context,
+                                                    listen: false)
+                                                .getUserToken(),
+                                            Provider.of<LocalizationProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .locale
+                                                .languageCode,
+                                            cart.cartList[cardIndex].id);
+                                  } */
+                                }
                               }
+
+                              (context as Element).markNeedsBuild();
                             },
                             child: Padding(
                               padding: EdgeInsets.symmetric(
@@ -251,22 +297,28 @@ class ProductWidget extends StatelessWidget {
                             onTap: () {
                               if (cart.cartList[cardIndex].quantity <
                                   cart.cartList[cardIndex].stock) {
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .setQuantity(true, cardIndex);
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .increamentProduct(
-                                        context,
-                                        Provider.of<AuthProvider>(context,
-                                                listen: false)
-                                            .getUserToken(),
-                                        Provider.of<LocalizationProvider>(
-                                                context,
-                                                listen: false)
-                                            .locale
-                                            .languageCode,
-                                        cart.cartList[cardIndex].id);
+                                if (_isLogged) {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .setQuantity(true, cardIndex);
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .increamentProduct(
+                                          context,
+                                          Provider.of<AuthProvider>(context,
+                                                  listen: false)
+                                              .getUserToken(),
+                                          Provider.of<LocalizationProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .locale
+                                              .languageCode,
+                                          cart.cartList[cardIndex].id);
+                                } else {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .setQuantity(true, cardIndex);
+                                }
                               } else {
                                 showCustomSnackBar(
                                     getTranslated('out_of_stock', context),

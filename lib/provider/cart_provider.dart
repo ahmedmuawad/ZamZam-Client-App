@@ -122,7 +122,7 @@ class CartProvider extends ChangeNotifier {
           Provider.of<LocalizationProvider>(context, listen: false)
               .locale
               .languageCode,
-          _cartApiList[index].cartProduct.id);
+          cartList[index].id);
     }
 
     _amount =
