@@ -108,14 +108,35 @@ class CartProductWidget extends StatelessWidget {
                                 flex: 2,
                                 child: Text(cart.cartProduct.name,
                                     style: poppinsRegular.copyWith(
-                                        fontSize: Dimensions.FONT_SIZE_SMALL),
+                                        fontSize:
+                                            Dimensions.FONT_SIZE_EXTRA_SMALL),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis)),
-                            Text(
-                              PriceConverter.convertPrice(
-                                  context, cart.cartProduct.price),
-                              style: poppinsSemiBold.copyWith(
-                                  fontSize: Dimensions.FONT_SIZE_SMALL),
+                            Column(
+                              children: [
+                                Text(
+                                  PriceConverter.convertPrice(
+                                      context, cart.cartProduct.price,
+                                      discount: cart.cartProduct.discount,
+                                      discountType:
+                                          cart.cartProduct.discountType),
+                                  style: poppinsBold.copyWith(
+                                      fontSize: Dimensions.FONT_SIZE_SMALL),
+                                ),
+                                cart.cartProduct.discount > 0
+                                    ? Text(
+                                        PriceConverter.convertPrice(
+                                            context, cart.cartProduct.price),
+                                        style: poppinsRegular.copyWith(
+                                          fontSize:
+                                              Dimensions.FONT_SIZE_EXTRA_SMALL,
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                          color: Colors.red,
+                                        ),
+                                      )
+                                    : SizedBox(),
+                              ],
                             ),
                             SizedBox(width: 10),
                           ],
@@ -151,18 +172,6 @@ class CartProductWidget extends StatelessWidget {
                                     .setQuantity(false, index);
                                 reload();
                               } else if (cart.quantity == 1) {
-                                /* Provider.of<CartProvider>(context, listen: false)
-                              .delete(
-                                  context,
-                                  Provider.of<AuthProvider>(context,
-                                          listen: false)
-                                      .getUserToken(),
-                                  Provider.of<LocalizationProvider>(context,
-                                          listen: false)
-                                      .locale
-                                      .languageCode,
-                                  cart.id); */
-
                                 Provider.of<CartProvider>(context,
                                         listen: false)
                                     .removeFromCart(index, context);
@@ -185,35 +194,6 @@ class CartProductWidget extends StatelessWidget {
                                   color: Theme.of(context).primaryColor)),
                           InkWell(
                             onTap: () {
-                              /* if (isExistInCart) {
-                            showCustomSnackBar(
-                                getTranslated('already_added', context),
-                                context);
-                          } else if (_stock < 1) {
-                            showCustomSnackBar(
-                                getTranslated('out_of_stock', context),
-                                context);
-                          } else {
-                            Provider.of<CartProvider>(context, listen: false)
-                                .addToCart(_cartModel);
-                            Provider.of<CartProvider>(context, listen: false)
-                                .addToMyCart(
-                                    context,
-                                    Provider.of<AuthProvider>(context,
-                                            listen: false)
-                                        .getUserToken(),
-                                    Provider.of<LocalizationProvider>(context,
-                                            listen: false)
-                                        .locale
-                                        .languageCode,
-                                    product.id,
-                                    1);
-
-                            showCustomSnackBar(
-                                getTranslated('added_to_cart', context),
-                                context,
-                                isError: false);
-                          } */
                               if (cart.quantity < cart.cartProduct.totalStock) {
                                 Provider.of<CartProvider>(context,
                                         listen: false)
@@ -396,18 +376,6 @@ class CartProductWidget extends StatelessWidget {
                                         listen: false)
                                     .setQuantity(false, index);
                               } else if (cartL.quantity == 1) {
-                                /* Provider.of<CartProvider>(context, listen: false)
-                              .delete(
-                                  context,
-                                  Provider.of<AuthProvider>(context,
-                                          listen: false)
-                                      .getUserToken(),
-                                  Provider.of<LocalizationProvider>(context,
-                                          listen: false)
-                                      .locale
-                                      .languageCode,
-                                  cart.id); */
-
                                 Provider.of<CartProvider>(context,
                                         listen: false)
                                     .removeFromCart(index, context);

@@ -87,7 +87,7 @@ class ProductDetailsScreen extends StatelessWidget {
             _stock = productProvider.product.totalStock;
             for (Variations variation in productProvider.product.variations) {
               if (variation.type == variationType) {
-                price = variation.price;
+                price = double.parse(variation.price);
                 _variation = variation;
                 _stock = variation.stock;
                 break;

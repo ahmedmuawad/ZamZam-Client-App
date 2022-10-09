@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/cart_model.dart';
+import 'package:flutter_grocery/data/model/response/category_model.dart';
 import 'package:flutter_grocery/data/model/response/product_model.dart';
 import 'package:flutter_grocery/helper/price_converter.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
@@ -16,20 +17,46 @@ import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
+import 'package:flutter_grocery/view/screens/product/category_product_screen.dart';
 import 'package:flutter_grocery/view/screens/product/product_details_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../provider/category_provider.dart';
+
 class ProductWidget extends StatelessWidget {
+  int flag = 0;
   final Product product;
   final CartModel cart;
-  ProductWidget({@required this.product, this.cart});
+  final CategoryModel categoryModel;
+
+  ProductWidget({@required this.product, this.cart, this.categoryModel});
 
   @override
   Widget build(BuildContext context) {
+    void _loadData(BuildContext context) async {
+      if (flag == 0) {
+        Provider.of<CategoryProvider>(context, listen: false)
+            .getCategory(categoryModel.id, context);
+        Provider.of<ProductProvider>(context, listen: false)
+            .initCategoryProductList(
+          categoryModel.id.toString(),
+          context,
+          Provider.of<LocalizationProvider>(context, listen: false)
+              .locale
+              .languageCode,
+        );
+        Provider.of<ProductProvider>(context, listen: false)
+            .initializeAllSortBy(context);
+        Provider.of<CategoryProvider>(context, listen: false)
+            .setFilterIndex(-1);
+        flag++;
+      }
+    }
+
     return Consumer<ProductProvider>(
         builder: (context, productProvider, child) {
       double _price = product.variations.length > 0
-          ? product.variations[0].price
+          ? double.parse(product.variations[0].price)
           : product.price;
       int _stock = product.variations.length > 0
           ? product.variations[0].stock
@@ -62,7 +89,7 @@ class ProductWidget extends StatelessWidget {
           Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
 
       return Padding(
-        padding: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_SMALL),
+        padding: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_EXTRA_SMALL),
         child: InkWell(
           onTap: () {
             Navigator.of(context).pushNamed(
@@ -118,8 +145,8 @@ class ProductWidget extends StatelessWidget {
                         Text(
                           product.name,
                           style: poppinsMedium.copyWith(
-                              fontSize: Dimensions.FONT_SIZE_SMALL),
-                          maxLines: 1,
+                              fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL),
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 10),
@@ -162,6 +189,7 @@ class ProductWidget extends StatelessWidget {
                                 getTranslated('out_of_stock', context),
                                 context);
                           } else {
+                            _loadData(context);
                             if (_isLogged) {
                               Provider.of<CartProvider>(context, listen: false)
                                   .addToMyCart(
@@ -229,10 +257,13 @@ class ProductWidget extends StatelessWidget {
                                               .locale
                                               .languageCode,
                                           cart.cartList[cardIndex].id);
+                                  _loadData(context);
+                                  (context as Element).markNeedsBuild();
                                 } else {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .removeFromCart(cardIndex, context);
+                                  _loadData(context);
                                   (context as Element).markNeedsBuild();
                                 }
                               } else {
@@ -240,6 +271,7 @@ class ProductWidget extends StatelessWidget {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .setQuantity(false, cardIndex);
+                                  _loadData(context);
                                   /* Provider.of<CartProvider>(context,
                                           listen: false)
                                       .decreamentProduct(
@@ -256,24 +288,11 @@ class ProductWidget extends StatelessWidget {
 
                                 } else if (cart.cartList[cardIndex].quantity ==
                                     1) {
+                                  _loadData(context);
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .removeFromCart(cardIndex, context);
-                                  /* if (_isLogged) {
-                                    Provider.of<CartProvider>(context,
-                                            listen: false)
-                                        .delete(
-                                            context,
-                                            Provider.of<AuthProvider>(context,
-                                                    listen: false)
-                                                .getUserToken(),
-                                            Provider.of<LocalizationProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .locale
-                                                .languageCode,
-                                            cart.cartList[cardIndex].id);
-                                  } */
+                                  (context as Element).markNeedsBuild();
                                 }
                               }
 
@@ -314,10 +333,12 @@ class ProductWidget extends StatelessWidget {
                                               .locale
                                               .languageCode,
                                           cart.cartList[cardIndex].id);
+                                  _loadData(context);
                                 } else {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .setQuantity(true, cardIndex);
+                                  _loadData(context);
                                 }
                               } else {
                                 showCustomSnackBar(

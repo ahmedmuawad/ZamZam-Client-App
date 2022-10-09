@@ -264,5 +264,6 @@
   "select_lang": "برجاء اختيار اللغة" ,
   "languageAr": "العربية" ,
   "languageEn": "الانجليزية",
-  "order_not_availble": "المنتج غير متاح"
+  "order_not_availble": "المنتج غير متاح",
+  "cancled_order":"ملغي"
 }

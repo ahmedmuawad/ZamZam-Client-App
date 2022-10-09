@@ -31,7 +31,11 @@ class OrderDetailsModel {
     productId = json['product_id'];
     orderId = json['order_id'];
     price = json['price'].toDouble();
-    productDetails = json['product_details'] != null ? new ProductDetails.fromJson(json['product_details']) : null;
+
+    productDetails = json['product_details'] != null
+        ? new ProductDetails.fromJson(json['product_details'])
+        : null;
+
     discountOnProduct = json['discount_on_product'].toDouble();
     discountType = json['discount_type'];
     quantity = json['quantity'];
@@ -107,7 +111,12 @@ class ProductDetails {
         categoryIds.add(new CategoryIds.fromJson(v));
       });
     }
-    capacity = json['capacity'];
+    if (json['capacity'] is double) {
+      capacity = json['capacity'].toInt();
+    } else {
+      capacity = json['capacity'];
+    }
+
     unit = json['unit'];
     tax = json['tax'].toDouble();
     status = json['status'];

@@ -70,8 +70,9 @@ class CategoryDetails extends StatelessWidget {
                                           List<double> _priceList = [];
                                           category.subCategoryData[index1]
                                               .products[index].variations
-                                              .forEach((variation) => _priceList
-                                                  .add(variation.price));
+                                              .forEach((variation) =>
+                                                  _priceList.add(double.parse(
+                                                      variation.price)));
                                           _priceList
                                               .sort((a, b) => a.compareTo(b));
                                           _startingPrice = _priceList[0];

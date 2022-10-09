@@ -264,5 +264,6 @@
   "select_lang": "Please Select Language",
   "languageAr": "Arabic" ,
   "languageEn": "English",
-  "order_not_availble": "the Product not available"
+  "order_not_availble": "the Product not available",
+  "cancled_order":"Canceled"
 }

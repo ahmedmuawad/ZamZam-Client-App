@@ -33,8 +33,8 @@ class ProductTitleView extends StatelessWidget {
     double _endingPrice;
     if (product.variations.length != 0) {
       List<double> _priceList = [];
-      product.variations
-          .forEach((variation) => _priceList.add(variation.price));
+      product.variations.forEach(
+          (variation) => _priceList.add(double.parse(variation.price)));
       _priceList.sort((a, b) => a.compareTo(b));
       _startingPrice = _priceList[0];
       if (_priceList[0] < _priceList[_priceList.length - 1]) {

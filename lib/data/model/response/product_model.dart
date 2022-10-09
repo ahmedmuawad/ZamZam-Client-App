@@ -68,25 +68,25 @@ class Product {
 
   Product(
       {int id,
-        String name,
-        String description,
-        List<String> image,
-        double price,
-        List<Variations> variations,
-        double tax,
-        int status,
-        String createdAt,
-        String updatedAt,
-        List<String> attributes,
-        List<CategoryIds> categoryIds,
-        List<ChoiceOptions> choiceOptions,
-        double discount,
-        String discountType,
-        String taxType,
-        String unit,
-        double capacity,
-        int totalStock,
-        List<Null> rating}) {
+      String name,
+      String description,
+      List<String> image,
+      double price,
+      List<Variations> variations,
+      double tax,
+      int status,
+      String createdAt,
+      String updatedAt,
+      List<String> attributes,
+      List<CategoryIds> categoryIds,
+      List<ChoiceOptions> choiceOptions,
+      double discount,
+      String discountType,
+      String taxType,
+      String unit,
+      double capacity,
+      int totalStock,
+      List<Null> rating}) {
     this._id = id;
     this._name = name;
     this._description = description;
@@ -163,7 +163,9 @@ class Product {
     _discountType = json['discount_type'];
     _taxType = json['tax_type'];
     _unit = json['unit'];
-    _capacity = json['capacity'] != null ? json['capacity'].toDouble() : json['capacity'];
+    _capacity = json['capacity'] != null
+        ? json['capacity'].toDouble()
+        : json['capacity'];
     _totalStock = json['total_stock'];
     if (json['rating'] != null) {
       _rating = [];
@@ -201,7 +203,7 @@ class Product {
     data['unit'] = this._unit;
     data['capacity'] = this._capacity;
     data['total_stock'] = this._totalStock;
-     if (this._rating != null) {
+    if (this._rating != null) {
       data['rating'] = this._rating.map((v) => v.toJson()).toList();
     }
     return data;
@@ -210,22 +212,22 @@ class Product {
 
 class Variations {
   String _type;
-  double _price;
+  String _price;
   int _stock;
 
-  Variations({String type, double price, int stock}) {
+  Variations({String type, String price, int stock}) {
     this._type = type;
     this._price = price;
     this._stock = stock;
   }
 
   String get type => _type;
-  double get price => _price;
+  String get price => _price;
   int get stock => _stock;
 
   Variations.fromJson(Map<String, dynamic> json) {
     _type = json['type'];
-    _price = json['price'].toDouble();
+    _price = json['price'];
     _stock = json['stock'];
   }
 
@@ -287,6 +289,7 @@ class ChoiceOptions {
     return data;
   }
 }
+
 class Rating {
   String _average;
 
