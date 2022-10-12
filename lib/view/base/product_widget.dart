@@ -243,9 +243,6 @@ class ProductWidget extends StatelessWidget {
                                 if (cart.cartList[cardIndex].quantity > 1) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
-                                      .setQuantity(false, cardIndex);
-                                  Provider.of<CartProvider>(context,
-                                          listen: false)
                                       .decreamentProduct(
                                           context,
                                           Provider.of<AuthProvider>(context,
@@ -257,14 +254,17 @@ class ProductWidget extends StatelessWidget {
                                               .locale
                                               .languageCode,
                                           cart.cartList[cardIndex].id);
+
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .setQuantity(false, cardIndex);
                                   _loadData(context);
-                                  (context as Element).markNeedsBuild();
-                                } else {
+                                } else if (cart.cartList[cardIndex].quantity ==
+                                    1) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .removeFromCart(cardIndex, context);
                                   _loadData(context);
-                                  (context as Element).markNeedsBuild();
                                 }
                               } else {
                                 if (cart.cartList[cardIndex].quantity > 1) {

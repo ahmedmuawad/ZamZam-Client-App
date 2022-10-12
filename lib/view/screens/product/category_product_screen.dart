@@ -17,6 +17,8 @@ import 'package:flutter_grocery/view/base/product_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
+import '../../../helper/price_converter.dart';
+
 class CategoryProductScreen extends StatefulWidget {
   int flag = 0;
 
@@ -291,6 +293,12 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                                                     Theme.of(context).cardColor,
                                               )),
                                           Text(
+                                            /* '${PriceConverter.convertPrice(context, Provider.of<CartProvider>(context, listen: false).amount)}',
+                                            style: poppinsMedium.copyWith(
+                                                fontSize:
+                                                    Dimensions.FONT_SIZE_LARGE,
+                                                color: Theme.of(context)
+                                                    .primaryColor), */
                                             '${Provider.of<CartProvider>(context, listen: false).amount}',
                                             style: poppinsMedium.copyWith(
                                                 fontSize:

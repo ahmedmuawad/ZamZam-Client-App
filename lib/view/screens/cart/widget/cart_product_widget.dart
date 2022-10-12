@@ -59,6 +59,7 @@ class CartProductWidget extends StatelessWidget {
 
                   Provider.of<CartProvider>(context, listen: false)
                       .removeFromCart(index, context);
+
                   reload();
                 },
                 child: Container(
@@ -150,28 +151,38 @@ class CartProductWidget extends StatelessWidget {
                                       fontSize: Dimensions.FONT_SIZE_SMALL))),
                           InkWell(
                             onTap: () {
-                              Provider.of<CouponProvider>(context,
-                                      listen: false)
-                                  .removeCouponData(false);
-                              if (cart.quantity > 1) {
-                                Provider.of<CartProvider>(context,
+                              if (cart.quantity > 0) {
+                                Provider.of<CouponProvider>(context,
                                         listen: false)
-                                    .decreamentProduct(
-                                        context,
-                                        Provider.of<AuthProvider>(context,
-                                                listen: false)
-                                            .getUserToken(),
-                                        Provider.of<LocalizationProvider>(
-                                                context,
-                                                listen: false)
-                                            .locale
-                                            .languageCode,
-                                        cart.cartProduct.id);
-                                Provider.of<CartProvider>(context,
-                                        listen: false)
-                                    .setQuantity(false, index);
-                                reload();
-                              } else if (cart.quantity == 1) {
+                                    .removeCouponData(false);
+                                if (cart.quantity > 1) {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .decreamentProduct(
+                                          context,
+                                          Provider.of<AuthProvider>(context,
+                                                  listen: false)
+                                              .getUserToken(),
+                                          Provider.of<LocalizationProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .locale
+                                              .languageCode,
+                                          cart.cartProduct.id);
+                                  if (cart.quantity > 0) {
+                                    Provider.of<CartProvider>(context,
+                                            listen: false)
+                                        .setQuantity(false, index);
+                                  }
+
+                                  reload();
+                                } else if (cart.quantity == 1) {
+                                  Provider.of<CartProvider>(context,
+                                          listen: false)
+                                      .removeFromCart(index, context);
+                                  reload();
+                                }
+                              } else if (cart.quantity == 0) {
                                 Provider.of<CartProvider>(context,
                                         listen: false)
                                     .removeFromCart(index, context);
