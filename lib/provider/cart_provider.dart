@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/cart_api_model.dart';
 import 'package:flutter_grocery/data/model/response/cart_model.dart';
 import 'package:flutter_grocery/data/repository/cart_repo.dart';
+import 'package:flutter_grocery/helper/price_converter.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -89,6 +90,7 @@ class CartProvider extends ChangeNotifier {
     _cartList.addAll(cartRepo.getCartList());
     _cartList.forEach((cart) {
       _amount = _amount + (cart.discountedPrice * cart.quantity);
+      _amount = double.parse((_amount).toStringAsFixed(2));
     });
   }
 
@@ -96,6 +98,7 @@ class CartProvider extends ChangeNotifier {
     _cartList.add(cartModel);
     cartRepo.addToCartList(_cartList);
     _amount = _amount + (cartModel.discountedPrice * cartModel.quantity);
+    _amount = double.parse((_amount).toStringAsFixed(2));
     notifyListeners();
   }
 
@@ -103,9 +106,13 @@ class CartProvider extends ChangeNotifier {
     if (isIncrement) {
       _cartList[index].quantity = _cartList[index].quantity + 1;
       _amount = _amount + _cartList[index].discountedPrice;
+      _amount = double.parse((_amount).toStringAsFixed(2));
     } else {
-      _cartList[index].quantity = _cartList[index].quantity - 1;
+      if (_cartList[index].quantity >= 1) {
+        _cartList[index].quantity = _cartList[index].quantity - 1;
+      }
       _amount = _amount - _cartList[index].discountedPrice;
+      _amount = double.parse((_amount).toStringAsFixed(2));
     }
     cartRepo.addToCartList(_cartList);
 
@@ -127,6 +134,7 @@ class CartProvider extends ChangeNotifier {
 
     _amount =
         _amount - (cartList[index].discountedPrice * cartList[index].quantity);
+    _amount = double.parse((_amount).toStringAsFixed(2));
     showCustomSnackBar(getTranslated('remove_from_cart', context), context);
     _cartList.removeAt(index);
 
