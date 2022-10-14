@@ -108,8 +108,11 @@ class CartProvider extends ChangeNotifier {
       _amount = _amount + _cartList[index].discountedPrice;
       _amount = double.parse((_amount).toStringAsFixed(2));
     } else {
-      if (_cartList[index].quantity >= 1) {
+      if (_cartList[index].quantity > 1) {
         _cartList[index].quantity = _cartList[index].quantity - 1;
+      } else if (_cartList[index].quantity == 1) {
+        _cartList[index].quantity = _cartList[index].quantity - 1;
+        _cartList.removeAt(index);
       }
       _amount = _amount - _cartList[index].discountedPrice;
       _amount = double.parse((_amount).toStringAsFixed(2));
