@@ -13,7 +13,7 @@ import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import '../../../../provider/auth_provider.dart';
 import '../../../../provider/localization_provider.dart';
 
@@ -150,11 +150,8 @@ class CartProductWidget extends StatelessWidget {
                                   style: poppinsRegular.copyWith(
                                       fontSize: Dimensions.FONT_SIZE_SMALL))),
                           InkWell(
-                            onTap: () {
+                            onTap: () async {
                               if (cart.quantity > 0) {
-                                Provider.of<CouponProvider>(context,
-                                        listen: false)
-                                    .removeCouponData(false);
                                 if (cart.quantity > 1) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
@@ -172,15 +169,22 @@ class CartProductWidget extends StatelessWidget {
                                   if (cart.quantity > 0) {
                                     Provider.of<CartProvider>(context,
                                             listen: false)
-                                        .setQuantity(false, index);
+                                        .setQuantity(false, index, context);
                                   }
 
                                   reload();
                                 } else if (cart.quantity == 1) {
+                                  Loader.show(context,
+                                      progressIndicator:
+                                          CircularProgressIndicator());
+                                  Provider.of<CouponProvider>(context,
+                                          listen: false)
+                                      .removeCouponData(false);
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .removeFromCart(index, context);
                                   reload();
+                                  Loader.hide();
                                 }
                               } else if (cart.quantity == 0) {
                                 Provider.of<CartProvider>(context,
@@ -224,7 +228,7 @@ class CartProductWidget extends StatelessWidget {
                                     .removeCouponData(false);
                                 Provider.of<CartProvider>(context,
                                         listen: false)
-                                    .setQuantity(true, index);
+                                    .setQuantity(true, index, context);
                                 reload();
                               } else {
                                 showCustomSnackBar(
@@ -385,7 +389,7 @@ class CartProductWidget extends StatelessWidget {
                                 }
                                 Provider.of<CartProvider>(context,
                                         listen: false)
-                                    .setQuantity(false, index);
+                                    .setQuantity(false, index, context);
                               } else if (cartL.quantity == 1) {
                                 Provider.of<CartProvider>(context,
                                         listen: false)
@@ -458,7 +462,7 @@ class CartProductWidget extends StatelessWidget {
                                     .removeCouponData(false);
                                 Provider.of<CartProvider>(context,
                                         listen: false)
-                                    .setQuantity(true, index);
+                                    .setQuantity(true, index, context);
                               } else {
                                 showCustomSnackBar(
                                     getTranslated('out_of_stock', context),

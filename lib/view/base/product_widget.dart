@@ -257,7 +257,7 @@ class ProductWidget extends StatelessWidget {
 
                                   Provider.of<CartProvider>(context,
                                           listen: false)
-                                      .setQuantity(false, cardIndex);
+                                      .setQuantity(false, cardIndex, context);
                                   _loadData(context);
                                 } else if (cart.cartList[cardIndex].quantity ==
                                     1) {
@@ -270,7 +270,7 @@ class ProductWidget extends StatelessWidget {
                                 if (cart.cartList[cardIndex].quantity > 1) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
-                                      .setQuantity(false, cardIndex);
+                                      .setQuantity(false, cardIndex, context);
                                   _loadData(context);
                                   /* Provider.of<CartProvider>(context,
                                           listen: false)
@@ -319,7 +319,7 @@ class ProductWidget extends StatelessWidget {
                                 if (_isLogged) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
-                                      .setQuantity(true, cardIndex);
+                                      .setQuantity(true, cardIndex, context);
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .increamentProduct(
@@ -337,7 +337,7 @@ class ProductWidget extends StatelessWidget {
                                 } else {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
-                                      .setQuantity(true, cardIndex);
+                                      .setQuantity(true, cardIndex, context);
                                   _loadData(context);
                                 }
                               } else {

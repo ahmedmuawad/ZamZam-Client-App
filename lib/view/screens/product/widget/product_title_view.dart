@@ -156,7 +156,7 @@ class QuantityButton extends StatelessWidget {
         if (!isIncrement && quantity > 1) {
           if (isExistInCart) {
             Provider.of<CartProvider>(context, listen: false)
-                .setQuantity(false, index);
+                .setQuantity(false, index, context);
             Provider.of<ProductProvider>(context, listen: false)
                 .setQuantity(false);
             if (isLogged) {
@@ -189,7 +189,7 @@ class QuantityButton extends StatelessWidget {
           if (quantity < stock) {
             if (isExistInCart) {
               Provider.of<CartProvider>(context, listen: false)
-                  .setQuantity(true, index);
+                  .setQuantity(true, index, context);
               Provider.of<ProductProvider>(context, listen: false)
                   .setQuantity(true);
               if (isLogged) {
