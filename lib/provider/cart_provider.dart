@@ -138,6 +138,12 @@ class CartProvider extends ChangeNotifier {
                     .languageCode,
                 cartList[index].id);
           }
+          if (_cartList[index].quantity > 1) {
+            _cartList[index].quantity = _cartList[index].quantity - 1;
+          } else if (_cartList[index].quantity == 1) {
+            _cartList[index].quantity = _cartList[index].quantity - 1;
+            _cartList.removeAt(index);
+          }
           _amount = _amount - _cartList[index].discountedPrice;
           _amount = double.parse((_amount).toStringAsFixed(2));
         }
@@ -161,22 +167,28 @@ class CartProvider extends ChangeNotifier {
     bool isLoged =
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
     if (isLoged) {
-      await Provider.of<CartProvider>(context, listen: false).delete(
+      Provider.of<CartProvider>(context, listen: false).delete(
           context,
           Provider.of<AuthProvider>(context, listen: false).getUserToken(),
           Provider.of<LocalizationProvider>(context, listen: false)
               .locale
               .languageCode,
           cartList[index].id);
+      _amount = _amount -
+          (cartList[index].discountedPrice * cartList[index].quantity);
+      _amount = double.parse((_amount).toStringAsFixed(2));
+      showCustomSnackBar(getTranslated('remove_from_cart', context), context);
+      _cartList.removeAt(index);
+      cartRepo.addToCartList(_cartList);
+    } else {
+      _amount = _amount -
+          (cartList[index].discountedPrice * cartList[index].quantity);
+      _amount = double.parse((_amount).toStringAsFixed(2));
+      showCustomSnackBar(getTranslated('remove_from_cart', context), context);
+      _cartList.removeAt(index);
+      cartRepo.addToCartList(_cartList);
     }
 
-    _amount =
-        _amount - (cartList[index].discountedPrice * cartList[index].quantity);
-    _amount = double.parse((_amount).toStringAsFixed(2));
-    showCustomSnackBar(getTranslated('remove_from_cart', context), context);
-    _cartList.removeAt(index);
-
-    cartRepo.addToCartList(_cartList);
     notifyListeners();
   }
 

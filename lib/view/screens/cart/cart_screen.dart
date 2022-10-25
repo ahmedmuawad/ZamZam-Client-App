@@ -23,18 +23,26 @@ import 'package:provider/provider.dart';
 
 import '../../../provider/auth_provider.dart';
 import '../../../provider/profile_provider.dart';
+import '../../../provider/theme_provider.dart';
+import '../../../utill/images.dart';
+import '../../base/custom_snackbar.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _couponController = TextEditingController();
   bool _isLogged;
   String balance;
+  bool _isLoading = false;
 
   @override
-  Widget build(BuildContext context) {
-    void reload() {
+  State<CartScreen> createState() => _CartScreenState();
+}
 
-      if (_isLogged) {
+class _CartScreenState extends State<CartScreen> {
+  @override
+  Widget build(BuildContext context) {
+    Future<void> reload() {
+      if (widget._isLogged) {
         Provider.of<CartProvider>(context, listen: false).getMyCartData(
             context,
             Provider.of<AuthProvider>(context, listen: false).getUserToken(),
@@ -57,32 +65,27 @@ class CartScreen extends StatelessWidget {
             .status ==
         1;
     print('after kmWise ================================');
-    _isLogged = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    if (_isLogged) {
+    widget._isLogged =
+        Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
+    if (widget._isLogged) {
       Provider.of<ProfileProvider>(context, listen: false).getUserInfo(context);
     }
     print('after user info ===============================');
-    if( _isLogged){
-Provider.of<CartProvider>(context, listen: false).getMyCartData(
-        context,
-        Provider.of<AuthProvider>(context, listen: false).getUserToken(),
-        Provider.of<LocalizationProvider>(context, listen: false)
-            .locale
-            .languageCode);
-
+    if (widget._isLogged) {
+      Provider.of<CartProvider>(context, listen: false).getMyCartData(
+          context,
+          Provider.of<AuthProvider>(context, listen: false).getUserToken(),
+          Provider.of<LocalizationProvider>(context, listen: false)
+              .locale
+              .languageCode);
     }
-    
+
     print('after cart info ===============================');
 
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: ResponsiveHelper.isMobilePhone()
-          ? null
-          : ResponsiveHelper.isDesktop(context)
-              ? MainAppBar()
-              : AppBarBase(),
+      key: widget._scaffoldKey,
       body: Center(
-        child: _isLogged
+        child: widget._isLogged
             ? Consumer<ProfileProvider>(
                 builder: (context, profileProvider, child) {
                 return Consumer<CartProvider>(
@@ -90,15 +93,15 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                     print(
                         'after cart Consumer ===============================');
 
-                    balance = profileProvider.userInfoModel.balance;
+                    widget.balance = profileProvider.userInfoModel.balance;
                     print(
-                        'after cart foreach =============================== $balance');
-                    if (balance == null) {
-                      balance = '0.0';
+                        'after cart foreach =============================== ${widget.balance}');
+                    if (widget.balance == null) {
+                      widget.balance = '0.0';
                     } else {
-                      balance = balance;
+                      widget.balance = widget.balance;
                     }
-                    double _oldBalance = double.parse(balance);
+                    double _oldBalance = double.parse(widget.balance);
 
                     double disBalance = 0.00;
                     double deliveryCharge = 0;
@@ -116,14 +119,13 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                     double _tax = 0;
 
                     cart.cartApiList.forEach((cartModel) {
-                        _itemPrice = _itemPrice +
-                            (cartModel.cartProduct.price * cartModel.quantity);
-                        _discount = _discount +
-                            (cartModel.cartProduct.discount *
-                                cartModel.quantity);
-                        _tax = _tax +
-                            (cartModel.cartProduct.tax * cartModel.quantity);
-                      });
+                      _itemPrice = _itemPrice +
+                          (cartModel.cartProduct.price * cartModel.quantity);
+                      _discount = _discount +
+                          (cartModel.cartProduct.discount * cartModel.quantity);
+                      _tax = _tax +
+                          (cartModel.cartProduct.tax * cartModel.quantity);
+                    });
 
                     double _subTotal = _itemPrice + _tax;
 
@@ -168,12 +170,209 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                                                 itemCount:
                                                     cart.cartApiList.length,
                                                 itemBuilder: (context, index) {
-                                                  return CartProductWidget(
-                                                    cartL: null,
-                                                    cart:
-                                                        cart.cartApiList[index],
-                                                    index: index,
-                                                  );
+                                                  return !widget._isLoading
+                                                      ? Container(
+                                                          margin: EdgeInsets.only(
+                                                              bottom: Dimensions
+                                                                  .PADDING_SIZE_DEFAULT),
+                                                          decoration: BoxDecoration(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                          child: Stack(
+                                                              children: [
+                                                                Positioned(
+                                                                  top: 0,
+                                                                  bottom: 0,
+                                                                  right: 0,
+                                                                  left: 0,
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .delete,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      size: 50),
+                                                                ),
+                                                                Dismissible(
+                                                                    key:
+                                                                        UniqueKey(),
+                                                                    onDismissed:
+                                                                        (DismissDirection
+                                                                            direction) async {
+                                                                      setState(
+                                                                          () {
+                                                                        widget._isLoading =
+                                                                            true;
+                                                                      });
+                                                                      await Future.delayed(Duration(
+                                                                          seconds:
+                                                                              5));
+                                                                      Provider.of<CouponProvider>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .removeCouponData(
+                                                                              false);
+
+                                                                      Provider.of<CartProvider>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .removeFromCart(
+                                                                              index,
+                                                                              context);
+
+                                                                      setState(
+                                                                          () {
+                                                                        widget._isLoading =
+                                                                            false;
+                                                                      });
+                                                                    },
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          95,
+                                                                      padding: EdgeInsets.symmetric(
+                                                                          vertical: Dimensions
+                                                                              .PADDING_SIZE_EXTRA_SMALL,
+                                                                          horizontal:
+                                                                              Dimensions.PADDING_SIZE_SMALL),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Theme.of(context)
+                                                                            .cardColor,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                        boxShadow: [
+                                                                          BoxShadow(
+                                                                            color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme
+                                                                                ? 700
+                                                                                : 300],
+                                                                            blurRadius:
+                                                                                5,
+                                                                            spreadRadius:
+                                                                                1,
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      child: Row(
+                                                                          children: [
+                                                                            ClipRRect(
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                              child: FadeInImage.assetNetwork(
+                                                                                placeholder: Images.placeholder,
+                                                                                image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${cart.cartApiList[index].cartProduct.image}',
+                                                                                height: 70,
+                                                                                width: 85,
+                                                                                imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder, height: 70, width: 85),
+                                                                              ),
+                                                                            ),
+                                                                            SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+                                                                            Expanded(
+                                                                                child: Column(
+                                                                              children: [
+                                                                                SizedBox(height: 10),
+                                                                                Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Expanded(flex: 2, child: Text(cart.cartApiList[index].cartProduct.name, style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL), maxLines: 2, overflow: TextOverflow.ellipsis)),
+                                                                                    Column(
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          PriceConverter.convertPrice(context, cart.cartApiList[index].cartProduct.price, discount: cart.cartApiList[index].cartProduct.discount, discountType: cart.cartApiList[index].cartProduct.discountType),
+                                                                                          style: poppinsBold.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
+                                                                                        ),
+                                                                                        cart.cartApiList[index].cartProduct.discount > 0
+                                                                                            ? Text(
+                                                                                                PriceConverter.convertPrice(context, cart.cartApiList[index].cartProduct.price),
+                                                                                                style: poppinsRegular.copyWith(
+                                                                                                  fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
+                                                                                                  decoration: TextDecoration.lineThrough,
+                                                                                                  color: Colors.red,
+                                                                                                ),
+                                                                                              )
+                                                                                            : SizedBox(),
+                                                                                      ],
+                                                                                    ),
+                                                                                    SizedBox(width: 10),
+                                                                                  ],
+                                                                                ),
+                                                                                SizedBox(height: 5),
+                                                                                Row(children: [
+                                                                                  Expanded(child: Text('${cart.cartApiList[index].cartProduct.capacity} ${cart.cartApiList[index].cartProduct.unit}', style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL))),
+                                                                                  InkWell(
+                                                                                    onTap: () async {
+                                                                                      if (cart.cartApiList[index].quantity > 0) {
+                                                                                        if (cart.cartApiList[index].quantity > 1) {
+                                                                                          Provider.of<CartProvider>(context, listen: false).decreamentProduct(context, Provider.of<AuthProvider>(context, listen: false).getUserToken(), Provider.of<LocalizationProvider>(context, listen: false).locale.languageCode, cart.cartApiList[index].cartProduct.id);
+                                                                                          if (cart.cartApiList[index].quantity > 0) {
+                                                                                            Provider.of<CartProvider>(context, listen: false).setQuantity(false, index, context);
+                                                                                          }
+
+                                                                                          setState(() {});
+                                                                                        } else if (cart.cartApiList[index].quantity == 1) {
+                                                                                          Provider.of<CouponProvider>(context, listen: false).removeCouponData(false);
+                                                                                          Provider.of<CartProvider>(context, listen: false).removeFromCart(index, context);
+                                                                                          setState(() {});
+                                                                                        }
+                                                                                      } else if (cart.cartApiList[index].quantity == 0) {
+                                                                                        Provider.of<CartProvider>(context, listen: false).removeFromCart(index, context);
+                                                                                        setState(() {});
+                                                                                      }
+                                                                                    },
+                                                                                    child: Padding(
+                                                                                      padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                                                                                      child: Icon(Icons.remove, size: 20, color: Theme.of(context).primaryColor),
+                                                                                    ),
+                                                                                  ),
+                                                                                  Text(cart.cartApiList[index].quantity.toString(), style: poppinsSemiBold.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE, color: Theme.of(context).primaryColor)),
+                                                                                  InkWell(
+                                                                                    onTap: () {
+                                                                                      if (cart.cartApiList[index].quantity < cart.cartApiList[index].cartProduct.totalStock) {
+                                                                                        Provider.of<CartProvider>(context, listen: false).increamentProduct(context, Provider.of<AuthProvider>(context, listen: false).getUserToken(), Provider.of<LocalizationProvider>(context, listen: false).locale.languageCode, cart.cartApiList[index].cartProduct.id);
+                                                                                        Provider.of<CouponProvider>(context, listen: false).removeCouponData(false);
+                                                                                        Provider.of<CartProvider>(context, listen: false).setQuantity(true, index, context);
+                                                                                        setState(() {});
+                                                                                      } else {
+                                                                                        showCustomSnackBar(getTranslated('out_of_stock', context), context);
+                                                                                      }
+                                                                                    },
+                                                                                    child: Padding(
+                                                                                      padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL, vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                                                                                      child: Icon(Icons.add, size: 20, color: Theme.of(context).primaryColor),
+                                                                                    ),
+                                                                                  ),
+                                                                                ]),
+                                                                              ],
+                                                                            )),
+                                                                            !ResponsiveHelper.isMobile(context)
+                                                                                ? Padding(
+                                                                                    padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL),
+                                                                                    child: IconButton(
+                                                                                      onPressed: () {
+                                                                                        Provider.of<CartProvider>(context, listen: false).removeFromCart(index, context);
+                                                                                        setState(() {});
+                                                                                      },
+                                                                                      icon: Icon(Icons.delete, color: Colors.red),
+                                                                                    ),
+                                                                                  )
+                                                                                : SizedBox(),
+                                                                          ]),
+                                                                    )),
+                                                              ]),
+                                                        )
+                                                      : Center(
+                                                          child: Container(
+                                                          width: 50,
+                                                          height: 50,
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        ));
                                                 },
                                               ),
                                               SizedBox(
@@ -187,8 +386,8 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                                                   return Row(children: [
                                                     Expanded(
                                                       child: TextField(
-                                                        controller:
-                                                            _couponController,
+                                                        controller: widget
+                                                            ._couponController,
                                                         style: poppinsMedium,
                                                         decoration: InputDecoration(
                                                             hintText: getTranslated(
@@ -215,7 +414,8 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                                                     ),
                                                     InkWell(
                                                       onTap: () {
-                                                        if (_couponController
+                                                        if (widget
+                                                                ._couponController
                                                                 .text
                                                                 .isNotEmpty &&
                                                             !coupon.isLoading) {
@@ -223,7 +423,8 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                                                               1) {
                                                             coupon
                                                                 .applyCoupon(
-                                                                    _couponController
+                                                                    widget
+                                                                        ._couponController
                                                                         .text,
                                                                     _total)
                                                                 .then(
@@ -629,12 +830,11 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                   double _discount = 0;
                   double _tax = 0;
                   cart.cartList.forEach((cartModel) {
-                    _itemPrice = _itemPrice +
-                        (cartModel.price * cartModel.quantity);
-                    _discount = _discount +
-                        (cartModel.discount * cartModel.quantity);
-                    _tax =
-                        _tax + (cartModel.tax * cartModel.quantity);
+                    _itemPrice =
+                        _itemPrice + (cartModel.price * cartModel.quantity);
+                    _discount =
+                        _discount + (cartModel.discount * cartModel.quantity);
+                    _tax = _tax + (cartModel.tax * cartModel.quantity);
                   });
                   double _subTotal = _itemPrice + _tax;
                   double _total = _subTotal -
@@ -663,13 +863,293 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                                               physics:
                                                   NeverScrollableScrollPhysics(),
                                               shrinkWrap: true,
-                                              itemCount:
-                                                  cart.cartList.length,
+                                              itemCount: cart.cartList.length,
                                               itemBuilder: (context, index) {
-                                                return CartProductWidget(
-                                                  cartL: cart.cartList[index],
-                                                  index: index,
+                                                return Container(
+                                                  margin: EdgeInsets.only(
+                                                      bottom: Dimensions
+                                                          .PADDING_SIZE_DEFAULT),
+                                                  decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                  child: Stack(children: [
+                                                    Positioned(
+                                                      top: 0,
+                                                      bottom: 0,
+                                                      right: 0,
+                                                      left: 0,
+                                                      child: Icon(Icons.delete,
+                                                          color: Colors.white,
+                                                          size: 50),
+                                                    ),
+                                                    Dismissible(
+                                                      key: UniqueKey(),
+                                                      onDismissed:
+                                                          (DismissDirection
+                                                              direction) {
+                                                        Provider.of<CouponProvider>(
+                                                                context,
+                                                                listen: false)
+                                                            .removeCouponData(
+                                                                false);
+
+                                                        Provider.of<CartProvider>(
+                                                                context,
+                                                                listen: false)
+                                                            .removeFromCart(
+                                                                index, context);
+                                                      },
+                                                      child: Container(
+                                                        height: 95,
+                                                        padding: EdgeInsets.symmetric(
+                                                            vertical: Dimensions
+                                                                .PADDING_SIZE_EXTRA_SMALL,
+                                                            horizontal: Dimensions
+                                                                .PADDING_SIZE_SMALL),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .cardColor,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors
+                                                                  .grey[Provider.of<
+                                                                              ThemeProvider>(
+                                                                          context)
+                                                                      .darkTheme
+                                                                  ? 700
+                                                                  : 300],
+                                                              blurRadius: 5,
+                                                              spreadRadius: 1,
+                                                            )
+                                                          ],
+                                                        ),
+                                                        child: Row(children: [
+                                                          ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            child: FadeInImage
+                                                                .assetNetwork(
+                                                              placeholder: Images
+                                                                  .placeholder,
+                                                              image:
+                                                                  '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${cart.cartList[index].image}',
+                                                              height: 70,
+                                                              width: 85,
+                                                              imageErrorBuilder: (c,
+                                                                      o, s) =>
+                                                                  Image.asset(
+                                                                      Images
+                                                                          .placeholder,
+                                                                      height:
+                                                                          70,
+                                                                      width:
+                                                                          85),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                              width: Dimensions
+                                                                  .PADDING_SIZE_SMALL),
+                                                          Expanded(
+                                                              child: Column(
+                                                            children: [
+                                                              SizedBox(
+                                                                  height: 10),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Expanded(
+                                                                      flex: 2,
+                                                                      child: Text(
+                                                                          cart
+                                                                              .cartList[
+                                                                                  index]
+                                                                              .name,
+                                                                          style: poppinsRegular.copyWith(
+                                                                              fontSize: Dimensions
+                                                                                  .FONT_SIZE_SMALL),
+                                                                          maxLines:
+                                                                              2,
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis)),
+                                                                  Text(
+                                                                    PriceConverter.convertPrice(
+                                                                        context,
+                                                                        cart.cartList[index]
+                                                                            .price),
+                                                                    style: poppinsSemiBold.copyWith(
+                                                                        fontSize:
+                                                                            Dimensions.FONT_SIZE_SMALL),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      width:
+                                                                          10),
+                                                                ],
+                                                              ),
+                                                              SizedBox(
+                                                                  height: 1),
+                                                              Row(children: [
+                                                                Expanded(
+                                                                    child: Text(
+                                                                        '${cart.cartList[index].capacity} ${cart.cartList[index].unit}',
+                                                                        style: poppinsRegular.copyWith(
+                                                                            fontSize:
+                                                                                Dimensions.FONT_SIZE_SMALL))),
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Provider.of<CouponProvider>(
+                                                                            context,
+                                                                            listen:
+                                                                                false)
+                                                                        .removeCouponData(
+                                                                            false);
+                                                                    if (cart.cartList[index]
+                                                                            .quantity >
+                                                                        1) {
+                                                                      Provider.of<CartProvider>(context, listen: false).setQuantity(
+                                                                          false,
+                                                                          index,
+                                                                          context);
+                                                                    } else if (cart
+                                                                            .cartList[index]
+                                                                            .quantity ==
+                                                                        1) {
+                                                                      Provider.of<CartProvider>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .removeFromCart(
+                                                                              index,
+                                                                              context);
+                                                                    }
+                                                                  },
+                                                                  child:
+                                                                      Padding(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            Dimensions
+                                                                                .PADDING_SIZE_SMALL,
+                                                                        vertical:
+                                                                            Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                                                                    child: Icon(
+                                                                        Icons
+                                                                            .remove,
+                                                                        size:
+                                                                            20,
+                                                                        color: Theme.of(context)
+                                                                            .primaryColor),
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                    cart
+                                                                        .cartList[
+                                                                            index]
+                                                                        .quantity
+                                                                        .toString(),
+                                                                    style: poppinsSemiBold.copyWith(
+                                                                        fontSize:
+                                                                            Dimensions
+                                                                                .FONT_SIZE_EXTRA_LARGE,
+                                                                        color: Theme.of(context)
+                                                                            .primaryColor)),
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    if (cart
+                                                                            .cartList[
+                                                                                index]
+                                                                            .quantity <
+                                                                        cart.cartList[index]
+                                                                            .stock) {
+                                                                      Provider.of<CouponProvider>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .removeCouponData(
+                                                                              false);
+                                                                      Provider.of<CartProvider>(context, listen: false).setQuantity(
+                                                                          true,
+                                                                          index,
+                                                                          context);
+                                                                    } else {
+                                                                      showCustomSnackBar(
+                                                                          getTranslated(
+                                                                              'out_of_stock',
+                                                                              context),
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  child:
+                                                                      Padding(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            Dimensions
+                                                                                .PADDING_SIZE_SMALL,
+                                                                        vertical:
+                                                                            Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                                                                    child: Icon(
+                                                                        Icons
+                                                                            .add,
+                                                                        size:
+                                                                            20,
+                                                                        color: Theme.of(context)
+                                                                            .primaryColor),
+                                                                  ),
+                                                                ),
+                                                              ]),
+                                                            ],
+                                                          )),
+                                                          !ResponsiveHelper
+                                                                  .isMobile(
+                                                                      context)
+                                                              ? Padding(
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          Dimensions
+                                                                              .PADDING_SIZE_SMALL),
+                                                                  child:
+                                                                      IconButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Provider.of<CartProvider>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .removeFromCart(
+                                                                              index,
+                                                                              context);
+                                                                    },
+                                                                    icon: Icon(
+                                                                        Icons
+                                                                            .delete,
+                                                                        color: Colors
+                                                                            .red),
+                                                                  ),
+                                                                )
+                                                              : SizedBox(),
+                                                        ]),
+                                                      ),
+                                                    ),
+                                                  ]),
                                                 );
+                                                /*CartProductWidget(
+                                                  cartL: cart.cartList[index],
+                                                  cart: null,
+                                                  index: index,
+                                                )*/
                                               },
                                             ),
                                             SizedBox(
@@ -683,8 +1163,8 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                                                 return Row(children: [
                                                   Expanded(
                                                     child: TextField(
-                                                      controller:
-                                                          _couponController,
+                                                      controller: widget
+                                                          ._couponController,
                                                       style: poppinsMedium,
                                                       decoration: InputDecoration(
                                                           hintText: getTranslated(
@@ -710,14 +1190,17 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
                                                   ),
                                                   InkWell(
                                                     onTap: () {
-                                                      if (_couponController.text
+                                                      if (widget
+                                                              ._couponController
+                                                              .text
                                                               .isNotEmpty &&
                                                           !coupon.isLoading) {
                                                         if (coupon.discount <
                                                             1) {
                                                           coupon
                                                               .applyCoupon(
-                                                                  _couponController
+                                                                  widget
+                                                                      ._couponController
                                                                       .text,
                                                                   _total)
                                                               .then((discount) {
@@ -1075,4 +1558,9 @@ Provider.of<CartProvider>(context, listen: false).getMyCartData(
     );
   }
 }
+
+
+  
+
+  
 /**/

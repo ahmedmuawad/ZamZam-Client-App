@@ -16,7 +16,11 @@ import 'package:flutter_grocery/view/base/no_data_screen.dart';
 import 'package:flutter_grocery/view/base/not_login_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../base/custom_app_bar.dart';
+
 class CouponScreen extends StatelessWidget {
+  int index = 0;
+  CouponScreen({this.index});
   @override
   Widget build(BuildContext context) {
     final bool _isLoggedIn =
@@ -27,7 +31,7 @@ class CouponScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      /* appBar: AppBarBase() , */
+      appBar: index == 0 ? AppBarBase() : null,
       body: _isLoggedIn
           ? Consumer<CouponProvider>(
               builder: (context, coupon, child) {
