@@ -15,8 +15,8 @@ import 'package:provider/provider.dart';
 
 class DeliveryManReviewWidget extends StatefulWidget {
   final DeliveryMan deliveryMan;
-  final String orderID;
-  DeliveryManReviewWidget({@required this.deliveryMan, @required this.orderID});
+  final String? orderID;
+  DeliveryManReviewWidget({required this.deliveryMan, required this.orderID});
 
   @override
   _DeliveryManReviewWidgetState createState() => _DeliveryManReviewWidgetState();
@@ -47,13 +47,13 @@ class _DeliveryManReviewWidgetState extends State<DeliveryManReviewWidget> {
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [BoxShadow(
-                      color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 700 : 300],
+                      color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 700 : 300]!,
                       blurRadius: 5, spreadRadius: 1,
                     )],
                   ),
                   child: Column(children: [
                     Text(
-                      getTranslated('rate_his_service', context),
+                      getTranslated('rate_his_service', context)!,
                       style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context)), overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
@@ -66,9 +66,9 @@ class _DeliveryManReviewWidgetState extends State<DeliveryManReviewWidget> {
                         itemBuilder: (context, i) {
                           return InkWell(
                             child: Icon(
-                              orderProvider.deliveryManRating < (i + 1) ? Icons.star_border : Icons.star,
+                              orderProvider.deliveryManRating! < (i + 1) ? Icons.star_border : Icons.star,
                               size: 25,
-                              color: orderProvider.deliveryManRating < (i + 1)
+                              color: orderProvider.deliveryManRating! < (i + 1)
                                   ? ColorResources.getTextColor(context)
                                   : Theme.of(context).primaryColor,
                             ),
@@ -82,7 +82,7 @@ class _DeliveryManReviewWidgetState extends State<DeliveryManReviewWidget> {
                     SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
 
                     Text(
-                      getTranslated('share_your_opinion', context),
+                      getTranslated('share_your_opinion', context)!,
                       style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context)), overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
@@ -90,7 +90,7 @@ class _DeliveryManReviewWidgetState extends State<DeliveryManReviewWidget> {
                       maxLines: 5,
                       capitalization: TextCapitalization.sentences,
                       controller: _controller,
-                      hintText: getTranslated('write_your_review_here', context),
+                      hintText: getTranslated('write_your_review_here', context)!,
                       fillColor: ColorResources.getCardBgColor(context),
                     ),
                     SizedBox(height: 40),
@@ -101,7 +101,7 @@ class _DeliveryManReviewWidgetState extends State<DeliveryManReviewWidget> {
                       child: Column(
                         children: [
                           !orderProvider.isLoading ? CustomButton(
-                            buttonText: getTranslated('submit', context),
+                            buttonText: getTranslated('submit', context)!,
                             onPressed: () {
                               if (orderProvider.deliveryManRating == 0) {
                                 showCustomSnackBar(getTranslated('give_a_rating', context), context);

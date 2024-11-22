@@ -43,7 +43,7 @@ class DailyItemView extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pushNamed(
                               RouteHelper.getProductDetailsRoute(
-                                  productProvider.dailyItemList[index].id),
+                                  productProvider.dailyItemList[index].id!),
                               arguments: ProductDetailsScreen(
                                   product: productProvider.dailyItemList[index],
                                   cart: null));
@@ -97,7 +97,7 @@ class DailyItemView extends StatelessWidget {
                                     children: [
                                       Text(
                                         productProvider
-                                            .dailyItemList[index].name,
+                                            .dailyItemList[index].name!,
                                         style: poppinsMedium.copyWith(
                                             fontSize:
                                                 Dimensions.FONT_SIZE_SMALL),
@@ -134,7 +134,7 @@ class DailyItemView extends StatelessWidget {
                                                             .dailyItemList[
                                                                 index]
                                                             .discountType,
-                                                  ),
+                                                  )!,
                                                   style: poppinsBold.copyWith(
                                                       fontSize: Dimensions
                                                           .FONT_SIZE_SMALL),
@@ -142,7 +142,7 @@ class DailyItemView extends StatelessWidget {
                                                 productProvider
                                                             .dailyItemList[
                                                                 index]
-                                                            .discount >
+                                                            .discount! >
                                                         0
                                                     ? Text(
                                                         PriceConverter
@@ -151,7 +151,7 @@ class DailyItemView extends StatelessWidget {
                                                                 productProvider
                                                                     .dailyItemList[
                                                                         index]
-                                                                    .price),
+                                                                    .price)!,
                                                         style: poppinsRegular.copyWith(
                                                             color: Colors.red,
                                                             fontSize: Dimensions

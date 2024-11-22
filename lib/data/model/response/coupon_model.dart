@@ -1,16 +1,16 @@
 class CouponModel {
-  int id;
-  String title;
-  String code;
-  String startDate;
-  String expireDate;
-  double minPurchase;
-  double maxDiscount;
-  double discount;
-  String discountType;
-  int status;
-  String createdAt;
-  String updatedAt;
+  int? id;
+  String? title;
+  String? code;
+  String? startDate;
+  String? expireDate;
+  double? minPurchase;
+  double? maxDiscount;
+  double? discount;
+  String? discountType;
+  int? status;
+  String? createdAt;
+  String? updatedAt;
 
   CouponModel(
       {this.id,
@@ -26,7 +26,7 @@ class CouponModel {
         this.createdAt,
         this.updatedAt});
 
-  CouponModel.fromJson(Map<String, dynamic> json) {
+  CouponModel.fromJson(Map<String?, dynamic> json) {
     id = json['id'];
     title = json['title'];
     code = json['code'];
@@ -41,8 +41,8 @@ class CouponModel {
     updatedAt = json['updated_at'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this.id;
     data['title'] = this.title;
     data['code'] = this.code;

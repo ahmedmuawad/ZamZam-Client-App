@@ -117,7 +117,7 @@ class RouteHelper {
   static String getPaymentRoute(String page, String id, int user) =>
       '$payment?page=$page&id=$id&user=$user';
   static String getCheckoutRoute(
-          double amount, double discount, String type, String code) =>
+          double? amount, double? discount, String type, String code) =>
       '$checkout?amount=$amount&discount=$discount&type=$type&code=$code';
   static String getOrderTrackingRoute(int id) => '$trackOrder?id=$id';
   static String getCategoryProductsRoute(int id) => '$categoryProducts?id=$id';
@@ -139,61 +139,53 @@ class RouteHelper {
   static String getMaintenanceRoute() => '$MAINTENANCE';
 
   static Handler _splashHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, List<String>> params) =>
           SplashScreen());
 
   static Handler _orderDetailsHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     OrderDetailsScreen _orderDetailsScreen =
-        ModalRoute.of(context).settings.arguments;
-    return _orderDetailsScreen != null
-        ? _orderDetailsScreen
-        : OrderDetailsScreen(
-            orderId: int.parse(params['id'][0]), orderModel: null);
+        ModalRoute.of(context!)!.settings.arguments as OrderDetailsScreen;
+    return _orderDetailsScreen;
   });
 
   static Handler _onBoardingHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           OnBoardingScreen(
             index: '',
           ));
 
   static Handler _menuHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           MenuScreen());
 
   static Handler _loginHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           LoginScreen());
 
   static Handler _forgetPassHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           ForgotPasswordScreen());
 
   static Handler _signUpHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           SignUpScreen());
 
   static Handler _verificationHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     VerificationScreen _verificationScreen =
-        ModalRoute.of(context).settings.arguments;
-    return _verificationScreen != null
-        ? _verificationScreen
-        : VerificationScreen(
-            fromSignUp: params['page'][0] == 'sign-up',
-            emailAddress: params['email'][0],
-          );
+        ModalRoute.of(context!)!.settings.arguments as VerificationScreen;
+    return _verificationScreen;
   });
 
   static Handler _createAccountHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           CreateAccountScreen());
 
   static Handler _resetPassHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     CreateNewPasswordScreen _createPassScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as CreateNewPasswordScreen;
     return _createPassScreen != null
         ? _createPassScreen
         : CreateNewPasswordScreen(
@@ -203,21 +195,21 @@ class RouteHelper {
   });
 
   static Handler _addAddressHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     AddNewAddressScreen _addNewAddressScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as AddNewAddressScreen;
     return _addNewAddressScreen != null
         ? _addNewAddressScreen
         : AddNewAddressScreen(
             fromCheckout: params['page'][0] == 'checkout',
-            isEnableUpdate: false,
+            isEnableUpdate: false, address: AddressModel(),
           );
   });
 
   static Handler _updateAddressHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     AddNewAddressScreen _addNewAddressScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as AddNewAddressScreen;
     List<int> _decode = base64Decode(params['address'][0].replaceAll(' ', '+'));
     String _address = utf8.decode(_decode);
     _decode = base64Decode(params['name'][0].replaceAll(' ', '+'));
@@ -243,13 +235,13 @@ class RouteHelper {
   static Handler _selectLocationHandler =
       Handler(handlerFunc: (context, Map<String, dynamic> params) {
     SelectLocationScreen _locationScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as SelectLocationScreen;
     return _locationScreen != null
         ? _locationScreen
         : Center(child: Container(child: Text('Not Found')));
   });
 
-/*  static Handler _orderSuccessfulHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+/*  static Handler _orderSuccessfulHandler = Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     OrderSuccessfulScreen _orderSuccessfulScreen = ModalRoute.of(context).settings.arguments;
     return _orderSuccessfulScreen != null ? _orderSuccessfulScreen : OrderSuccessfulScreen(
       orderID: params['id'][0], addressID: int.parse(params['address'][0]), status: int.parse(params['status'][0]),
@@ -268,8 +260,8 @@ class RouteHelper {
   });
 
   static Handler _paymentHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-    PaymentScreen _paymentScreen = ModalRoute.of(context).settings.arguments;
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+    PaymentScreen _paymentScreen = ModalRoute.of(context!)!.settings.arguments as PaymentScreen ;
     return _paymentScreen != null
         ? _paymentScreen
         : PaymentScreen(
@@ -282,8 +274,8 @@ class RouteHelper {
   });
 
   static Handler _checkoutHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-    CheckoutScreen _checkoutScreen = ModalRoute.of(context).settings.arguments;
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+    CheckoutScreen _checkoutScreen = ModalRoute.of(context!)!.settings.arguments as CheckoutScreen;
     return _checkoutScreen != null
         ? _checkoutScreen
         : CheckoutScreen(
@@ -295,34 +287,34 @@ class RouteHelper {
   });
 
   static Handler _notificationHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           NotificationScreen());
 
   static Handler _trackOrderHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     TrackOrderScreen _trackOrderScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as TrackOrderScreen;
     return _trackOrderScreen != null
         ? _trackOrderScreen
         : TrackOrderScreen(orderID: params['id'][0]);
   });
 
   static Handler _categoryProductsHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     CategoryProductScreen _categoryProductScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as CategoryProductScreen;
     return _categoryProductScreen != null
         ? _categoryProductScreen
         : CategoryProductScreen(
             categoryModel: CategoryModel(
-            id: int.parse(params['id'][0]),
+            id: int.parse(params['id'][0]), subCate: [],
           ));
   });
 
   static Handler _productDescriptionHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     DescriptionScreen _descriptionScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as DescriptionScreen;
     List<int> _decode =
         base64Decode(params['description'][0].replaceAll('-', '+'));
     String _data = utf8.decode(_decode);
@@ -332,9 +324,9 @@ class RouteHelper {
   });
 
   static Handler _productDetailsHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     ProductDetailsScreen _productDetailsScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as ProductDetailsScreen;
     return _productDetailsScreen != null
         ? _productDetailsScreen
         : ProductDetailsScreen(
@@ -342,9 +334,9 @@ class RouteHelper {
   });
 
   static Handler _productImagesHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     ProductImageScreen _productImageScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as ProductImageScreen;
     return _productImageScreen != null
         ? _productImageScreen
         : ProductImageScreen(
@@ -354,16 +346,16 @@ class RouteHelper {
   });
 
   static Handler _profileHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           ProfileScreen());
 
   static Handler _searchProductHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           SearchScreen());
   static Handler _profileEditHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     ProfileEditScreen _profileEditScreen =
-        ModalRoute.of(context).settings.arguments;
+        ModalRoute.of(context!)!.settings.arguments as ProfileEditScreen;
     List<int> _decode = base64Decode(params['fname'][0].replaceAll(' ', '+'));
     String _fname = utf8.decode(_decode);
     _decode = base64Decode(params['lname'][0].replaceAll(' ', '+'));
@@ -379,39 +371,39 @@ class RouteHelper {
           );
   });
   static Handler _searchResultHandler =
-      Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+      Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     List<int> _decode = base64Decode(params['text'][0]);
     String _data = utf8.decode(_decode);
     return SearchResultScreen(searchString: _data);
   });
   static Handler _address2Handler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           SelectAddressScreen(
-            isFirst: null,
+            isFirst: true,
           ));
   static Handler _cartHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           CartScreen());
   static Handler _categorysHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           AllCategoryScreen());
   static Handler _profileMenusHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           MenuWidget());
   static Handler _myOrderHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           MyOrderScreen());
   static Handler _addressHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
-          AddressScreen());
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
+          AddressScreen(addressModel: AddressModel(),));
   static Handler _couponHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           CouponScreen());
   static Handler _chatHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           ChatScreen());
   static Handler _settingsHandler = Handler(
-      handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
+      handlerFunc: (BuildContext? context, Map<String, dynamic> params) =>
           SettingsScreen());
   static Handler _termsHandler = Handler(
       handlerFunc: (context, Map<String, dynamic> params) =>
@@ -432,10 +424,10 @@ class RouteHelper {
           MaintenanceScreen());
   static Handler _set_langHandler = Handler(
       handlerFunc: (context, Map<String, dynamic> params) => LanguageScreen(
-            isFirst: null,
+            isFirst: true,
           ));
 
-  //static Handler _routeHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => ModalRoute.of(context).settings.arguments);
+  //static Handler _routeHandler = Handler(handlerFunc: (BuildContext? context, Map<String, dynamic> params) => ModalRoute.of(context).settings.arguments);
 
   static void setupRouter() {
     router.define(splash,

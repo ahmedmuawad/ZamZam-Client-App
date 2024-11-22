@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_grocery/data/model/response/category_model.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/provider/search_provider.dart';
@@ -14,7 +16,7 @@ import 'package:flutter_grocery/view/screens/search/widget/filter_widget.dart';
 import 'package:provider/provider.dart';
 
 class SearchResultScreen extends StatefulWidget {
-  final String searchString;
+  final String? searchString;
 
   SearchResultScreen({this.searchString});
 
@@ -57,7 +59,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                       Provider.of<ThemeProvider>(context)
                                               .darkTheme
                                           ? 700
-                                          : 200],
+                                          : 200]!,
                                   spreadRadius: 0.5,
                                   blurRadius: 0.5,
                                   offset: Offset(
@@ -69,7 +71,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  widget.searchString,
+                                  widget.searchString!,
                                   style: poppinsLight.copyWith(
                                       color:
                                           ColorResources.getTextColor(context),
@@ -102,7 +104,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                       Provider.of<ThemeProvider>(context)
                                               .darkTheme
                                           ? 700
-                                          : 200],
+                                          : 200]!,
                                   spreadRadius: 0.5,
                                   blurRadius: 0.5,
                                   offset: Offset(
@@ -117,7 +119,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                   children: [
                                     searchProvider.searchProductList != null
                                         ? Text(
-                                            "${searchProvider.searchProductList.length ?? 0}",
+                                            "${searchProvider.searchProductList.length}",
                                             style: poppinsMedium.copyWith(
                                                 color: Theme.of(context)
                                                     .primaryColor),
@@ -137,13 +139,13 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                                           showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
-                                                List<double> _prices = [];
+                                                List<double?> _prices = [];
                                                 searchProvider.filterProductList
                                                     .forEach((product) =>
                                                         _prices.add(
                                                             product.price));
                                                 _prices.sort();
-                                                double _maxValue =
+                                                double? _maxValue =
                                                     _prices.length > 0
                                                         ? _prices[
                                                             _prices.length - 1]
@@ -190,58 +192,36 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                             ),
                           ),
                           SizedBox(height: 22),
-                          searchProvider.searchProductList != null
-                              ? searchProvider.searchProductList.length > 0
-                                  ? GridView.builder(
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisSpacing: 5,
-                                              mainAxisSpacing: 5,
-                                              childAspectRatio: 4,
-                                              crossAxisCount:
-                                                  ResponsiveHelper.isDesktop(
-                                                          context)
-                                                      ? 3
-                                                      : ResponsiveHelper.isTab(
-                                                              context)
-                                                          ? 2
-                                                          : 1),
-                                      itemCount: searchProvider
-                                          .searchProductList.length,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              Dimensions.PADDING_SIZE_SMALL),
-                                      physics: NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return ProductWidget(
-                                            product: searchProvider
-                                                .searchProductList[index]);
-                                      },
-                                    )
-                                  : NoDataScreen()
-                              : GridView.builder(
+                          searchProvider.searchProductList.length > 0
+                              ? GridView.builder(
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisSpacing: 5,
                                           mainAxisSpacing: 5,
                                           childAspectRatio: 4,
-                                          crossAxisCount: ResponsiveHelper
-                                                  .isDesktop(context)
-                                              ? 3
-                                              : ResponsiveHelper.isTab(context)
-                                                  ? 2
-                                                  : 1),
+                                          crossAxisCount:
+                                              ResponsiveHelper.isDesktop(
+                                                      context)
+                                                  ? 3
+                                                  : ResponsiveHelper.isTab(
+                                                          context)
+                                                      ? 2
+                                                      : 1),
+                                  itemCount: searchProvider
+                                      .searchProductList.length,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          Dimensions.PADDING_SIZE_SMALL),
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: 10,
-                                  itemBuilder: (context, index) =>
-                                      ProductShimmer(
-                                          isEnabled: searchProvider
-                                                  .searchProductList ==
-                                              null),
-                                ),
+                                  itemBuilder:
+                                      (BuildContext context, int? index) {
+                                    return ProductWidget(
+                                        product: searchProvider
+                                            .searchProductList[index!], categoryModel: CategoryModel(subCate: []),);
+                                  },
+                                )
+                              : NoDataScreen()
                         ],
                       ),
                     ),

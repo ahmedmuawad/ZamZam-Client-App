@@ -27,7 +27,7 @@ class DailyItemScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: CustomAppBar(title: getTranslated('daily_needs', context)),
+      appBar: CustomAppBar(title: getTranslated('daily_needs', context), onBackPressed: (){},),
       body: Scrollbar(
           child: SingleChildScrollView(
               child: Center(
@@ -65,7 +65,7 @@ class DailyItemScreen extends StatelessWidget {
                                                         productProvider
                                                             .dailyItemList[
                                                                 index]
-                                                            .id),
+                                                            .id!),
                                                 arguments: ProductDetailsScreen(
                                                     product: productProvider
                                                         .dailyItemList[index],
@@ -133,7 +133,7 @@ class DailyItemScreen extends StatelessWidget {
                                                   Text(
                                                     productProvider
                                                         .dailyItemList[index]
-                                                        .name,
+                                                        .name!,
                                                     style: poppinsMedium.copyWith(
                                                         fontSize: Dimensions
                                                             .FONT_SIZE_SMALL),
@@ -162,7 +162,7 @@ class DailyItemScreen extends StatelessWidget {
                                                                   productProvider
                                                                       .dailyItemList[
                                                                           index]
-                                                                      .price),
+                                                                      .price)!,
                                                           style: poppinsBold.copyWith(
                                                               fontSize: Dimensions
                                                                   .FONT_SIZE_SMALL),

@@ -11,13 +11,12 @@ import 'package:flutter_grocery/data/model/response/signup_model.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthRepo {
   final DioClient dioClient;
   final SharedPreferences sharedPreferences;
 
-  AuthRepo({@required this.dioClient, @required this.sharedPreferences});
+  AuthRepo({required this.dioClient, required this.sharedPreferences});
 
   Future<ApiResponse> registration(SignUpModel signUpModel) async {
     try {
@@ -32,7 +31,7 @@ class AuthRepo {
     }
   }
 
-  Future<ApiResponse> login({String email, String password}) async {
+  Future<ApiResponse> login({required String email, required String password}) async {
     try {
       print({"email": email, "email_or_phone": email, "password": password});
       Response response = await dioClient.post(
@@ -151,14 +150,12 @@ class AuthRepo {
   Future<String> _saveDeviceToken() async {
     String _deviceToken = '';
     if(Platform.isAndroid) {
-      _deviceToken = await FirebaseMessaging.instance.getToken();
+      _deviceToken = (await FirebaseMessaging.instance.getToken()) ?? '';
     }else if(Platform.isIOS) {
-      _deviceToken = await FirebaseMessaging.instance.getAPNSToken();
+      _deviceToken = (await FirebaseMessaging.instance.getAPNSToken()) ?? '';
     }
-    if (_deviceToken != null) {
-      print('--------Device Token---------- '+_deviceToken);
-    }
-    return _deviceToken;
+    print('--------Device Token---------- '+_deviceToken);
+      return _deviceToken;
   }
 
   String getUserToken() {

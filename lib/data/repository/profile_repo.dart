@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:path/path.dart';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter_grocery/data/datasource/remote/dio/dio_client.dart';
 import 'package:flutter_grocery/data/datasource/remote/exception/api_error_handler.dart';
 import 'package:flutter_grocery/data/model/response/base/api_response.dart';
@@ -16,7 +14,7 @@ import 'package:http/http.dart' as http;
 class ProfileRepo{
   final DioClient dioClient;
   final SharedPreferences sharedPreferences;
-  ProfileRepo({@required this.dioClient, @required this.sharedPreferences});
+  ProfileRepo({required this.dioClient, required this.sharedPreferences});
 
   Future<ApiResponse> getAddressTypeList() async {
     try {
@@ -45,23 +43,17 @@ class ProfileRepo{
   Future<http.StreamedResponse> updateProfile(UserInfoModel userInfoModel, File file, PickedFile data, String token) async {
     http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse('${AppConstants.BASE_URL}${AppConstants.UPDATE_PROFILE_URI}'));
     request.headers.addAll(<String,String>{'Authorization': 'Bearer $token'});
-    if(file != null) {
-      request.files.add(http.MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: file.path.split('/').last));
-    }else if(data != null) {
-      Uint8List _list = await data.readAsBytes();
-      http.MultipartFile part = http.MultipartFile('image', data.readAsBytes().asStream(), _list.length, filename: basename(data.path));
-      request.files.add(part);
-    }
-    Map<String, String> _fields = Map();
+    request.files.add(http.MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: file.path.split('/').last));
+      Map<String, String> _fields = Map();
     _fields.addAll(<String, String>{
-      '_method': 'put', 'f_name': userInfoModel.fName, 'l_name': userInfoModel.lName, 'phone': userInfoModel.phone
+      '_method': 'put', 'f_name': userInfoModel.fName!, 'l_name': userInfoModel.lName!, 'phone': userInfoModel.phone!
     });
     request.fields.addAll(_fields);
     http.StreamedResponse response = await request.send();
     return response;
   }
 
-  Future<http.StreamedResponse> updateBalance(double balance , String token) async {
+  Future<http.StreamedResponse> updateBalance(double? balance , String token) async {
     http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse('${AppConstants.BASE_URL}${AppConstants.UPDATE_BALANCE}'));
     request.headers.addAll(<String,String>{'Authorization': 'Bearer $token'});
     Map<String, String> _fields = Map();

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/cart_model.dart';
 import 'package:flutter_grocery/data/model/response/category_model.dart';
@@ -17,19 +15,19 @@ import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
-import 'package:flutter_grocery/view/screens/product/category_product_screen.dart';
 import 'package:flutter_grocery/view/screens/product/product_details_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/category_provider.dart';
 
 class ProductWidget extends StatelessWidget {
-  int flag = 0;
+  final int flag = 0;
   final Product product;
-  final CartModel cart;
+  final CartModel? cart;
   final CategoryModel categoryModel;
 
-  ProductWidget({@required this.product, this.cart, this.categoryModel});
+  ProductWidget(
+      {required this.product, this.cart, required this.categoryModel});
 
   @override
   Widget build(BuildContext context) {
@@ -49,16 +47,16 @@ class ProductWidget extends StatelessWidget {
             .initializeAllSortBy(context);
         Provider.of<CategoryProvider>(context, listen: false)
             .setFilterIndex(-1);
-        flag++;
+        flag + 1;
       }
     }
 
     return Consumer<ProductProvider>(
         builder: (context, productProvider, child) {
       double _price = product.variations.length > 0
-          ? double.parse(product.variations[0].price)
-          : product.price;
-      int _stock = product.variations.length > 0
+          ? double.parse(product.variations[0].price!) 
+          : product.price ?? 0.0;
+      int? _stock = product.variations.length > 0
           ? product.variations[0].stock
           : product.totalStock;
       CartModel _cartModel = CartModel(
@@ -69,13 +67,13 @@ class ProductWidget extends StatelessWidget {
         PriceConverter.convertWithDiscount(
             context, _price, product.discount, product.discountType),
         1,
-        product.variations.length > 0 ? product.variations[0] : null,
+        product.variations.isNotEmpty ? product.variations[0] : Variations(),
         (_price -
             PriceConverter.convertWithDiscount(
-                context, _price, product.discount, product.discountType)),
+                context, _price , product.discount, product.discountType)!),
         (_price -
             PriceConverter.convertWithDiscount(
-                context, _price, product.tax, product.taxType)),
+                context, _price , product.tax, product.taxType)!),
         product.capacity,
         product.unit,
         _stock,
@@ -83,7 +81,7 @@ class ProductWidget extends StatelessWidget {
       bool isExistInCart = Provider.of<CartProvider>(context, listen: false)
               .isExistInCart(_cartModel) !=
           -1;
-      int cardIndex = Provider.of<CartProvider>(context, listen: false)
+      int? cardIndex = Provider.of<CartProvider>(context, listen: false)
           .isExistInCart(_cartModel);
       bool _isLogged =
           Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
@@ -93,13 +91,13 @@ class ProductWidget extends StatelessWidget {
         child: InkWell(
           onTap: () {
             Navigator.of(context).pushNamed(
-                RouteHelper.getProductDetailsRoute(product.id),
+                RouteHelper.getProductDetailsRoute(product.id!),
                 arguments: ProductDetailsScreen(
                     product: product,
                     index: cardIndex,
                     cart: isExistInCart
                         ? Provider.of<CartProvider>(context, listen: false)
-                            .cartList[cardIndex]
+                            .cartList[cardIndex!]
                         : null));
           },
           child: Container(
@@ -143,7 +141,7 @@ class ProductWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          product.name,
+                          product.name!,
                           style: poppinsMedium.copyWith(
                               fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL),
                           maxLines: 2,
@@ -161,13 +159,13 @@ class ProductWidget extends StatelessWidget {
                 Text(
                   PriceConverter.convertPrice(context, product.price,
                       discount: product.discount,
-                      discountType: product.discountType),
+                      discountType: product.discountType)!,
                   style: poppinsBold.copyWith(
                       fontSize: Dimensions.FONT_SIZE_SMALL),
                 ),
-                product.discount > 0
+                product.discount! > 0
                     ? Text(
-                        PriceConverter.convertPrice(context, product.price),
+                        PriceConverter.convertPrice(context, product.price)!,
                         style: poppinsRegular.copyWith(
                           fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
                           decoration: TextDecoration.lineThrough,
@@ -184,7 +182,7 @@ class ProductWidget extends StatelessWidget {
                             showCustomSnackBar(
                                 getTranslated('already_added', context),
                                 context);
-                          } else if (_stock < 1) {
+                          } else if (_stock! < 1) {
                             showCustomSnackBar(
                                 getTranslated('out_of_stock', context),
                                 context);
@@ -240,7 +238,7 @@ class ProductWidget extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (_isLogged) {
-                                if (cart.cartList[cardIndex].quantity > 1) {
+                                if (cart.cartList[cardIndex!].quantity! > 1) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .decreamentProduct(
@@ -267,7 +265,7 @@ class ProductWidget extends StatelessWidget {
                                   _loadData(context);
                                 }
                               } else {
-                                if (cart.cartList[cardIndex].quantity > 1) {
+                                if (cart.cartList[cardIndex!].quantity! > 1) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
                                       .setQuantity(false, cardIndex, context);
@@ -285,7 +283,6 @@ class ProductWidget extends StatelessWidget {
                                               .locale
                                               .languageCode,
                                           cart.cartList[cardIndex].id); */
-
                                 } else if (cart.cartList[cardIndex].quantity ==
                                     1) {
                                   _loadData(context);
@@ -308,14 +305,14 @@ class ProductWidget extends StatelessWidget {
                                   color: Theme.of(context).primaryColor),
                             ),
                           ),
-                          Text(cart.cartList[cardIndex].quantity.toString(),
+                          Text(cart.cartList[cardIndex!].quantity.toString(),
                               style: poppinsSemiBold.copyWith(
                                   fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE,
                                   color: Theme.of(context).primaryColor)),
                           InkWell(
                             onTap: () {
-                              if (cart.cartList[cardIndex].quantity <
-                                  cart.cartList[cardIndex].stock) {
+                              if (cart.cartList[cardIndex].quantity! <
+                                  cart.cartList[cardIndex].stock!) {
                                 if (_isLogged) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)

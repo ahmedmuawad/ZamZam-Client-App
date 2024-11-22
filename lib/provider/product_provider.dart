@@ -11,17 +11,20 @@ class ProductProvider extends ChangeNotifier {
   final ProductRepo productRepo;
   final SearchRepo searchRepo;
 
-  ProductProvider({@required this.productRepo, this.searchRepo});
+  ProductProvider({required this.productRepo, required this.searchRepo})
+      : _errorText = '',
+        _imageSliderIndex = 0,
+        _popularPageSize = 0;
 
   // Latest products
-  Product _product;
-  List<Product> _popularProductList;
-  List<Product> _dailyItemList;
+  late Product _product;
+  List<Product> _popularProductList = [];
+  List<Product> _dailyItemList = [];
   bool _isLoading = false;
   int _popularPageSize;
   List<String> _offsetList = [];
   int _quantity = 1;
-  List<int> _variationIndex;
+  List<int> _variationIndex = [];
   int _imageSliderIndex;
 
   Product get product => _product;
@@ -42,15 +45,14 @@ class ProductProvider extends ChangeNotifier {
       _offsetList.add(offset);
       ApiResponse apiResponse =
           await productRepo.getPopularProductList(offset, languageCode);
-      if (apiResponse.response != null &&
-          apiResponse.response.statusCode == 200) {
+      if (apiResponse.response.statusCode == 200) {
         if (reload) {
           _popularProductList = [];
         }
         _popularProductList
-            .addAll(ProductModel.fromJson(apiResponse.response.data).products);
+            .addAll(ProductModel.fromJson(apiResponse.response.data).products!);
         _popularPageSize =
-            ProductModel.fromJson(apiResponse.response.data).totalSize;
+            ProductModel.fromJson(apiResponse.response.data).totalSize!;
         _isLoading = false;
         notifyListeners();
       } else {
@@ -66,11 +68,10 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> getDailyItemList(
       BuildContext context, bool reload, String languageCode) async {
-    if (_dailyItemList == null || reload) {
+    if (reload) {
       ApiResponse apiResponse =
           await productRepo.getDailyItemList(languageCode);
-      if (apiResponse.response != null &&
-          apiResponse.response.statusCode == 200) {
+      if (apiResponse.response.statusCode == 200) {
         _dailyItemList = [];
         apiResponse.response.data.forEach(
             (dailyItem) => _dailyItemList.add(Product.fromJson(dailyItem)));
@@ -83,21 +84,8 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> getProductDetails(BuildContext context, Product product,
       CartModel cart, String languageCode) async {
-    if (product.name != null) {
-      _product = product;
-    } else {
-      _product = null;
-      notifyListeners();
-      ApiResponse apiResponse = await productRepo.getProductDetails(
-          product.id.toString(), languageCode);
-      if (apiResponse.response != null &&
-          apiResponse.response.statusCode == 200) {
-        _product = Product.fromJson(apiResponse.response.data);
-      } else {
-        ApiChecker.checkApi(context, apiResponse);
-      }
-    }
-    initData(_product, cart);
+    _product = product;
+      initData(_product, cart);
     notifyListeners();
   }
 
@@ -108,28 +96,21 @@ class ProductProvider extends ChangeNotifier {
 
   void initData(Product product, CartModel cart) {
     _variationIndex = [];
-    if (cart != null) {
-      _quantity = cart.quantity;
-      List<String> _variationTypes = [];
-      if (cart.variation.type != null) {
-        _variationTypes.addAll(cart.variation.type.split('-'));
-      }
+    _quantity = cart.quantity!;
+    List<String> _variationTypes = [];
+    _variationTypes.addAll(cart.variation.type!.split('-'));
       int _varIndex = 0;
-      product.choiceOptions.forEach((choiceOption) {
-        for (int index = 0; index < choiceOption.options.length; index++) {
-          if (choiceOption.options[index].trim().replaceAll(' ', '') ==
-              _variationTypes[_varIndex].trim()) {
-            _variationIndex.add(index);
-            break;
-          }
+    product.choiceOptions.forEach((choiceOption) {
+      for (int index = 0; index < choiceOption.options!.length; index++) {
+        if (choiceOption.options![index].trim().replaceAll(' ', '') ==
+            _variationTypes[_varIndex].trim()) {
+          _variationIndex.add(index);
+          break;
         }
-        _varIndex++;
-      });
-    } else {
-      _quantity = 1;
-      product.choiceOptions.forEach((element) => _variationIndex.add(0));
+      }
+      _varIndex++;
+    });
     }
-  }
   /*void initData(Product product, CartModel cart) {
     _quantity = 1;
     _variationIndex = [];
@@ -172,7 +153,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void removeData() {
-    _errorText = null;
+    _errorText = '';
     _rating = 0;
     notifyListeners();
   }
@@ -185,7 +166,7 @@ class ProductProvider extends ChangeNotifier {
   // Brand and category products
   List<Product> _categoryProductList = [];
   List<Product> _categoryAllProductList = [];
-  bool _hasData;
+  bool _hasData = false;
 
   double _maxValue = 0;
 
@@ -204,8 +185,7 @@ class ProductProvider extends ChangeNotifier {
     _hasData = true;
     ApiResponse apiResponse =
         await productRepo.getBrandOrCategoryProductList(id, languageCode);
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _categoryProductList = [];
       _categoryAllProductList = [];
       apiResponse.response.data.forEach(
@@ -216,7 +196,7 @@ class ProductProvider extends ChangeNotifier {
       List<Product> _products = [];
       _products.addAll(_categoryProductList);
       List<double> _prices = [];
-      _products.forEach((product) => _prices.add(product.price));
+      _products.forEach((product) => _prices.add(product.price!));
       _prices.sort();
       if (categoryProductList.length != 0)
         _maxValue = _prices[_prices.length - 1];
@@ -229,20 +209,20 @@ class ProductProvider extends ChangeNotifier {
   void sortCategoryProduct(int filterIndex) {
     if (filterIndex == 0) {
       _categoryProductList.sort(
-          (product1, product2) => product1.price.compareTo(product2.price));
+          (product1, product2) => product1.price!.compareTo(product2.price!));
     } else if (filterIndex == 1) {
       _categoryProductList.sort(
-          (product1, product2) => product1.price.compareTo(product2.price));
+          (product1, product2) => product1.price!.compareTo(product2.price!));
       Iterable iterable = _categoryProductList.reversed;
-      _categoryProductList = iterable.toList();
+      _categoryProductList = iterable.toList() as List<Product>;
     } else if (filterIndex == 2) {
       _categoryProductList.sort((product1, product2) =>
-          product1.name.toLowerCase().compareTo(product2.name.toLowerCase()));
+          product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
     } else if (filterIndex == 3) {
       _categoryProductList.sort((product1, product2) =>
-          product1.name.toLowerCase().compareTo(product2.name.toLowerCase()));
+          product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
       Iterable iterable = _categoryProductList.reversed;
-      _categoryProductList = iterable.toList();
+      _categoryProductList = iterable.toList() as List<Product>;
     }
     notifyListeners();
   }
@@ -255,7 +235,7 @@ class ProductProvider extends ChangeNotifier {
     } else {
       _categoryProductList = [];
       categoryAllProductList.forEach((product) async {
-        if (product.name.toLowerCase().contains(query.toLowerCase())) {
+        if (product.name!.toLowerCase().contains(query.toLowerCase())) {
           _categoryProductList.add(product);
         }
       });
@@ -314,7 +294,7 @@ class ProductProvider extends ChangeNotifier {
         return aPrice.compareTo(bPrice);
       });
       Iterable iterable = _categoryProductList.reversed;
-      _categoryProductList = iterable.toList();
+      _categoryProductList = iterable.toList() as List<Product>;
     }
     notifyListeners();
   }

@@ -10,7 +10,7 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 
 class ReviewWidget extends StatelessWidget {
   final ReviewModel reviewModel;
-  ReviewWidget({@required this.reviewModel});
+  ReviewWidget({required this.reviewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class ReviewWidget extends StatelessWidget {
         Row(children: [
           ClipOval(
             child: FadeInImage.assetNetwork(
-              image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.customerImageUrl}/${reviewModel.customer.image}',
+              image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.customerImageUrl}/${reviewModel.customer!.image}',
               placeholder: Images.placeholder,
               width: 30, height: 30, fit: BoxFit.cover,
               imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder, height: 30, width: 30, fit: BoxFit.cover),
@@ -33,7 +33,7 @@ class ReviewWidget extends StatelessWidget {
           ),
           SizedBox(width: 5),
           Expanded(child: Text(
-            '${reviewModel.customer.fName} ${reviewModel.customer.lName}',
+            '${reviewModel.customer!.fName} ${reviewModel.customer!.lName}',
             style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE),
             maxLines: 1, overflow: TextOverflow.ellipsis,
           )),
@@ -43,7 +43,7 @@ class ReviewWidget extends StatelessWidget {
           Text(reviewModel.rating.toString(), style: poppinsRegular),
         ]),
         SizedBox(height: 5),
-        Text(reviewModel.comment, style: poppinsRegular),
+        Text(reviewModel.comment!, style: poppinsRegular),
       ]),
     );
   }

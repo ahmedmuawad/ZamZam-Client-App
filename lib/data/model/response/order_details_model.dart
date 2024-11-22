@@ -1,23 +1,23 @@
 class OrderDetailsModel {
-  int id;
-  int productId;
-  int orderId;
-  double price;
-  ProductDetails productDetails;
-  double discountOnProduct;
-  String discountType;
-  int quantity;
-  double taxAmount;
-  String createdAt;
-  String updatedAt;
-  String variant;
+  int? id;
+  int? productId;
+  int? orderId;
+  double? price;
+  late ProductDetails productDetails;
+  double? discountOnProduct;
+  String? discountType;
+  int? quantity;
+  double? taxAmount;
+  String? createdAt;
+  String? updatedAt;
+  String? variant;
 
   OrderDetailsModel(
       {this.id,
       this.productId,
       this.orderId,
       this.price,
-      this.productDetails,
+      required this.productDetails,
       this.discountOnProduct,
       this.discountType,
       this.quantity,
@@ -26,15 +26,15 @@ class OrderDetailsModel {
       this.updatedAt,
       this.variant});
 
-  OrderDetailsModel.fromJson(Map<String, dynamic> json) {
+  OrderDetailsModel.fromJson(Map<String?, dynamic> json) {
     id = json['id'];
     productId = json['product_id'];
     orderId = json['order_id'];
     price = json['price'].toDouble();
 
-    productDetails = json['product_details'] != null
+    productDetails = (json['product_details'] != null
         ? new ProductDetails.fromJson(json['product_details'])
-        : null;
+        : null)!;
 
     discountOnProduct = json['discount_on_product'].toDouble();
     discountType = json['discount_type'];
@@ -45,16 +45,14 @@ class OrderDetailsModel {
     variant = json['variant'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this.id;
     data['product_id'] = this.productId;
     data['order_id'] = this.orderId;
     data['price'] = this.price;
-    if (this.productDetails != null) {
-      data['product_details'] = this.productDetails.toJson();
-    }
-    data['discount_on_product'] = this.discountOnProduct;
+    data['product_details'] = this.productDetails.toJson();
+      data['discount_on_product'] = this.discountOnProduct;
     data['discount_type'] = this.discountType;
     data['quantity'] = this.quantity;
     data['tax_amount'] = this.taxAmount;
@@ -66,27 +64,27 @@ class OrderDetailsModel {
 }
 
 class ProductDetails {
-  int id;
-  String name;
-  String description;
-  List<dynamic> image;
-  double price;
-  List<CategoryIds> categoryIds;
-  int capacity;
-  String unit;
-  double tax;
-  int status;
-  String createdAt;
-  String updatedAt;
-  double discount;
-  String discountType;
-  String taxType;
+  int? id;
+  String? name;
+  String? description;
+  List<dynamic>? image;
+  double? price;
+  List<CategoryIds>? categoryIds;
+  int? capacity;
+  String? unit;
+  double? tax;
+  int? status;
+  String? createdAt;
+  String? updatedAt;
+  double? discount;
+  String? discountType;
+  String? taxType;
 
   ProductDetails(
       {this.id,
       this.name,
       this.description,
-      this.image,
+      required this.image,
       this.price,
       this.categoryIds,
       this.capacity,
@@ -99,7 +97,7 @@ class ProductDetails {
       this.discountType,
       this.taxType});
 
-  ProductDetails.fromJson(Map<String, dynamic> json) {
+  ProductDetails.fromJson(Map<String?, dynamic> json) {
     id = json['id'];
     name = json['name'];
     description = json['description'];
@@ -108,10 +106,10 @@ class ProductDetails {
     if (json['category_ids'] != null) {
       categoryIds = [];
       json['category_ids'].forEach((v) {
-        categoryIds.add(new CategoryIds.fromJson(v));
+        categoryIds!.add(new CategoryIds.fromJson(v));
       });
     }
-    if (json['capacity'] is double) {
+    if (json['capacity'] is double?) {
       capacity = json['capacity'].toInt();
     } else {
       capacity = json['capacity'];
@@ -127,17 +125,15 @@ class ProductDetails {
     taxType = json['tax_type'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['description'] = this.description;
     data['image'] = this.image;
     data['price'] = this.price;
-    if (this.categoryIds != null) {
-      data['category_ids'] = this.categoryIds.map((v) => v.toJson()).toList();
-    }
-    data['capacity'] = this.capacity;
+    data['category_ids'] = this.categoryIds!.map((v) => v.toJson()).toList();
+      data['capacity'] = this.capacity;
     data['unit'] = this.unit;
     data['tax'] = this.tax;
     data['status'] = this.status;
@@ -151,16 +147,16 @@ class ProductDetails {
 }
 
 class CategoryIds {
-  String id;
+  String? id;
 
   CategoryIds({this.id});
 
-  CategoryIds.fromJson(Map<String, dynamic> json) {
+  CategoryIds.fromJson(Map<String?, dynamic> json) {
     id = json['id'].toString();
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this.id;
     return data;
   }

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../../data/model/response/category_model.dart';
 import '../../../../helper/responsive_helper.dart';
 import '../../../../helper/route_helper.dart';
-import '../../../../localization/language_constrants.dart';
 import '../../../../provider/category_provider.dart';
 import '../../../../provider/splash_provider.dart';
 import '../../../../provider/theme_provider.dart';
@@ -50,10 +49,10 @@ class SubSubCategory extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         Navigator.of(context).pushNamed(
-                          RouteHelper.getCategoryProductsRoute(category.ssHomecate[index].subSubList[index1].id),
+                          RouteHelper.getCategoryProductsRoute(category.ssHomecate[index].subSubList[index1].id!),
                           arguments: CategoryProductScreen(categoryModel: CategoryModel(
                             id: category.ssHomecate[index].subSubList[index1].id,
-                            name: category.ssHomecate[index].subSubList[index1].name,
+                            name: category.ssHomecate[index].subSubList[index1].name, subCate: [],
                           )),
                         );
 
@@ -65,7 +64,7 @@ class SubSubCategory extends StatelessWidget {
                           color: Colors.white.withOpacity(Provider.of<ThemeProvider>(context).darkTheme ? 0.05 : 1),
                           boxShadow: Provider.of<ThemeProvider>(context).darkTheme
                               ? null
-                              : [BoxShadow(color: Colors.grey[200], spreadRadius: 1, blurRadius: 5)],
+                              : [BoxShadow(color: Colors.grey[200]!, spreadRadius: 1, blurRadius: 5)],
                         ),
                         child: Column(children: [
                           Expanded(
@@ -94,7 +93,7 @@ class SubSubCategory extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
                               child: Text(
-                                category.ssHomecate[index].subSubList[index1].name ,
+                                category.ssHomecate[index].subSubList[index1].name! ,
                                 style: poppinsLight,
                                 textAlign: TextAlign.center,
                                 maxLines: 2,

@@ -8,8 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../../provider/auth_provider.dart';
 
 class DetailsAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final Key key;
-  DetailsAppBar({this.key});
+  DetailsAppBar();
 
   @override
   DetailsAppBarState createState() => DetailsAppBarState();
@@ -20,8 +19,8 @@ class DetailsAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class DetailsAppBarState extends State<DetailsAppBar>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  bool _isLogged;
+  AnimationController? controller;
+  bool? _isLogged;
 
   @override
   void initState() {
@@ -32,25 +31,25 @@ class DetailsAppBarState extends State<DetailsAppBar>
   }
 
   void shake() {
-    controller.forward(from: 0.0);
+    controller!.forward(from: 0.0);
   }
 
   @override
   Widget build(BuildContext context) {
     _isLogged = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    final Animation<double> offsetAnimation = Tween(begin: 0.0, end: 15.0)
+    final Animation<double?> offsetAnimation = Tween(begin: 0.0, end: 15.0)
         .chain(CurveTween(curve: Curves.elasticIn))
-        .animate(controller)
+        .animate(controller!)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          controller.reverse();
+          controller!.reverse();
         }
       });
 
     return AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios,
-            color: Theme.of(context).textTheme.bodyText1.color, size: 20),
+            color: Theme.of(context).textTheme.bodyLarge!.color, size: 20),
         onPressed: () => Navigator.pop(context),
       ),
       elevation: 1,
@@ -62,14 +61,14 @@ class DetailsAppBarState extends State<DetailsAppBar>
           builder: (buildContext, child) {
             return Container(
               padding: EdgeInsets.only(
-                  left: offsetAnimation.value + 15.0,
-                  right: 15.0 - offsetAnimation.value),
+                  left: offsetAnimation.value! + 15.0,
+                  right: 15.0 - offsetAnimation.value!),
               child: IconButton(
                 icon: Stack(clipBehavior: Clip.none, children: [
                   Image.asset(Images.cart_icon,
                       width: 23,
                       height: 25,
-                      color: Theme.of(context).textTheme.bodyText1.color),
+                      color: Theme.of(context).textTheme.bodyLarge!.color),
                   Positioned(
                     top: -7,
                     right: -2,
@@ -79,7 +78,7 @@ class DetailsAppBarState extends State<DetailsAppBar>
                           shape: BoxShape.circle,
                           color: Theme.of(context).primaryColor),
                       child: Text(
-                          _isLogged
+                          _isLogged!
                               ? '${Provider.of<CartProvider>(context).cartApiList.length}'
                               : '${Provider.of<CartProvider>(context).cartList.length}',
                           style: TextStyle(

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/base/api_response.dart';
 import 'package:flutter_grocery/data/model/response/response_model.dart';
@@ -14,16 +13,16 @@ import 'package:image_picker/image_picker.dart';
 class ProfileProvider with ChangeNotifier {
   final ProfileRepo profileRepo;
 
-  ProfileProvider({@required this.profileRepo});
+  ProfileProvider({required this.profileRepo});
 
-  UserInfoModel _userInfoModel;
+  late UserInfoModel _userInfoModel;
 
   UserInfoModel get userInfoModel => _userInfoModel;
 
   Future<ResponseModel> getUserInfo(BuildContext context) async {
     ResponseModel _responseModel;
     ApiResponse apiResponse = await profileRepo.getUserInfo();
-    if (apiResponse.response != null && apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _userInfoModel = UserInfoModel.fromJson(apiResponse.response.data);
       _responseModel = ResponseModel(true, 'successful');
     } else {
@@ -45,16 +44,16 @@ class ProfileProvider with ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  File _file;
-  PickedFile _data;
+  late File _file;
+  XFile? _data;
 
-  PickedFile get data => _data;
+  XFile? get data => _data;
 
   File get file => _file;
   final picker = ImagePicker();
 
   void choosePhoto() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery, imageQuality: 50, maxHeight: 500, maxWidth: 500);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 50, maxHeight: 500, maxWidth: 500);
     if (pickedFile != null) {
       _file = File(pickedFile.path);
     } else {
@@ -64,7 +63,7 @@ class ProfileProvider with ChangeNotifier {
   }
 
   void pickImage() async {
-    _data = await picker.getImage(source: ImageSource.gallery, maxHeight: 100, maxWidth: 100, imageQuality: 20);
+    _data = await picker.pickImage(source: ImageSource.gallery, maxHeight: 100, maxWidth: 100, imageQuality: 20);
     notifyListeners();
   }
 

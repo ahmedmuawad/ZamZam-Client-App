@@ -11,12 +11,9 @@ import 'package:flutter_grocery/provider/splash_provider.dart';
 import 'package:flutter_grocery/utill/color_resources.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
-import 'package:flutter_grocery/view/base/app_bar_base.dart';
 import 'package:flutter_grocery/view/base/custom_button.dart';
 import 'package:flutter_grocery/view/base/custom_divider.dart';
-import 'package:flutter_grocery/view/base/main_app_bar.dart';
 import 'package:flutter_grocery/view/base/no_data_screen.dart';
-import 'package:flutter_grocery/view/screens/cart/widget/cart_product_widget.dart';
 import 'package:flutter_grocery/view/screens/cart/widget/delivery_option_button.dart';
 import 'package:flutter_grocery/view/screens/checkout/checkout_screen.dart';
 import 'package:provider/provider.dart';
@@ -27,11 +24,12 @@ import '../../../provider/theme_provider.dart';
 import '../../../utill/images.dart';
 import '../../base/custom_snackbar.dart';
 
+// ignore: must_be_immutable
 class CartScreen extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _couponController = TextEditingController();
-  bool _isLogged;
-  String balance;
+  bool? _isLogged;
+  String? balance;
   bool _isLoading = false;
 
   @override
@@ -41,15 +39,16 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
-    Future<void> reload() {
-      if (widget._isLogged) {
-        Provider.of<CartProvider>(context, listen: false).getMyCartData(
+    Future<void> reload() async {
+      if (widget._isLogged!) {
+        await Provider.of<CartProvider>(context, listen: false).getMyCartData(
             context,
             Provider.of<AuthProvider>(context, listen: false).getUserToken(),
             Provider.of<LocalizationProvider>(context, listen: false)
                 .locale
                 .languageCode);
       }
+      return;
     }
 
     print('first of screen ======================== ');
@@ -61,17 +60,17 @@ class _CartScreenState extends State<CartScreen> {
             1;
     bool _kmWiseCharge = Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .deliveryManagement
+            .DeliveryManagement
             .status ==
         1;
     print('after kmWise ================================');
     widget._isLogged =
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    if (widget._isLogged) {
+    if (widget._isLogged!) {
       Provider.of<ProfileProvider>(context, listen: false).getUserInfo(context);
     }
     print('after user info ===============================');
-    if (widget._isLogged) {
+    if (widget._isLogged!) {
       Provider.of<CartProvider>(context, listen: false).getMyCartData(
           context,
           Provider.of<AuthProvider>(context, listen: false).getUserToken(),
@@ -85,7 +84,7 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       key: widget._scaffoldKey,
       body: Center(
-        child: widget._isLogged
+        child: widget._isLogged!
             ? Consumer<ProfileProvider>(
                 builder: (context, profileProvider, child) {
                 return Consumer<CartProvider>(
@@ -96,15 +95,11 @@ class _CartScreenState extends State<CartScreen> {
                     widget.balance = profileProvider.userInfoModel.balance;
                     print(
                         'after cart foreach =============================== ${widget.balance}');
-                    if (widget.balance == null) {
-                      widget.balance = '0.0';
-                    } else {
-                      widget.balance = widget.balance;
-                    }
-                    double _oldBalance = double.parse(widget.balance);
+                    widget.balance = widget.balance;
+                    double? _oldBalance = double.parse(widget.balance!);
 
-                    double disBalance = 0.00;
-                    double deliveryCharge = 0;
+                    double? disBalance = 0.00;
+                    double? deliveryCharge = 0;
 
                     (Provider.of<OrderProvider>(context).orderType ==
                                 'delivery' &&
@@ -120,19 +115,20 @@ class _CartScreenState extends State<CartScreen> {
 
                     cart.cartApiList.forEach((cartModel) {
                       _itemPrice = _itemPrice +
-                          (cartModel.cartProduct.price * cartModel.quantity);
+                          (cartModel.cartProduct!.price! * cartModel.quantity!);
                       _discount = _discount +
-                          (cartModel.cartProduct.discount * cartModel.quantity);
+                          (cartModel.cartProduct!.discount! *
+                              cartModel.quantity!);
                       _tax = _tax +
-                          (cartModel.cartProduct.tax * cartModel.quantity);
+                          (cartModel.cartProduct!.tax! * cartModel.quantity!);
                     });
 
-                    double _subTotal = _itemPrice + _tax;
+                    double? _subTotal = _itemPrice + _tax;
 
-                    double _total = _subTotal -
+                    double? _total = _subTotal -
                         _discount -
-                        Provider.of<CouponProvider>(context).discount +
-                        deliveryCharge;
+                        Provider.of<CouponProvider>(context).discount! +
+                        deliveryCharge!;
                     if (_oldBalance > _total) {
                       disBalance = _total;
                       _oldBalance = _oldBalance - _total;
@@ -251,7 +247,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                           BoxShadow(
                                                                             color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme
                                                                                 ? 700
-                                                                                : 300],
+                                                                                : 300]!,
                                                                             blurRadius:
                                                                                 5,
                                                                             spreadRadius:
@@ -265,7 +261,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                               borderRadius: BorderRadius.circular(10),
                                                                               child: FadeInImage.assetNetwork(
                                                                                 placeholder: Images.placeholder,
-                                                                                image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${cart.cartApiList[index].cartProduct.image}',
+                                                                                image: '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${cart.cartApiList[index].cartProduct!.image}',
                                                                                 height: 70,
                                                                                 width: 85,
                                                                                 imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder, height: 70, width: 85),
@@ -280,16 +276,16 @@ class _CartScreenState extends State<CartScreen> {
                                                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                                                   children: [
-                                                                                    Expanded(flex: 2, child: Text(cart.cartApiList[index].cartProduct.name, style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL), maxLines: 2, overflow: TextOverflow.ellipsis)),
+                                                                                    Expanded(flex: 2, child: Text(cart.cartApiList[index].cartProduct!.name!, style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL), maxLines: 2, overflow: TextOverflow.ellipsis)),
                                                                                     Column(
                                                                                       children: [
                                                                                         Text(
-                                                                                          PriceConverter.convertPrice(context, cart.cartApiList[index].cartProduct.price, discount: cart.cartApiList[index].cartProduct.discount, discountType: cart.cartApiList[index].cartProduct.discountType),
+                                                                                          PriceConverter.convertPrice(context, cart.cartApiList[index].cartProduct!.price, discount: cart.cartApiList[index].cartProduct!.discount, discountType: cart.cartApiList[index].cartProduct!.discountType)!,
                                                                                           style: poppinsBold.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
                                                                                         ),
-                                                                                        cart.cartApiList[index].cartProduct.discount > 0
+                                                                                        cart.cartApiList[index].cartProduct!.discount! > 0
                                                                                             ? Text(
-                                                                                                PriceConverter.convertPrice(context, cart.cartApiList[index].cartProduct.price),
+                                                                                                PriceConverter.convertPrice(context, cart.cartApiList[index].cartProduct!.price)!,
                                                                                                 style: poppinsRegular.copyWith(
                                                                                                   fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
                                                                                                   decoration: TextDecoration.lineThrough,
@@ -304,13 +300,13 @@ class _CartScreenState extends State<CartScreen> {
                                                                                 ),
                                                                                 SizedBox(height: 5),
                                                                                 Row(children: [
-                                                                                  Expanded(child: Text('${cart.cartApiList[index].cartProduct.capacity} ${cart.cartApiList[index].cartProduct.unit}', style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL))),
+                                                                                  Expanded(child: Text('${cart.cartApiList[index].cartProduct!.capacity} ${cart.cartApiList[index].cartProduct!.unit}', style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL))),
                                                                                   InkWell(
                                                                                     onTap: () async {
-                                                                                      if (cart.cartApiList[index].quantity > 0) {
-                                                                                        if (cart.cartApiList[index].quantity > 1) {
-                                                                                          Provider.of<CartProvider>(context, listen: false).decreamentProduct(context, Provider.of<AuthProvider>(context, listen: false).getUserToken(), Provider.of<LocalizationProvider>(context, listen: false).locale.languageCode, cart.cartApiList[index].cartProduct.id);
-                                                                                          if (cart.cartApiList[index].quantity > 0) {
+                                                                                      if (cart.cartApiList[index].quantity! > 0) {
+                                                                                        if (cart.cartApiList[index].quantity! > 1) {
+                                                                                          Provider.of<CartProvider>(context, listen: false).decreamentProduct(context, Provider.of<AuthProvider>(context, listen: false).getUserToken(), Provider.of<LocalizationProvider>(context, listen: false).locale.languageCode, cart.cartApiList[index].cartProduct!.id);
+                                                                                          if (cart.cartApiList[index].quantity! > 0) {
                                                                                             Provider.of<CartProvider>(context, listen: false).setQuantity(false, index, context);
                                                                                           }
 
@@ -333,8 +329,8 @@ class _CartScreenState extends State<CartScreen> {
                                                                                   Text(cart.cartApiList[index].quantity.toString(), style: poppinsSemiBold.copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE, color: Theme.of(context).primaryColor)),
                                                                                   InkWell(
                                                                                     onTap: () {
-                                                                                      if (cart.cartApiList[index].quantity < cart.cartApiList[index].cartProduct.totalStock) {
-                                                                                        Provider.of<CartProvider>(context, listen: false).increamentProduct(context, Provider.of<AuthProvider>(context, listen: false).getUserToken(), Provider.of<LocalizationProvider>(context, listen: false).locale.languageCode, cart.cartApiList[index].cartProduct.id);
+                                                                                      if (cart.cartApiList[index].quantity! < cart.cartApiList[index].cartProduct!.totalStock!) {
+                                                                                        Provider.of<CartProvider>(context, listen: false).increamentProduct(context, Provider.of<AuthProvider>(context, listen: false).getUserToken(), Provider.of<LocalizationProvider>(context, listen: false).locale.languageCode, cart.cartApiList[index].cartProduct!.id);
                                                                                         Provider.of<CouponProvider>(context, listen: false).removeCouponData(false);
                                                                                         Provider.of<CartProvider>(context, listen: false).setQuantity(true, index, context);
                                                                                         setState(() {});
@@ -419,7 +415,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                 .text
                                                                 .isNotEmpty &&
                                                             !coupon.isLoading) {
-                                                          if (coupon.discount <
+                                                          if (coupon.discount! <
                                                               1) {
                                                             coupon
                                                                 .applyCoupon(
@@ -429,7 +425,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                     _total)
                                                                 .then(
                                                                     (discount) {
-                                                              if (discount >
+                                                              if (discount! >
                                                                   0) {
                                                                 ScaffoldMessenger.of(
                                                                         context)
@@ -507,7 +503,7 @@ class _CartScreenState extends State<CartScreen> {
                                                           ),
                                                         ),
                                                         child: coupon
-                                                                    .discount <=
+                                                                    .discount! <=
                                                                 0
                                                             ? !coupon.isLoading
                                                                 ? Text(
@@ -591,7 +587,7 @@ class _CartScreenState extends State<CartScreen> {
                                                         PriceConverter
                                                             .convertPrice(
                                                                 context,
-                                                                _itemPrice),
+                                                                _itemPrice)!,
                                                         style: poppinsRegular.copyWith(
                                                             fontSize: Dimensions
                                                                 .FONT_SIZE_LARGE)),
@@ -733,7 +729,7 @@ class _CartScreenState extends State<CartScreen> {
                                                     Text(
                                                       PriceConverter
                                                           .convertPrice(
-                                                              context, _total),
+                                                              context, _total)!,
                                                       style: poppinsMedium.copyWith(
                                                           fontSize: Dimensions
                                                               .FONT_SIZE_EXTRA_LARGE,
@@ -760,7 +756,7 @@ class _CartScreenState extends State<CartScreen> {
                                         Provider.of<SplashProvider>(context,
                                                 listen: false)
                                             .configModel
-                                            .minimumOrderValue) {
+                                            .minimumOrderValue!) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text(
@@ -768,11 +764,11 @@ class _CartScreenState extends State<CartScreen> {
                                               ),
                                               backgroundColor: Colors.red));
                                     } else {
-                                      String _orderType =
+                                      String? _orderType =
                                           Provider.of<OrderProvider>(context,
                                                   listen: false)
                                               .orderType;
-                                      double _discount =
+                                      double? _discount =
                                           Provider.of<CouponProvider>(context,
                                                   listen: false)
                                               .discount;
@@ -781,10 +777,10 @@ class _CartScreenState extends State<CartScreen> {
                                         RouteHelper.getCheckoutRoute(
                                           _total,
                                           _discount,
-                                          _orderType,
+                                          _orderType!,
                                           Provider.of<CouponProvider>(context,
                                                   listen: false)
-                                              .code,
+                                              .code!,
                                         ),
                                         arguments: CheckoutScreen(
                                           amount: _total,
@@ -802,7 +798,7 @@ class _CartScreenState extends State<CartScreen> {
                                     Provider.of<ProfileProvider>(context,
                                             listen: false)
                                         .updateUserBalance(
-                                            _oldBalance,
+                                            _oldBalance!,
                                             Provider.of<AuthProvider>(context,
                                                     listen: false)
                                                 .getUserToken());
@@ -817,7 +813,7 @@ class _CartScreenState extends State<CartScreen> {
               })
             : Consumer<CartProvider>(
                 builder: (context, cart, child) {
-                  double deliveryCharge = 0;
+                  double? deliveryCharge = 0;
                   (Provider.of<OrderProvider>(context).orderType ==
                               'delivery' &&
                           !_kmWiseCharge)
@@ -831,16 +827,16 @@ class _CartScreenState extends State<CartScreen> {
                   double _tax = 0;
                   cart.cartList.forEach((cartModel) {
                     _itemPrice =
-                        _itemPrice + (cartModel.price * cartModel.quantity);
+                        _itemPrice + (cartModel.price! * cartModel.quantity!);
                     _discount =
-                        _discount + (cartModel.discount * cartModel.quantity);
-                    _tax = _tax + (cartModel.tax * cartModel.quantity);
+                        _discount + (cartModel.discount! * cartModel.quantity!);
+                    _tax = _tax + (cartModel.tax! * cartModel.quantity!);
                   });
-                  double _subTotal = _itemPrice + _tax;
-                  double _total = _subTotal -
+                  double? _subTotal = _itemPrice + _tax;
+                  double? _total = _subTotal -
                       _discount -
-                      Provider.of<CouponProvider>(context).discount +
-                      deliveryCharge;
+                      Provider.of<CouponProvider>(context).discount! +
+                      deliveryCharge!;
 
                   return cart.cartList.length > 0
                       ? Column(
@@ -925,7 +921,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                           context)
                                                                       .darkTheme
                                                                   ? 700
-                                                                  : 300],
+                                                                  : 300]!,
                                                               blurRadius: 5,
                                                               spreadRadius: 1,
                                                             )
@@ -978,7 +974,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                           cart
                                                                               .cartList[
                                                                                   index]
-                                                                              .name,
+                                                                              .name!,
                                                                           style: poppinsRegular.copyWith(
                                                                               fontSize: Dimensions
                                                                                   .FONT_SIZE_SMALL),
@@ -990,7 +986,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                     PriceConverter.convertPrice(
                                                                         context,
                                                                         cart.cartList[index]
-                                                                            .price),
+                                                                            .price)!,
                                                                     style: poppinsSemiBold.copyWith(
                                                                         fontSize:
                                                                             Dimensions.FONT_SIZE_SMALL),
@@ -1017,8 +1013,10 @@ class _CartScreenState extends State<CartScreen> {
                                                                                 false)
                                                                         .removeCouponData(
                                                                             false);
-                                                                    if (cart.cartList[index]
-                                                                            .quantity >
+                                                                    if (cart
+                                                                            .cartList[
+                                                                                index]
+                                                                            .quantity! >
                                                                         1) {
                                                                       Provider.of<CartProvider>(context, listen: false).setQuantity(
                                                                           false,
@@ -1071,9 +1069,9 @@ class _CartScreenState extends State<CartScreen> {
                                                                     if (cart
                                                                             .cartList[
                                                                                 index]
-                                                                            .quantity <
+                                                                            .quantity! <
                                                                         cart.cartList[index]
-                                                                            .stock) {
+                                                                            .stock!) {
                                                                       Provider.of<CouponProvider>(
                                                                               context,
                                                                               listen:
@@ -1195,7 +1193,7 @@ class _CartScreenState extends State<CartScreen> {
                                                               .text
                                                               .isNotEmpty &&
                                                           !coupon.isLoading) {
-                                                        if (coupon.discount <
+                                                        if (coupon.discount! <
                                                             1) {
                                                           coupon
                                                               .applyCoupon(
@@ -1204,7 +1202,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                       .text,
                                                                   _total)
                                                               .then((discount) {
-                                                            if (discount > 0) {
+                                                            if (discount! > 0) {
                                                               ScaffoldMessenger
                                                                       .of(
                                                                           context)
@@ -1279,7 +1277,7 @@ class _CartScreenState extends State<CartScreen> {
                                                                   : 10),
                                                         ),
                                                       ),
-                                                      child: coupon.discount <=
+                                                      child: coupon.discount! <=
                                                               0
                                                           ? !coupon.isLoading
                                                               ? Text(
@@ -1362,7 +1360,7 @@ class _CartScreenState extends State<CartScreen> {
                                                   Text(
                                                       PriceConverter
                                                           .convertPrice(context,
-                                                              _itemPrice),
+                                                              _itemPrice)!,
                                                       style: poppinsRegular.copyWith(
                                                           fontSize: Dimensions
                                                               .FONT_SIZE_LARGE)),
@@ -1483,7 +1481,7 @@ class _CartScreenState extends State<CartScreen> {
                                                       )),
                                                   Text(
                                                     PriceConverter.convertPrice(
-                                                        context, _total),
+                                                        context, _total)!,
                                                     style: poppinsMedium.copyWith(
                                                         fontSize: Dimensions
                                                             .FONT_SIZE_EXTRA_LARGE,
@@ -1509,7 +1507,7 @@ class _CartScreenState extends State<CartScreen> {
                                       Provider.of<SplashProvider>(context,
                                               listen: false)
                                           .configModel
-                                          .minimumOrderValue) {
+                                          .minimumOrderValue!) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                             content: Text(
@@ -1517,11 +1515,11 @@ class _CartScreenState extends State<CartScreen> {
                                             ),
                                             backgroundColor: Colors.red));
                                   } else {
-                                    String _orderType =
+                                    String? _orderType =
                                         Provider.of<OrderProvider>(context,
                                                 listen: false)
                                             .orderType;
-                                    double _discount =
+                                    double? _discount =
                                         Provider.of<CouponProvider>(context,
                                                 listen: false)
                                             .discount;
@@ -1530,10 +1528,10 @@ class _CartScreenState extends State<CartScreen> {
                                       RouteHelper.getCheckoutRoute(
                                         _total,
                                         _discount,
-                                        _orderType,
+                                        _orderType!,
                                         Provider.of<CouponProvider>(context,
                                                 listen: false)
-                                            .code,
+                                            .code!,
                                       ),
                                       arguments: CheckoutScreen(
                                         amount: _total,

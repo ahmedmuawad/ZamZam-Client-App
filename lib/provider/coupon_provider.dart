@@ -7,18 +7,18 @@ import 'package:flutter_grocery/helper/api_checker.dart';
 class CouponProvider extends ChangeNotifier {
   final CouponRepo couponRepo;
 
-  CouponProvider({@required this.couponRepo});
+  CouponProvider({required this.couponRepo});
 
-  List<CouponModel> _couponList;
-  CouponModel _coupon;
-  double _discount = 0.0;
-  String _code = '';
+  late List<CouponModel> _couponList;
+  CouponModel? _coupon;
+  double? _discount = 0.0;
+  String? _code = '';
   bool _isLoading = false;
 
-  CouponModel get coupon => _coupon;
+  CouponModel? get coupon => _coupon;
 
-  double get discount => _discount;
-  String get code => _code;
+  double? get discount => _discount;
+  String? get code => _code;
 
   bool get isLoading => _isLoading;
 
@@ -26,7 +26,7 @@ class CouponProvider extends ChangeNotifier {
 
   Future<void> getCouponList(BuildContext context) async {
     ApiResponse apiResponse = await couponRepo.getCouponList();
-    if (apiResponse.response != null && apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _couponList = [];
       apiResponse.response.data.forEach((category) => _couponList.add(CouponModel.fromJson(category)));
     } else {
@@ -35,22 +35,22 @@ class CouponProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<double> applyCoupon(String coupon, double order) async {
+  Future<double?> applyCoupon(String? coupon, double? order) async {
     _isLoading = true;
     notifyListeners();
     ApiResponse apiResponse = await couponRepo.applyCoupon(coupon);
-    if (apiResponse.response != null && apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _coupon = CouponModel.fromJson(apiResponse.response.data);
-      _code = _coupon.code;
-      if (_coupon.minPurchase != null && _coupon.minPurchase <= order) {
-        if (_coupon.discountType == 'percent') {
-          if (_coupon.maxDiscount != null && _coupon.maxDiscount != 0) {
-            _discount = (_coupon.discount * order / 100) < _coupon.maxDiscount ? (_coupon.discount * order / 100) : _coupon.maxDiscount;
+      _code = _coupon!.code;
+      if (_coupon!.minPurchase! <= order!) {
+        if (_coupon!.discountType == 'percent') {
+          if (_coupon!.maxDiscount != 0) {
+            _discount = (_coupon!.discount! * order / 100) < _coupon!.maxDiscount! ? (_coupon!.discount! * order / 100) : _coupon!.maxDiscount;
           } else {
-            _discount = _coupon.discount * order / 100;
+            _discount = _coupon!.discount! * order / 100;
           }
         } else {
-          _discount = _coupon.discount;
+          _discount = _coupon!.discount;
         }
       } else {
         _discount = 0.0;

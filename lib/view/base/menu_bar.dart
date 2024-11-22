@@ -13,7 +13,7 @@ class MenuBar extends StatelessWidget {
   //   this.scaffoldKey,
   // });
 
-  // void message(context, String text) {
+  // void message(context, String? text) {
   // //  scaffoldKey.currentState.hideCurrentSnackBar();
   //
   //   // final snackBar = SnackBar(
@@ -28,6 +28,7 @@ class MenuBar extends StatelessWidget {
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
     return [
       item.MenuItem(
+          children: [],
           title: getTranslated('home', context),
           icon: Icons.home_filled,
           onTap: () => Navigator.pushNamed(context, RouteHelper.menu)
@@ -37,6 +38,7 @@ class MenuBar extends StatelessWidget {
         title: getTranslated('all_categories', context),
         icon: Icons.category,
         onTap: () => Navigator.pushNamed(context, RouteHelper.categorys),
+        children: [],
       ),
       /*    MenuItem(
         title: 'Settings',
@@ -63,20 +65,27 @@ class MenuBar extends StatelessWidget {
         children: [
           item.MenuItem(
             title: getTranslated('privacy_policy', context),
+            icon: Icons.privacy_tip,
             onTap: () =>
                 Navigator.pushNamed(context, RouteHelper.getPolicyRoute()),
+            children: [],
           ),
           item.MenuItem(
             title: getTranslated('terms_and_condition', context),
+            icon: Icons.description,
             onTap: () =>
                 Navigator.pushNamed(context, RouteHelper.getTermsRoute()),
+            children: [],
           ),
           item.MenuItem(
             title: getTranslated('about_us', context),
+            icon: Icons.info,
             onTap: () =>
                 Navigator.pushNamed(context, RouteHelper.getAboutUsRoute()),
+            children: [],
           ),
         ],
+        onTap: () {},
       ),
       /*  MenuItem(
         title: 'Favourite',
@@ -88,27 +97,32 @@ class MenuBar extends StatelessWidget {
         title: getTranslated('search', context),
         icon: Icons.search,
         onTap: () => Navigator.pushNamed(context, RouteHelper.searchProduct),
+        children: [],
       ),
       item.MenuItem(
         title: getTranslated('menu', context),
         icon: Icons.menu,
         onTap: () => Navigator.pushNamed(context, RouteHelper.profileMenus),
+        children: [],
       ),
       _isLoggedIn
           ? item.MenuItem(
               title: getTranslated('profile', context),
               icon: Icons.person,
               onTap: () => Navigator.pushNamed(context, RouteHelper.profile),
+              children: [],
             )
           : item.MenuItem(
               title: getTranslated('login', context),
               icon: Icons.lock,
               onTap: () => Navigator.pushNamed(context, RouteHelper.login),
+              children: [],
             ),
       item.MenuItem(
         title: '',
         icon: Icons.shopping_cart,
         onTap: () => Navigator.pushNamed(context, RouteHelper.cart),
+        children: [],
       ),
     ];
   }
@@ -122,10 +136,13 @@ class MenuBar extends StatelessWidget {
         backgroundColor: Theme.of(context).cardColor,
         gradient: false,
         goBackButtonText: 'Back',
-        textStyle:
-            TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-        moreIconColor: Theme.of(context).textTheme.bodyText1.color,
-        menuIconColor: Theme.of(context).textTheme.bodyText1.color,
+        textStyle: TextStyle(
+            color:
+                Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black),
+        moreIconColor:
+            Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black,
+        menuIconColor:
+            Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black,
         menus: getMenus(context),
       ),
     );

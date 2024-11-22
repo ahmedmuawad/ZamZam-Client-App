@@ -5,10 +5,10 @@ import 'package:flutter_grocery/utill/styles.dart';
 
 class CustomButton extends StatelessWidget {
   final String buttonText;
-  final Function onPressed;
+  final VoidCallback? onPressed;
   final double margin;
   CustomButton(
-      {@required this.buttonText, @required this.onPressed, this.margin = 0});
+      {required this.buttonText, required this.onPressed, this.margin = 0});
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 class LoggingInterceptor extends InterceptorsWrapper {
-  int maxCharactersPerLine = 200;
+  int? maxCharactersPerLine = 200;
 
   @override
   Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
@@ -20,9 +20,9 @@ class LoggingInterceptor extends InterceptorsWrapper {
     String responseAsString = response.data.toString();
 
     if (responseAsString.length > maxCharactersPerLine) {
-      int iterations = (responseAsString.length / maxCharactersPerLine).floor();
-      for (int i = 0; i <= iterations; i++) {
-        int endingIndex = i * maxCharactersPerLine + maxCharactersPerLine;
+      int? iterations = (responseAsString.length / maxCharactersPerLine).floor();
+      for (int? i = 0; i <= iterations; i++) {
+        int? endingIndex = i * maxCharactersPerLine + maxCharactersPerLine;
         if (endingIndex > responseAsString.length) {
           endingIndex = responseAsString.length;
         }
@@ -39,8 +39,8 @@ class LoggingInterceptor extends InterceptorsWrapper {
   }
 
   @override
-  Future onError(DioError err, ErrorInterceptorHandler handler) async {
-    print("ERROR[${err?.response?.statusCode}] => PATH: ${err?.requestOptions?.path}");
+  Future onError(DioException err, ErrorInterceptorHandler handler) async {
+    print("ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}");
     return super.onError(err, handler);
   }
 }

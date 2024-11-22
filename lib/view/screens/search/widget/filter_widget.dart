@@ -9,14 +9,13 @@ import 'package:flutter_grocery/view/base/custom_button.dart';
 import 'package:provider/provider.dart';
 
 class FilterWidget extends StatelessWidget {
-  final double maxValue;
-  final int index;
+  final double? maxValue;
+  final int? index;
 
-  FilterWidget({@required this.maxValue, this.index});
+  FilterWidget({required this.maxValue, this.index});
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       width: 1170,
       padding: EdgeInsets.all(Dimensions.PADDING_SIZE_LARGE),
@@ -31,12 +30,13 @@ class FilterWidget extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(Icons.close, size: 18, color: ColorResources.getTextColor(context)),
+                    icon: Icon(Icons.close,
+                        size: 18, color: ColorResources.getTextColor(context)),
                   ),
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      getTranslated('filter', context),
+                      getTranslated('filter', context) ?? '',
                       textAlign: TextAlign.center,
                       style: poppinsMedium.copyWith(
                         fontSize: Dimensions.FONT_SIZE_LARGE,
@@ -46,12 +46,13 @@ class FilterWidget extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      Provider.of<CategoryProvider>(context, listen: false).updateSelectCategory(-1);
+                      Provider.of<CategoryProvider>(context, listen: false)
+                          .updateSelectCategory(-1);
                       searchProvider.setLowerAndUpperValue(0, 0);
                       searchProvider.setFilterIndex(0);
                     },
                     child: Text(
-                      getTranslated('reset', context),
+                      getTranslated('reset', context) ?? '',
                       style: poppinsRegular.copyWith(color: Colors.red),
                     ),
                   )
@@ -59,26 +60,31 @@ class FilterWidget extends StatelessWidget {
               ),
               SizedBox(height: 15),
               Text(
-                getTranslated('price', context),
-                style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context)),
+                getTranslated('price', context) ?? '',
+                style: poppinsMedium.copyWith(
+                    color: ColorResources.getTextColor(context)),
               ),
 
               // price range
               RangeSlider(
-                values: RangeValues(searchProvider.lowerValue, searchProvider.upperValue),
-                max: maxValue,
+                values: RangeValues(
+                    searchProvider.lowerValue, searchProvider.upperValue),
+                max: maxValue!,
                 min: 0,
                 activeColor: Theme.of(context).primaryColor,
-                labels: RangeLabels(searchProvider.lowerValue.toString(), searchProvider.upperValue.toString()),
+                labels: RangeLabels(searchProvider.lowerValue.toString(),
+                    searchProvider.upperValue.toString()),
                 onChanged: (RangeValues rangeValues) {
-                  searchProvider.setLowerAndUpperValue(rangeValues.start, rangeValues.end);
+                  searchProvider.setLowerAndUpperValue(
+                      rangeValues.start, rangeValues.end);
                 },
               ),
 
               SizedBox(height: 15),
               Text(
-                getTranslated('sort_by', context),
-                style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context)),
+                getTranslated('sort_by', context) ?? '',
+                style: poppinsMedium.copyWith(
+                    color: ColorResources.getTextColor(context)),
               ),
               SizedBox(height: 13),
               ListView.builder(
@@ -94,7 +100,8 @@ class FilterWidget extends StatelessWidget {
                       children: [
                         Text(
                           searchProvider.allSortBy[index],
-                          style: poppinsRegular.copyWith(color: ColorResources.getTextColor(context)),
+                          style: poppinsRegular.copyWith(
+                              color: ColorResources.getTextColor(context)),
                         ),
                         Container(
                           padding: EdgeInsets.all(2),
@@ -127,9 +134,10 @@ class FilterWidget extends StatelessWidget {
               Container(
                 width: MediaQuery.of(context).size.width,
                 child: CustomButton(
-                  buttonText: getTranslated('apply', context),
+                  buttonText: getTranslated('apply', context) ?? '',
                   onPressed: () {
-                    Provider.of<SearchProvider>(context, listen: false).sortSearchList();
+                    Provider.of<SearchProvider>(context, listen: false)
+                        .sortSearchList();
                     Navigator.pop(context);
                   },
                 ),

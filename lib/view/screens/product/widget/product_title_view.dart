@@ -7,7 +7,6 @@ import 'package:flutter_grocery/utill/color_resources.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../provider/auth_provider.dart';
@@ -16,25 +15,25 @@ import '../../../../provider/localization_provider.dart';
 
 class ProductTitleView extends StatelessWidget {
   final Product product;
-  final int stock;
-  final int index;
-  final bool isExistInCart;
+  final int? stock;
+  final int? index;
+  final bool? isExistInCart;
   ProductTitleView(
-      {@required this.product,
+      {required this.product,
       this.isExistInCart,
       this.index,
-      @required this.stock});
+      required this.stock});
 
   @override
   Widget build(BuildContext context) {
     bool isLogged =
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    double _startingPrice;
-    double _endingPrice;
+    double? _startingPrice;
+    double? _endingPrice;
     if (product.variations.length != 0) {
       List<double> _priceList = [];
       product.variations.forEach(
-          (variation) => _priceList.add(double.parse(variation.price)));
+          (variation) => _priceList.add(double.parse(variation.price!)));
       _priceList.sort((a, b) => a.compareTo(b));
       _startingPrice = _priceList[0];
       if (_priceList[0] < _priceList[_priceList.length - 1]) {
@@ -81,7 +80,7 @@ class ProductTitleView extends StatelessWidget {
                       color: ColorResources.getTextColor(context),
                       fontSize: Dimensions.FONT_SIZE_LARGE),
                 ),
-                product.discount > 0
+                product.discount! > 0
                     ? Text(
                         '${PriceConverter.convertPrice(context, _startingPrice)}'
                         '${_endingPrice != null ? ' - ${PriceConverter.convertPrice(context, _endingPrice)}' : ''}',
@@ -102,7 +101,7 @@ class ProductTitleView extends StatelessWidget {
                   Expanded(child: SizedBox.shrink()),
                   Row(children: [
                     QuantityButton(
-                        isExistInCart: isExistInCart,
+                        isExistInCart: isExistInCart!,
                         isIncrement: false,
                         quantity: productProvider.quantity,
                         stock: stock,
@@ -114,7 +113,7 @@ class ProductTitleView extends StatelessWidget {
                         style: poppinsSemiBold),
                     SizedBox(width: 15),
                     QuantityButton(
-                        isExistInCart: isExistInCart,
+                        isExistInCart: isExistInCart!,
                         isIncrement: true,
                         quantity: productProvider.quantity,
                         stock: stock,
@@ -132,28 +131,28 @@ class ProductTitleView extends StatelessWidget {
 
 class QuantityButton extends StatelessWidget {
   final bool isIncrement;
-  final int quantity;
+  final int? quantity;
   final bool isCartWidget;
-  final int stock;
-  final int id;
+  final int? stock;
+  final int? id;
   final bool isLogged;
   final index;
   final bool isExistInCart;
   QuantityButton(
-      {@required this.isExistInCart,
-      @required this.index,
-      @required this.id,
-      @required this.isIncrement,
-      @required this.quantity,
-      @required this.stock,
+      {required this.isExistInCart,
+      required this.index,
+      required this.id,
+      required this.isIncrement,
+      required this.quantity,
+      required this.stock,
       this.isCartWidget = false,
-      @required this.isLogged});
+      required this.isLogged});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (!isIncrement && quantity > 1) {
+        if (!isIncrement && quantity! > 1) {
           if (isExistInCart) {
             Provider.of<CartProvider>(context, listen: false)
                 .setQuantity(false, index, context);
@@ -186,7 +185,7 @@ class QuantityButton extends StatelessWidget {
             }
           }
         } else if (isIncrement) {
-          if (quantity < stock) {
+          if (quantity! < stock!) {
             if (isExistInCart) {
               Provider.of<CartProvider>(context, listen: false)
                   .setQuantity(true, index, context);
@@ -234,7 +233,7 @@ class QuantityButton extends StatelessWidget {
           isIncrement ? Icons.add : Icons.remove,
           color: isIncrement
               ? Theme.of(context).primaryColor
-              : quantity > 1
+              : quantity! > 1
                   ? Theme.of(context).primaryColor
                   : Theme.of(context).primaryColor,
           size: isCartWidget ? 26 : 20,

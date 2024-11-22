@@ -8,10 +8,10 @@ import 'package:flutter_grocery/view/base/custom_button.dart';
 import 'package:provider/provider.dart';
 
 class ChangeMethodDialog extends StatelessWidget {
-  final String orderID;
+  final String? orderID;
   final Function callback;
   final bool fromOrder;
-  ChangeMethodDialog({@required this.orderID, @required this.callback, @required this.fromOrder});
+  ChangeMethodDialog({required this.orderID, required this.callback, required this.fromOrder});
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +38,7 @@ class ChangeMethodDialog extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       style: TextButton.styleFrom(
-                        primary: Theme.of(context).primaryColor,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10), side: BorderSide(width: 2, color: Theme.of(context).primaryColor)),
+                        foregroundColor: Theme.of(context).primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10), side: BorderSide(width: 2, color: Theme.of(context).primaryColor)),
                         minimumSize: Size(1, 50),
                       ),
                       child: Text(getTranslated('no', context)),

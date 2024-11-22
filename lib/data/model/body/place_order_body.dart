@@ -1,34 +1,34 @@
 class PlaceOrderBody {
   List<Cart> _cart;
-  double _couponDiscountAmount;
-  String _couponDiscountTitle;
-  double _orderAmount;
-  String _orderType;
-  int _branchId;
-  int _deliveryAddressId;
-  int _timeSlotId;
-  String _deliveryDate;
-  String _paymentMethod;
-  String _orderNote;
-  String _couponCode;
-  double _distance;
-  double _balance;
+  double? _couponDiscountAmount;
+  String? _couponDiscountTitle;
+  double? _orderAmount;
+  String? _orderType;
+  int? _branchId;
+  int? _deliveryAddressId;
+  int? _timeSlotId;
+  String? _deliveryDate;
+  String? _paymentMethod;
+  String? _orderNote;
+  String? _couponCode;
+  double? _distance;
+  double? _balance;
 
   PlaceOrderBody({
     List<Cart> cart,
-    double couponDiscountAmount,
-    String couponDiscountTitle,
-    double orderAmount,
-    String orderType,
-    int branchId,
-    int deliveryAddressId,
-    int timeSlotId,
-    String deliveryDate,
-    String paymentMethod,
-    String orderNote,
-    String couponCode,
-    double distance,
-    double balance,
+    double? couponDiscountAmount,
+    String? couponDiscountTitle,
+    double? orderAmount,
+    String? orderType,
+    int? branchId,
+    int? deliveryAddressId,
+    int? timeSlotId,
+    String? deliveryDate,
+    String? paymentMethod,
+    String? orderNote,
+    String? couponCode,
+    double? distance,
+    double? balance,
   }) {
     this._cart = cart;
     this._couponDiscountAmount = couponDiscountAmount;
@@ -48,33 +48,33 @@ class PlaceOrderBody {
 
   List<Cart> get cart => _cart;
 
-  double get couponDiscountAmount => _couponDiscountAmount;
+  double? get couponDiscountAmount => _couponDiscountAmount;
 
-  String get couponDiscountTitle => _couponDiscountTitle;
+  String? get couponDiscountTitle => _couponDiscountTitle;
 
-  double get orderAmount => _orderAmount;
+  double? get orderAmount => _orderAmount;
 
-  String get orderType => _orderType;
+  String? get orderType => _orderType;
 
-  int get branchId => _branchId;
+  int? get branchId => _branchId;
 
-  int get deliveryAddressId => _deliveryAddressId;
+  int? get deliveryAddressId => _deliveryAddressId;
 
-  int get timeSlotId => _timeSlotId;
+  int? get timeSlotId => _timeSlotId;
 
-  String get deliveryDate => _deliveryDate;
+  String? get deliveryDate => _deliveryDate;
 
-  String get paymentMethod => _paymentMethod;
+  String? get paymentMethod => _paymentMethod;
 
-  String get orderNote => _orderNote;
+  String? get orderNote => _orderNote;
 
-  String get couponCode => _couponCode;
+  String? get couponCode => _couponCode;
 
-  double get distance => _distance;
+  double? get distance => _distance;
 
-  double get balance => _balance;
+  double? get balance => _balance;
 
-  PlaceOrderBody.fromJson(Map<String, dynamic> json) {
+  PlaceOrderBody.fromJson(Map<String?, dynamic> json) {
     if (json['cart'] != null) {
       _cart = [];
       json['cart'].forEach((v) {
@@ -96,12 +96,10 @@ class PlaceOrderBody {
     _balance = json['balance'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this._cart != null) {
-      data['cart'] = this._cart.map((v) => v.toJson()).toList();
-    }
-    data['coupon_discount_amount'] = this._couponDiscountAmount;
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
+    data['cart'] = this._cart.map((v) => v.toJson()).toList();
+      data['coupon_discount_amount'] = this._couponDiscountAmount;
     data['coupon_discount_title'] = this._couponDiscountTitle;
     data['order_amount'] = this._orderAmount;
     data['order_type'] = this._orderType;
@@ -119,22 +117,22 @@ class PlaceOrderBody {
 }
 
 class Cart {
-  int _productId;
-  double _price;
-  String _variant;
+  int? _productId;
+  double? _price;
+  String? _variant;
   List<Variation> _variation;
-  double _discountAmount;
-  int _quantity;
-  double _taxAmount;
+  double? _discountAmount;
+  int? _quantity;
+  double? _taxAmount;
 
   Cart(
-      {int productId,
-      double price,
-      String variant,
+      {int? productId,
+      double? price,
+      String? variant,
       List<Variation> variation,
-      double discountAmount,
-      int quantity,
-      double taxAmount}) {
+      double? discountAmount,
+      int? quantity,
+      double? taxAmount}) {
     this._productId = productId;
     this._price = price;
     this._variant = variant;
@@ -144,21 +142,21 @@ class Cart {
     this._taxAmount = taxAmount;
   }
 
-  int get productId => _productId;
+  int? get productId => _productId;
 
-  double get price => _price;
+  double? get price => _price;
 
-  String get variant => _variant;
+  String? get variant => _variant;
 
   List<Variation> get variation => _variation;
 
-  double get discountAmount => _discountAmount;
+  double? get discountAmount => _discountAmount;
 
-  int get quantity => _quantity;
+  int? get quantity => _quantity;
 
-  double get taxAmount => _taxAmount;
+  double? get taxAmount => _taxAmount;
 
-  Cart.fromJson(Map<String, dynamic> json) {
+  Cart.fromJson(Map<String?, dynamic> json) {
     _productId = json['product_id'];
     _price = json['price'].toDouble();
     _variant = json['variant'];
@@ -173,15 +171,13 @@ class Cart {
     _taxAmount = json['tax_amount'].toDouble();
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['product_id'] = this._productId;
     data['price'] = this._price;
     data['variant'] = this._variant;
-    if (this._variation != null) {
-      data['variation'] = this._variation.map((v) => v.toJson()).toList();
-    }
-    data['discount_amount'] = this._discountAmount;
+    data['variation'] = this._variation.map((v) => v.toJson()).toList();
+      data['discount_amount'] = this._discountAmount;
     data['quantity'] = this._quantity;
     data['tax_amount'] = this._taxAmount;
     return data;
@@ -189,20 +185,20 @@ class Cart {
 }
 
 class Variation {
-  String _type;
+  String? _type;
 
-  Variation({String type}) {
+  Variation({String? type}) {
     this._type = type;
   }
 
-  String get type => _type;
+  String? get type => _type;
 
-  Variation.fromJson(Map<String, dynamic> json) {
+  Variation.fromJson(Map<String?, dynamic> json) {
     _type = json['type'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['type'] = this._type;
     return data;
   }

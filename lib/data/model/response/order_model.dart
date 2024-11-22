@@ -2,60 +2,60 @@ import 'package:flutter_grocery/data/model/response/product_model.dart';
 import 'package:flutter_grocery/data/model/response/userinfo_model.dart';
 
 class OrderModel {
-  int _id;
-  int _userId;
-  double _orderAmount;
-  double _couponDiscountAmount;
-  String _couponDiscountTitle;
-  String _paymentStatus;
-  String _orderStatus;
-  double _totalTaxAmount;
-  String _paymentMethod;
-  String _transactionReference;
-  int _deliveryAddressId;
-  String _createdAt;
-  String _updatedAt;
-  int _checked;
-  int _deliveryManId;
-  double _deliveryCharge;
-  String _orderNote;
-  String _couponCode;
-  String _orderType;
-  int _branchId;
-  int _timeSlotId;
-  String _date;
-  String _deliveryDate;
-  int _detailsCount;
-  UserInfoModel _customer;
-  DeliveryMan _deliveryMan;
+  int? _id;
+  int? _userId;
+  double? _orderAmount;
+  double? _couponDiscountAmount;
+  String? _couponDiscountTitle;
+  String? _paymentStatus;
+  String? _orderStatus;
+  double? _totalTaxAmount;
+  String? _paymentMethod;
+  String? _transactionReference;
+  int? _deliveryAddressId;
+  String? _createdAt;
+  String? _updatedAt;
+  int? _checked;
+  int? _deliveryManId;
+  double? _deliveryCharge;
+  String? _orderNote;
+  String? _couponCode;
+  String? _orderType;
+  int? _branchId;
+  int? _timeSlotId;
+  String? _date;
+  String? _deliveryDate;
+  int? _detailsCount;
+  late UserInfoModel _customer;
+  late DeliveryMan _deliveryMan;
 
   OrderModel(
-      {int id,
-        int userId,
-        double orderAmount,
-        double couponDiscountAmount,
-        String couponDiscountTitle,
-        String paymentStatus,
-        String orderStatus,
-        double totalTaxAmount,
-        String paymentMethod,
-        String transactionReference,
-        int deliveryAddressId,
-        String createdAt,
-        String updatedAt,
-        int checked,
-        int deliveryManId,
-        double deliveryCharge,
-        String orderNote,
-        String couponCode,
-        String orderType,
-        int branchId,
-        int timeSlotId,
-        String date,
-        String deliveryDate,
-        int detailsCount,
-        UserInfoModel customer,
-        DeliveryMan deliveryMan}) {
+      {int? id,
+        int? userId,
+        double? orderAmount,
+        double? couponDiscountAmount,
+        String? couponDiscountTitle,
+        String? paymentStatus,
+        String? orderStatus,
+        double? totalTaxAmount,
+        String? paymentMethod,
+        String? transactionReference,
+        int? deliveryAddressId,
+        String? createdAt,
+        String? updatedAt,
+        int? checked,
+        int? deliveryManId,
+        double? deliveryCharge,
+        String? orderNote,
+        String? couponCode,
+        String? orderType,
+        int? branchId,
+        int? timeSlotId,
+        String? date,
+        String? deliveryDate,
+        int? detailsCount,
+        UserInfoModel? customer,
+        DeliveryMan? deliveryMan}) {
     this._id = id;
     this._userId = userId;
     this._orderAmount = orderAmount;
@@ -80,43 +80,43 @@ class OrderModel {
     this._date = date;
     this._deliveryDate = deliveryDate;
     this._detailsCount = detailsCount;
-    this._customer = customer;
-    this._deliveryMan = deliveryMan;
+    this._customer = customer!;
+    this._deliveryMan = deliveryMan!;
   }
 
-  int get id => _id;
-  int get userId => _userId;
-  double get orderAmount => _orderAmount;
-  double get couponDiscountAmount => _couponDiscountAmount;
-  String get couponDiscountTitle => _couponDiscountTitle;
-  String get paymentStatus => _paymentStatus;
-  String get orderStatus => _orderStatus;
-  double get totalTaxAmount => _totalTaxAmount;
+  int? get id => _id;
+  int? get userId => _userId;
+  double? get orderAmount => _orderAmount;
+  double? get couponDiscountAmount => _couponDiscountAmount;
+  String? get couponDiscountTitle => _couponDiscountTitle;
+  String? get paymentStatus => _paymentStatus;
+  String? get orderStatus => _orderStatus;
+  double? get totalTaxAmount => _totalTaxAmount;
   // ignore: unnecessary_getters_setters
-  String get paymentMethod => _paymentMethod;
+  String? get paymentMethod => _paymentMethod;
   // ignore: unnecessary_getters_setters
-  set paymentMethod(String value) {
+  set paymentMethod(String? value) {
     _paymentMethod = value;
   }
-  String get transactionReference => _transactionReference;
-  int get deliveryAddressId => _deliveryAddressId;
-  String get createdAt => _createdAt;
-  String get updatedAt => _updatedAt;
-  int get checked => _checked;
-  int get deliveryManId => _deliveryManId;
-  double get deliveryCharge => _deliveryCharge;
-  String get orderNote => _orderNote;
-  String get couponCode => _couponCode;
-  String get orderType => _orderType;
-  int get branchId => _branchId;
-  int get timeSlotId => _timeSlotId;
-  String get date => _date;
-  String get deliveryDate => _deliveryDate;
-  int get detailsCount => _detailsCount;
+  String? get transactionReference => _transactionReference;
+  int? get deliveryAddressId => _deliveryAddressId;
+  String? get createdAt => _createdAt;
+  String? get updatedAt => _updatedAt;
+  int? get checked => _checked;
+  int? get deliveryManId => _deliveryManId;
+  double? get deliveryCharge => _deliveryCharge;
+  String? get orderNote => _orderNote;
+  String? get couponCode => _couponCode;
+  String? get orderType => _orderType;
+  int? get branchId => _branchId;
+  int? get timeSlotId => _timeSlotId;
+  String? get date => _date;
+  String? get deliveryDate => _deliveryDate;
+  int? get detailsCount => _detailsCount;
   UserInfoModel get customer => _customer;
   DeliveryMan get deliveryMan => _deliveryMan;
 
-  OrderModel.fromJson(Map<String, dynamic> json) {
+  OrderModel.fromJson(Map<String?, dynamic> json) {
     _id = json['id'];
     _userId = json['user_id'];
     _orderAmount = json['order_amount'].toDouble();
@@ -141,16 +141,16 @@ class OrderModel {
     _date = json['date'];
     _deliveryDate = json['delivery_date'];
     _detailsCount = json['details_count'];
-    _customer = json['customer'] != null
+    _customer = (json['customer'] != null
         ? new UserInfoModel.fromJson(json['customer'])
-        : null;
-    _deliveryMan = json['delivery_man'] != null
+        : null)!;
+    _deliveryMan = (json['delivery_man'] != null
         ? new DeliveryMan.fromJson(json['delivery_man'])
-        : null;
+        : null)!;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this._id;
     data['user_id'] = this._userId;
     data['order_amount'] = this._orderAmount;
@@ -175,49 +175,45 @@ class OrderModel {
     data['date'] = this._date;
     data['delivery_date'] = this._deliveryDate;
     data['details_count'] = this._detailsCount;
-    if (this._customer != null) {
-      data['customer'] = this._customer.toJson();
-    }
-    if (this._deliveryMan != null) {
+    data['customer'] = this._customer.toJson();
       data['delivery_man'] = this._deliveryMan.toJson();
-    }
-    return data;
+      return data;
   }
 }
 
 class DeliveryMan {
-  int _id;
-  String _fName;
-  String _lName;
-  String _phone;
-  String _email;
-  String _identityNumber;
-  String _identityType;
-  String _identityImage;
-  String _image;
-  String _password;
-  String _createdAt;
-  String _updatedAt;
-  String _authToken;
-  String _fcmToken;
-  List<Rating> _rating;
+  int? _id;
+  String? _fName;
+  String? _lName;
+  String? _phone;
+  String? _email;
+  String? _identityNumber;
+  String? _identityType;
+  String? _identityImage;
+  String? _image;
+  String? _password;
+  String? _createdAt;
+  String? _updatedAt;
+  String? _authToken;
+  String? _fcmToken;
+  late List<Rating> _rating;
 
   DeliveryMan(
-      {int id,
-        String fName,
-        String lName,
-        String phone,
-        String email,
-        String identityNumber,
-        String identityType,
-        String identityImage,
-        String image,
-        String password,
-        String createdAt,
-        String updatedAt,
-        String authToken,
-        String fcmToken,
-        List<Rating> rating}) {
+      {int? id,
+        String? fName,
+        String? lName,
+        String? phone,
+        String? email,
+        String? identityNumber,
+        String? identityType,
+        String? identityImage,
+        String? image,
+        String? password,
+        String? createdAt,
+        String? updatedAt,
+        String? authToken,
+        String? fcmToken,
+        List<Rating>? rating}) {
     this._id = id;
     this._fName = fName;
     this._lName = lName;
@@ -232,26 +228,26 @@ class DeliveryMan {
     this._updatedAt = updatedAt;
     this._authToken = authToken;
     this._fcmToken = fcmToken;
-    this._rating = rating;
+    this._rating = rating!;
   }
 
-  int get id => _id;
-  String get fName => _fName;
-  String get lName => _lName;
-  String get phone => _phone;
-  String get email => _email;
-  String get identityNumber => _identityNumber;
-  String get identityType => _identityType;
-  String get identityImage => _identityImage;
-  String get image => _image;
-  String get password => _password;
-  String get createdAt => _createdAt;
-  String get updatedAt => _updatedAt;
-  String get authToken => _authToken;
-  String get fcmToken => _fcmToken;
+  int? get id => _id;
+  String? get fName => _fName;
+  String? get lName => _lName;
+  String? get phone => _phone;
+  String? get email => _email;
+  String? get identityNumber => _identityNumber;
+  String? get identityType => _identityType;
+  String? get identityImage => _identityImage;
+  String? get image => _image;
+  String? get password => _password;
+  String? get createdAt => _createdAt;
+  String? get updatedAt => _updatedAt;
+  String? get authToken => _authToken;
+  String? get fcmToken => _fcmToken;
   List<Rating> get rating => _rating;
 
-  DeliveryMan.fromJson(Map<String, dynamic> json) {
+  DeliveryMan.fromJson(Map<String?, dynamic> json) {
     _id = json['id'];
     _fName = json['f_name'];
     _lName = json['l_name'];
@@ -274,8 +270,8 @@ class DeliveryMan {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this._id;
     data['f_name'] = this._fName;
     data['l_name'] = this._lName;
@@ -290,9 +286,7 @@ class DeliveryMan {
     data['updated_at'] = this._updatedAt;
     data['auth_token'] = this._authToken;
     data['fcm_token'] = this._fcmToken;
-    if (this._rating != null) {
-      data['rating'] = this._rating.map((v) => v.toJson()).toList();
-    }
-    return data;
+    data['rating'] = this._rating.map((v) => v.toJson()).toList();
+      return data;
   }
 }

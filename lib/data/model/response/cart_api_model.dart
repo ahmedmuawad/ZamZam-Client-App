@@ -1,5 +1,3 @@
-import 'package:flutter_grocery/data/model/response/product_model.dart';
-
 class CartApiModel {
   /* "id": 1,
         "user_id": 10,
@@ -9,32 +7,32 @@ class CartApiModel {
         "updated_at": "2022-08-25T11:40:42.000000Z",
         "product" */
 
-  int _id;
-  int _user_id;
-  int _product_id;
-  int _quantity;
-  CartProduct _cartProduct;
+  int? _id;
+  int? _user_id;
+  int? _product_id;
+  int? _quantity;
+  CartProduct? _cartProduct;
 
   CartApiModel(
-      {int id,
-      int userId,
-      int productId,
-      int quantity,
-      CartProduct cartProduct}) {
-    this._cartProduct = cartProduct;
+      {int? id,
+      int? userId,
+      int? productId,
+      int? quantity,
+      CartProduct? cartProduct}) {
+    this._cartProduct = cartProduct!;
     this._id = id;
     this._product_id = productId;
     this._quantity = quantity;
     this._user_id = userId;
   }
 
-  int get id => _id;
-  int get userId => _user_id;
-  int get quantity => _quantity;
-  int get productId => _product_id;
-  CartProduct get cartProduct => _cartProduct;
+  int? get id => _id;
+  int? get userId => _user_id;
+  int? get quantity => _quantity;
+  int? get productId => _product_id;
+  CartProduct? get cartProduct => _cartProduct;
 
-  CartApiModel.fromJson(Map<String, dynamic> json) {
+  CartApiModel.fromJson(Map<String?, dynamic> json) {
     _id = json['id'];
     _user_id = json['user_id'];
     _product_id = json['product_id'];
@@ -43,63 +41,61 @@ class CartApiModel {
         json['product'] != null ? CartProduct.fromJson(json['product']) : null;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this._id;
     data['user_id'] = this._user_id;
     data['product_id'] = this._product_id;
     data['quantity'] = this._quantity;
-    if (this._cartProduct != null) {
-      data['product'] = this._cartProduct.toJson();
-    }
+    data['product'] = this._cartProduct!.toJson();
 
     return data;
   }
 }
 
 class CartProduct {
-  int _id;
-  String _name;
-  String _description;
-  /* List<String> _image; */
-  String _image;
-  double _price;
+  int? _id;
+  String? _name;
+  String? _description;
+  /* List<String?> _image; */
+  String? _image;
+  double? _price;
   /* List<Variations> _variations; */
-  double _tax;
-  int _status;
-  String _createdAt;
-  String _updatedAt;
-  /* List<String> _attributes;
+  double? _tax;
+  int? _status;
+  String? _createdAt;
+  String? _updatedAt;
+  /* List<String?> _attributes;
   List<CategoryIds> _categoryIds;
   List<ChoiceOptions> _choiceOptions; */
-  double _discount;
-  String _discountType;
-  String _taxType;
-  String _unit;
-  double _capacity;
-  int _totalStock;
+  double? _discount;
+  String? _discountType;
+  String? _taxType;
+  String? _unit;
+  double? _capacity;
+  int? _totalStock;
   /* List<Rating> _rating; */
 
   CartProduct({
-    int id,
-    String name,
-    String description,
-    String image,
-    double price,
+    int? id,
+    String? name,
+    String? description,
+    String? image,
+    double? price,
     /* List<Variations> variations, */
-    double tax,
-    int status,
-    String createdAt,
-    String updatedAt,
-    /* List<String> attributes,
+    double? tax,
+    int? status,
+    String? createdAt,
+    String? updatedAt,
+    /* List<String?> attributes,
       List<CategoryIds> categoryIds,
       List<ChoiceOptions> choiceOptions, */
-    double discount,
-    String discountType,
-    String taxType,
-    String unit,
-    double capacity,
-    int totalStock,
+    double? discount,
+    String? discountType,
+    String? taxType,
+    String? unit,
+    double? capacity,
+    int? totalStock,
     /* List<Null> rating */
   }) {
     this._id = id;
@@ -124,28 +120,28 @@ class CartProduct {
     /* this._rating = rating; */
   }
 
-  int get id => _id;
-  String get name => _name;
-  String get description => _description;
-  String get image => _image;
-  double get price => _price;
+  int? get id => _id;
+  String? get name => _name;
+  String? get description => _description;
+  String? get image => _image;
+  double? get price => _price;
   /* List<Variations> get variations => _variations; */
-  double get tax => _tax;
-  int get status => _status;
-  String get createdAt => _createdAt;
-  String get updatedAt => _updatedAt;
-  /* List<String> get attributes => _attributes;
+  double? get tax => _tax;
+  int? get status => _status;
+  String? get createdAt => _createdAt;
+  String? get updatedAt => _updatedAt;
+  /* List<String?> get attributes => _attributes;
   List<CategoryIds> get categoryIds => _categoryIds;
   List<ChoiceOptions> get choiceOptions => _choiceOptions; */
-  double get discount => _discount;
-  String get discountType => _discountType;
-  String get taxType => _taxType;
-  String get unit => _unit;
-  double get capacity => _capacity;
-  int get totalStock => _totalStock;
+  double? get discount => _discount;
+  String? get discountType => _discountType;
+  String? get taxType => _taxType;
+  String? get unit => _unit;
+  double? get capacity => _capacity;
+  int? get totalStock => _totalStock;
   /* List<Rating> get rating => _rating; */
 
-  CartProduct.fromJson(Map<String, dynamic> json) {
+  CartProduct.fromJson(Map<String?, dynamic> json) {
     _id = json['id'];
     _name = json['name'];
     _description = json['description'];
@@ -161,7 +157,7 @@ class CartProduct {
     _status = json['status'];
     _createdAt = json['created_at'];
     _updatedAt = json['updated_at'];
-    /* _attributes = json['attributes'].cast<String>();
+    /* _attributes = json['attributes'].cast<String?>();
     if (json['category_ids'] != null) {
       _categoryIds = [];
       json['category_ids'].forEach((v) {
@@ -190,8 +186,8 @@ class CartProduct {
     } */
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this._id;
     data['name'] = this._name;
     data['description'] = this._description;

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/address_model.dart';
 import 'package:flutter_grocery/data/model/response/order_details_model.dart';
@@ -34,9 +36,9 @@ import '../../../provider/auth_provider.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   final OrderModel orderModel;
-  final int orderId;
+  final int? orderId;
 
-  OrderDetailsScreen({@required this.orderModel, @required this.orderId});
+  OrderDetailsScreen({required this.orderModel, required this.orderId});
 
   @override
   _OrderDetailsScreenState createState() => _OrderDetailsScreenState();
@@ -44,15 +46,11 @@ class OrderDetailsScreen extends StatefulWidget {
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   final GlobalKey<ScaffoldMessengerState> _scaffold = GlobalKey();
-  bool _isLogged;
+  bool? _isLogged;
 
   void _loadData(BuildContext context) async {
     await Provider.of<OrderProvider>(context, listen: false).trackOrder(
         widget.orderId.toString(), widget.orderModel, context, false);
-    if (widget.orderModel == null) {
-      await Provider.of<SplashProvider>(context, listen: false)
-          .initConfig(context);
-    }
     await Provider.of<LocationProvider>(context, listen: false)
         .initAddressList(context);
     await Provider.of<OrderProvider>(context, listen: false)
@@ -76,54 +74,48 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     _isLogged = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    if (_isLogged) {
+    if (_isLogged!) {
       Provider.of<ProfileProvider>(context, listen: false).getUserInfo(context);
     }
     return Scaffold(
       key: _scaffold,
       appBar: ResponsiveHelper.isDesktop(context)
           ? MainAppBar()
-          : CustomAppBar(title: getTranslated('order_details', context)),
-      body: _isLogged
+          : CustomAppBar(title: getTranslated('order_details', context), onBackPressed: (){},),
+      body: _isLogged!
           ? Consumer<ProfileProvider>(
               builder: (context, profileProvider, child) {
               return Consumer<OrderProvider>(
                 builder: (context, order, child) {
-                  double _deliveryCharge = 0;
-                  double _itemsPrice = 0;
-                  double _discount = 0;
-                  double _tax = 0;
+                  double? _deliveryCharge = 0;
+                  double? _itemsPrice = 0;
+                  double? _discount = 0;
+                  double? _tax = 0;
                   TimeSlotModel _timeSlot;
-                  String balance = order.balance;
-                  double _balance;
-                  if (balance != null) {
-                    _balance = double.parse(balance);
-                  } else {
-                    _balance = 0.00;
+                  String? balance = order.balance;
+                  double? _balance;
+                  _balance = double.parse(balance!);
+
+                  _deliveryCharge = order.trackModel.deliveryCharge;
+                  for (OrderDetailsModel orderDetails in order.orderDetails) {
+                    _itemsPrice = _itemsPrice! +
+                        (orderDetails.price! * orderDetails.quantity!);
+                    _discount = _discount! +
+                        (orderDetails.discountOnProduct! *
+                            orderDetails.quantity!);
+                    _tax = _tax! +
+                        (orderDetails.taxAmount! * orderDetails.quantity!);
                   }
 
-                  if (order.orderDetails != null) {
-                    _deliveryCharge = order.trackModel.deliveryCharge;
-                    for (OrderDetailsModel orderDetails in order.orderDetails) {
-                      _itemsPrice = _itemsPrice +
-                          (orderDetails.price * orderDetails.quantity);
-                      _discount = _discount +
-                          (orderDetails.discountOnProduct *
-                              orderDetails.quantity);
-                      _tax = _tax +
-                          (orderDetails.taxAmount * orderDetails.quantity);
-                    }
-
-                    _timeSlot = order.allTimeSlots.firstWhere((timeSlot) =>
-                        timeSlot.id == order.trackModel.timeSlotId);
-                  }
-                  double _subTotal = _itemsPrice + _tax;
-                  double _total = _subTotal -
-                      _discount +
-                      _deliveryCharge -
+                  _timeSlot = order.allTimeSlots.firstWhere(
+                      (timeSlot) => timeSlot.id == order.trackModel.timeSlotId);
+                  double? _subTotal = _itemsPrice! + _tax!;
+                  double? _total = _subTotal -
+                      _discount! +
+                      _deliveryCharge! -
                       (order.trackModel != null
                           ? order.trackModel.couponDiscountAmount
-                          : 0);
+                          : 0)!;
                   if (_balance > _total) {
                     _total = 0.00;
                   } else {
@@ -166,7 +158,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 DateConverter
                                                     .isoStringToLocalDateOnly(
                                                         order.trackModel
-                                                            .createdAt),
+                                                            .createdAt)!,
                                                 style: poppinsMedium),
                                           ]),
                                           SizedBox(
@@ -183,7 +175,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                             Text(
                                                 DateConverter.convertTimeRange(
                                                     _timeSlot.startTime,
-                                                    _timeSlot.endTime),
+                                                    _timeSlot.endTime)!,
                                                 style: poppinsMedium),
                                           ]),
                                           SizedBox(
@@ -208,7 +200,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                     'delivery'
                                                 ? TextButton.icon(
                                                     onPressed: () {
-                                                      AddressModel _address;
+                                                      AddressModel? _address;
                                                       for (AddressModel address
                                                           in Provider.of<
                                                                       LocationProvider>(
@@ -222,15 +214,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                           break;
                                                         }
                                                       }
-                                                      if (_address != null) {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (_) =>
-                                                                    MapWidget(
-                                                                        address:
-                                                                            _address)));
-                                                      }
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  MapWidget(
+                                                                      address:
+                                                                          _address!)));
                                                     },
                                                     icon: Icon(
                                                       Icons.map,
@@ -294,7 +284,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 child: Text(
                                                   getTranslated(
                                                       order.trackModel
-                                                          .paymentStatus,
+                                                          .paymentStatus!,
                                                       context),
                                                   style:
                                                       poppinsRegular.copyWith(
@@ -316,15 +306,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                   flex: 8,
                                                   child: Row(children: [
                                                     Text(
-                                                      (order.trackModel
-                                                                      .paymentMethod !=
-                                                                  null &&
-                                                              order
-                                                                      .trackModel
-                                                                      .paymentMethod
-                                                                      .length >
-                                                                  0)
-                                                          ? '${order.trackModel.paymentMethod[0].toUpperCase()}${order.trackModel.paymentMethod.substring(1).replaceAll('_', ' ')}'
+                                                      (order
+                                                                  .trackModel
+                                                                  .paymentMethod!
+                                                                  .length >
+                                                              0)
+                                                          ? '${order.trackModel.paymentMethod![0].toUpperCase()}${order.trackModel.paymentMethod!.substring(1).replaceAll('_', ' ')}'
                                                           : 'Digital Payment',
                                                       style: poppinsRegular
                                                           .copyWith(
@@ -357,12 +344,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                         fromOrder:
                                                                             widget.orderModel !=
                                                                                 null,
-                                                                        callback: (String
+                                                                        callback: (String?
                                                                                 message,
                                                                             bool
                                                                                 isSuccess) {
                                                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                              content: Text(message),
+                                                                              content: Text(message!),
                                                                               duration: Duration(milliseconds: 600),
                                                                               backgroundColor: isSuccess ? Colors.green : Colors.red));
                                                                         }),
@@ -407,7 +394,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                     color: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .bodyText1
+                                                                        .bodyLarge!
                                                                         .color,
                                                                   )),
                                                             ),
@@ -439,7 +426,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                               .placeholder,
                                                           image:
                                                               '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/'
-                                                              '${order.orderDetails[index].productDetails.image[0]}',
+                                                              '${order.orderDetails[index].productDetails.image![0]}',
                                                           height: 70,
                                                           width: 80,
                                                           fit: BoxFit.cover,
@@ -471,7 +458,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                           .orderDetails[
                                                                               index]
                                                                           .productDetails
-                                                                          .name,
+                                                                          .name!,
                                                                       style: poppinsRegular.copyWith(
                                                                           fontSize:
                                                                               Dimensions.FONT_SIZE_SMALL),
@@ -507,24 +494,24 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                 Text(
                                                                   PriceConverter.convertPrice(
                                                                       context,
-                                                                      order.orderDetails[index].price -
+                                                                      order.orderDetails[index].price! -
                                                                           order
                                                                               .orderDetails[index]
-                                                                              .discountOnProduct
-                                                                              .toDouble()),
+                                                                              .discountOnProduct!
+                                                                              .toDouble())!,
                                                                   style:
                                                                       poppinsRegular,
                                                                 ),
                                                                 SizedBox(
                                                                     width: 5),
                                                                 order.orderDetails[index]
-                                                                            .discountOnProduct >
+                                                                            .discountOnProduct! >
                                                                         0
                                                                     ? Expanded(
                                                                         child: Text(
                                                                         PriceConverter.convertPrice(
                                                                             context,
-                                                                            order.orderDetails[index].price),
+                                                                            order.orderDetails[index].price)!,
                                                                         style: poppinsRegular
                                                                             .copyWith(
                                                                           decoration:
@@ -551,7 +538,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                       color: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText1
+                                                                          .bodyLarge!
                                                                           .color,
                                                                     )),
                                                                 SizedBox(
@@ -574,9 +561,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                             },
                                           ),
 
-                                          (order.trackModel.orderNote != null &&
-                                                  order.trackModel.orderNote
-                                                      .isNotEmpty)
+                                          (order.trackModel.orderNote!
+                                                  .isNotEmpty)
                                               ? Container(
                                                   padding: EdgeInsets.all(
                                                       Dimensions
@@ -596,8 +582,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                 context)),
                                                   ),
                                                   child: Text(
-                                                      order
-                                                          .trackModel.orderNote,
+                                                      order.trackModel
+                                                          .orderNote!,
                                                       style: poppinsRegular
                                                           .copyWith(
                                                               color: ColorResources
@@ -620,7 +606,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                             .FONT_SIZE_LARGE)),
                                                 Text(
                                                     PriceConverter.convertPrice(
-                                                        context, _itemsPrice),
+                                                        context, _itemsPrice)!,
                                                     style: poppinsRegular.copyWith(
                                                         fontSize: Dimensions
                                                             .FONT_SIZE_LARGE)),
@@ -653,8 +639,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                             child: CustomDivider(
                                                 color: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
-                                                    .color),
+                                                    .bodyLarge!
+                                                    .color!),
                                           ),
 
                                           Row(
@@ -670,7 +656,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                             .FONT_SIZE_LARGE)),
                                                 Text(
                                                     PriceConverter.convertPrice(
-                                                        context, _subTotal),
+                                                        context, _subTotal)!,
                                                     style: poppinsRegular.copyWith(
                                                         fontSize: Dimensions
                                                             .FONT_SIZE_LARGE)),
@@ -779,7 +765,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                     )),
                                                 Text(
                                                   PriceConverter.convertPrice(
-                                                      context, _total),
+                                                      context, _total)!,
                                                   style: poppinsRegular.copyWith(
                                                       fontSize: Dimensions
                                                           .FONT_SIZE_EXTRA_LARGE,
@@ -832,11 +818,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                               fromOrder: widget
                                                                       .orderModel !=
                                                                   null,
-                                                              callback: (String
+                                                              callback: (String?
                                                                       message,
                                                                   bool
                                                                       isSuccess,
-                                                                  String
+                                                                  String?
                                                                       orderID) {
                                                                 if (isSuccess) {
                                                                   Provider.of<ProductProvider>(
@@ -867,7 +853,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                 } else {
                                                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                       content: Text(
-                                                                          message),
+                                                                          message!),
                                                                       backgroundColor:
                                                                           Colors
                                                                               .red));
@@ -881,7 +867,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                           context),
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .headline3
+                                                          .displaySmall!
                                                           .copyWith(
                                                             color: ColorResources
                                                                 .getTextColor(
@@ -911,11 +897,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                   onPressed: () async {
                                                     if (ResponsiveHelper
                                                         .isWeb()) {
-                                                      String hostname = html
+                                                      String? hostname = html
                                                           .window
                                                           .location
                                                           .hostname;
-                                                      String selectedUrl =
+                                                      String? selectedUrl =
                                                           '${AppConstants.BASE_URL}/payment-mobile?order_id=${order.trackModel.id}&&customer_id=${Provider.of<ProfileProvider>(context, listen: false).userInfoModel.id}'
                                                           '&&callback=http://$hostname${RouteHelper.orderSuccessful}${order.trackModel.id}';
                                                       html.window.open(
@@ -932,7 +918,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                       .toString(),
                                                                   order
                                                                       .trackModel
-                                                                      .userId));
+                                                                      .userId!));
                                                     }
                                                   },
                                                 ),
@@ -976,7 +962,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                         Navigator.pushNamed(
                                             context,
                                             RouteHelper.getOrderTrackingRoute(
-                                                order.trackModel.id));
+                                                order.trackModel.id!));
                                       },
                                     ),
                                   )
@@ -991,7 +977,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                       onPressed: () {
                                         List<OrderDetailsModel>
                                             _orderDetailsList = [];
-                                        List<int> _orderIdList = [];
+                                        List<int?> _orderIdList = [];
                                         order.orderDetails
                                             .forEach((orderDetails) {
                                           if (!_orderIdList.contains(
@@ -1031,28 +1017,26 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 double _discount = 0;
                 double _tax = 0;
                 TimeSlotModel _timeSlot;
-                if (order.orderDetails != null) {
-                  _deliveryCharge = order.trackModel.deliveryCharge;
-                  for (OrderDetailsModel orderDetails in order.orderDetails) {
-                    _itemsPrice = _itemsPrice +
-                        (orderDetails.price * orderDetails.quantity);
-                    _discount = _discount +
-                        (orderDetails.discountOnProduct *
-                            orderDetails.quantity);
-                    _tax =
-                        _tax + (orderDetails.taxAmount * orderDetails.quantity);
-                  }
-
-                  _timeSlot = order.allTimeSlots.firstWhere(
-                      (timeSlot) => timeSlot.id == order.trackModel.timeSlotId);
+                _deliveryCharge = order.trackModel.deliveryCharge!;
+                for (OrderDetailsModel orderDetails in order.orderDetails) {
+                  _itemsPrice = _itemsPrice +
+                      (orderDetails.price! * orderDetails.quantity!);
+                  _discount = _discount +
+                      (orderDetails.discountOnProduct! *
+                          orderDetails.quantity!);
+                  _tax =
+                      _tax + (orderDetails.taxAmount! * orderDetails.quantity!);
                 }
-                double _subTotal = _itemsPrice + _tax;
-                double _total = _subTotal -
+
+                _timeSlot = order.allTimeSlots.firstWhere(
+                    (timeSlot) => timeSlot.id == order.trackModel.timeSlotId);
+                double? _subTotal = _itemsPrice + _tax;
+                double? _total = _subTotal -
                     _discount +
                     _deliveryCharge -
                     (order.trackModel != null
                         ? order.trackModel.couponDiscountAmount
-                        : 0);
+                        : 0)!;
 
                 return order.orderDetails != null
                     ? Column(
@@ -1091,7 +1075,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                               DateConverter
                                                   .isoStringToLocalDateOnly(
                                                       order.trackModel
-                                                          .createdAt),
+                                                          .createdAt)!,
                                               style: poppinsMedium),
                                         ]),
                                         SizedBox(
@@ -1108,7 +1092,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                           Text(
                                               DateConverter.convertTimeRange(
                                                   _timeSlot.startTime,
-                                                  _timeSlot.endTime),
+                                                  _timeSlot.endTime)!,
                                               style: poppinsMedium),
                                         ]),
                                         SizedBox(
@@ -1133,7 +1117,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                   'delivery'
                                               ? TextButton.icon(
                                                   onPressed: () {
-                                                    AddressModel _address;
+                                                    AddressModel? _address;
                                                     for (AddressModel address
                                                         in Provider.of<
                                                                     LocationProvider>(
@@ -1147,15 +1131,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                         break;
                                                       }
                                                     }
-                                                    if (_address != null) {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (_) =>
-                                                                  MapWidget(
-                                                                      address:
-                                                                          _address)));
-                                                    }
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (_) =>
+                                                                MapWidget(
+                                                                    address:
+                                                                        _address!)));
                                                   },
                                                   icon: Icon(
                                                     Icons.map,
@@ -1216,7 +1198,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                               child: Text(
                                                 getTranslated(
                                                     order.trackModel
-                                                        .paymentStatus,
+                                                        .paymentStatus!,
                                                     context),
                                                 style: poppinsRegular.copyWith(
                                                     color: Theme.of(context)
@@ -1236,15 +1218,12 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 flex: 8,
                                                 child: Row(children: [
                                                   Text(
-                                                    (order.trackModel
-                                                                    .paymentMethod !=
-                                                                null &&
-                                                            order
-                                                                    .trackModel
-                                                                    .paymentMethod
-                                                                    .length >
-                                                                0)
-                                                        ? '${order.trackModel.paymentMethod[0].toUpperCase()}${order.trackModel.paymentMethod.substring(1).replaceAll('_', ' ')}'
+                                                    (order
+                                                                .trackModel
+                                                                .paymentMethod!
+                                                                .length >
+                                                            0)
+                                                        ? '${order.trackModel.paymentMethod![0].toUpperCase()}${order.trackModel.paymentMethod!.substring(1).replaceAll('_', ' ')}'
                                                         : 'Digital Payment',
                                                     style:
                                                         poppinsRegular.copyWith(
@@ -1276,13 +1255,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                       fromOrder:
                                                                           widget.orderModel !=
                                                                               null,
-                                                                      callback: (String
+                                                                      callback: (String?
                                                                               message,
                                                                           bool
                                                                               isSuccess) {
                                                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                             content:
-                                                                                Text(message),
+                                                                                Text(message!),
                                                                             duration: Duration(milliseconds: 600),
                                                                             backgroundColor: isSuccess ? Colors.green : Colors.red));
                                                                       }),
@@ -1325,7 +1304,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                   color: Theme.of(
                                                                           context)
                                                                       .textTheme
-                                                                      .bodyText1
+                                                                      .bodyLarge!
                                                                       .color,
                                                                 )),
                                                           ),
@@ -1356,7 +1335,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                             Images.placeholder,
                                                         image:
                                                             '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/'
-                                                            '${order.orderDetails[index].productDetails.image[0]}',
+                                                            '${order.orderDetails[index].productDetails.image![0]}',
                                                         height: 70,
                                                         width: 80,
                                                         fit: BoxFit.cover,
@@ -1388,7 +1367,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                         .orderDetails[
                                                                             index]
                                                                         .productDetails
-                                                                        .name,
+                                                                        .name!,
                                                                     style: poppinsRegular.copyWith(
                                                                         fontSize:
                                                                             Dimensions.FONT_SIZE_SMALL),
@@ -1427,18 +1406,18 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                     order
                                                                             .orderDetails[
                                                                                 index]
-                                                                            .price -
+                                                                            .price! -
                                                                         order
                                                                             .orderDetails[index]
-                                                                            .discountOnProduct
-                                                                            .toDouble()),
+                                                                            .discountOnProduct!
+                                                                            .toDouble())!,
                                                                 style:
                                                                     poppinsRegular,
                                                               ),
                                                               SizedBox(
                                                                   width: 5),
                                                               order.orderDetails[index]
-                                                                          .discountOnProduct >
+                                                                          .discountOnProduct! >
                                                                       0
                                                                   ? Expanded(
                                                                       child: Text(
@@ -1446,7 +1425,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                           context,
                                                                           order
                                                                               .orderDetails[index]
-                                                                              .price),
+                                                                              .price)!,
                                                                       style: poppinsRegular
                                                                           .copyWith(
                                                                         decoration:
@@ -1473,7 +1452,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                     color: Theme.of(
                                                                             context)
                                                                         .textTheme
-                                                                        .bodyText1
+                                                                        .bodyLarge!
                                                                         .color,
                                                                   )),
                                                               SizedBox(
@@ -1496,9 +1475,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                           },
                                         ),
 
-                                        (order.trackModel.orderNote != null &&
-                                                order.trackModel.orderNote
-                                                    .isNotEmpty)
+                                        (order.trackModel.orderNote!.isNotEmpty)
                                             ? Container(
                                                 padding: EdgeInsets.all(
                                                     Dimensions
@@ -1517,7 +1494,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                               context)),
                                                 ),
                                                 child: Text(
-                                                    order.trackModel.orderNote,
+                                                    order.trackModel.orderNote!,
                                                     style:
                                                         poppinsRegular.copyWith(
                                                             color: ColorResources
@@ -1539,7 +1516,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                           .FONT_SIZE_LARGE)),
                                               Text(
                                                   PriceConverter.convertPrice(
-                                                      context, _itemsPrice),
+                                                      context, _itemsPrice)!,
                                                   style: poppinsRegular.copyWith(
                                                       fontSize: Dimensions
                                                           .FONT_SIZE_LARGE)),
@@ -1570,8 +1547,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                           child: CustomDivider(
                                               color: Theme.of(context)
                                                   .textTheme
-                                                  .bodyText1
-                                                  .color),
+                                                  .bodyLarge!
+                                                  .color!),
                                         ),
 
                                         Row(
@@ -1586,7 +1563,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                           .FONT_SIZE_LARGE)),
                                               Text(
                                                   PriceConverter.convertPrice(
-                                                      context, _subTotal),
+                                                      context, _subTotal)!,
                                                   style: poppinsRegular.copyWith(
                                                       fontSize: Dimensions
                                                           .FONT_SIZE_LARGE)),
@@ -1671,7 +1648,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                   )),
                                               Text(
                                                 PriceConverter.convertPrice(
-                                                    context, _total),
+                                                    context, _total)!,
                                                 style: poppinsRegular.copyWith(
                                                     fontSize: Dimensions
                                                         .FONT_SIZE_EXTRA_LARGE,
@@ -1723,11 +1700,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                 fromOrder: widget
                                                                         .orderModel !=
                                                                     null,
-                                                                callback: (String
+                                                                callback: (String?
                                                                         message,
                                                                     bool
                                                                         isSuccess,
-                                                                    String
+                                                                    String?
                                                                         orderID) {
                                                                   if (isSuccess) {
                                                                     Provider.of<ProductProvider>(
@@ -1758,7 +1735,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                         content:
                                                                             Text(
-                                                                                message),
+                                                                                message!),
                                                                         backgroundColor:
                                                                             Colors.red));
                                                                   }
@@ -1771,7 +1748,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                         context),
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .headline3
+                                                        .displaySmall!
                                                         .copyWith(
                                                           color: ColorResources
                                                               .getTextColor(
@@ -1800,11 +1777,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 onPressed: () async {
                                                   if (ResponsiveHelper
                                                       .isWeb()) {
-                                                    String hostname = html
+                                                    String? hostname = html
                                                         .window
                                                         .location
                                                         .hostname;
-                                                    String selectedUrl =
+                                                    String? selectedUrl =
                                                         '${AppConstants.BASE_URL}/payment-mobile?order_id=${order.trackModel.id}&&customer_id=${Provider.of<ProfileProvider>(context, listen: false).userInfoModel.id}'
                                                         '&&callback=http://$hostname${RouteHelper.orderSuccessful}${order.trackModel.id}';
                                                     html.window.open(
@@ -1819,7 +1796,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                                     .id
                                                                     .toString(),
                                                                 order.trackModel
-                                                                    .userId));
+                                                                    .userId!));
                                                   }
                                                 },
                                               ),
@@ -1861,7 +1838,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                       Navigator.pushNamed(
                                           context,
                                           RouteHelper.getOrderTrackingRoute(
-                                              order.trackModel.id));
+                                              order.trackModel.id!));
                                     },
                                   ),
                                 )
@@ -1883,7 +1860,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                             orderDetails.productDetails.id)) {
                                           _orderDetailsList.add(orderDetails);
                                           _orderIdList.add(
-                                              orderDetails.productDetails.id);
+                                              orderDetails.productDetails.id!);
                                         }
                                       });
                                       Navigator.of(context)

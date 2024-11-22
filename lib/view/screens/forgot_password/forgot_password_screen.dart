@@ -26,21 +26,30 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   TextEditingController _emailController = TextEditingController();
-  String _countryDialCode;
+  String? _countryDialCode;
 
   @override
   void initState() {
     super.initState();
 
-    _countryDialCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel.country).dialCode;
+    _countryDialCode = CountryCode.fromCountryCode(
+            Provider.of<SplashProvider>(context, listen: false)
+                .configModel
+                .country!)
+        .dialCode;
   }
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double? _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: ResponsiveHelper.isDesktop(context)? MainAppBar(): CustomAppBar(title: getTranslated('forgot_password', context)),
+      appBar: ResponsiveHelper.isDesktop(context)
+          ? MainAppBar()
+          : CustomAppBar(
+              title: getTranslated('forgot_password', context),
+              onBackPressed: () {},
+            ),
       body: Center(
         child: Scrollbar(
           child: SingleChildScrollView(
@@ -48,103 +57,179 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Center(
               child: Container(
                 width: _width > 700 ? 700 : _width,
-                padding: _width > 700 ? EdgeInsets.all(Dimensions.PADDING_SIZE_DEFAULT) : null,
-                decoration: _width > 700 ? BoxDecoration(
-                  color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(10),
-                  boxShadow: [BoxShadow(color: Colors.grey[300], blurRadius: 5, spreadRadius: 1)],
-                ) : null,
+                padding: _width > 700
+                    ? EdgeInsets.all(Dimensions.PADDING_SIZE_DEFAULT)
+                    : null,
+                decoration: _width > 700
+                    ? BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey[300]!,
+                              blurRadius: 5,
+                              spreadRadius: 1)
+                        ],
+                      )
+                    : null,
                 child: Consumer<AuthProvider>(
                   builder: (context, auth, child) {
                     return Column(
                       children: [
                         SizedBox(height: 55),
-                        Image.asset(Images.close_lock, width: 142, height: 142, color: Theme.of(context).primaryColor),
+                        Image.asset(Images.close_lock,
+                            width: 142,
+                            height: 142,
+                            color: Theme.of(context).primaryColor),
                         SizedBox(height: 40),
                         Center(
                             child: Text(
                           getTranslated('please_enter_your_number_to', context),
                           textAlign: TextAlign.center,
-                          style: poppinsRegular.copyWith(color: ColorResources.getHintColor(context)),
+                          style: poppinsRegular.copyWith(
+                              color: ColorResources.getHintColor(context)),
                         )),
                         Padding(
-                          padding: const EdgeInsets.all(Dimensions.PADDING_SIZE_LARGE),
+                          padding: const EdgeInsets.all(
+                              Dimensions.PADDING_SIZE_LARGE),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: 80),
-                              Provider.of<SplashProvider>(context, listen: false).configModel.phoneVerification ? Text(
-                                getTranslated('mobile_number', context),
-                                style: poppinsRegular.copyWith(color: ColorResources.getHintColor(context)),
-                              ) : Text(
-                                getTranslated('email', context),
-                                style: poppinsRegular.copyWith(color: ColorResources.getHintColor(context)),
-                              ),
+                              Provider.of<SplashProvider>(context,
+                                          listen: false)
+                                      .configModel
+                                      .phoneVerification
+                                  ? Text(
+                                      getTranslated('mobile_number', context),
+                                      style: poppinsRegular.copyWith(
+                                          color: ColorResources.getHintColor(
+                                              context)),
+                                    )
+                                  : Text(
+                                      getTranslated('email', context),
+                                      style: poppinsRegular.copyWith(
+                                          color: ColorResources.getHintColor(
+                                              context)),
+                                    ),
                               SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                              Provider.of<SplashProvider>(context, listen: false).configModel.phoneVerification ? Row(children: [
-                                CodePickerWidget(
-                                  onChanged: (CountryCode countryCode) {
-                                    _countryDialCode = countryCode.dialCode;
-                                  },
-                                  initialSelection: _countryDialCode,
-                                  favorite: [_countryDialCode],
-                                  showDropDownButton: true,
-                                  padding: EdgeInsets.zero,
-                                  showFlagMain: true,
-                                  textStyle: TextStyle(color: Theme.of(context).textTheme.headline1.color),
-
-                                ),
-                                Expanded(child: CustomTextField(
-                                  hintText: getTranslated('number_hint', context),
-                                  isShowBorder: true,
-                                  controller: _emailController,
-                                  inputAction: TextInputAction.done,
-                                  inputType: TextInputType.phone,
-                                )),
-                              ]) : CustomTextField(
-                                hintText: getTranslated('demo_gmail', context),
-                                isShowBorder: true,
-                                controller: _emailController,
-                                inputType: TextInputType.emailAddress,
-                                inputAction: TextInputAction.done,
-                              ),
+                              Provider.of<SplashProvider>(context,
+                                          listen: false)
+                                      .configModel
+                                      .phoneVerification
+                                  ? Row(children: [
+                                      CodePickerWidget(
+                                        onChanged: (CountryCode countryCode) {
+                                          _countryDialCode =
+                                              countryCode.dialCode;
+                                        },
+                                        initialSelection: _countryDialCode,
+                                        favorite: [_countryDialCode],
+                                        showDropDownButton: true,
+                                        padding: EdgeInsets.zero,
+                                        showFlagMain: true,
+                                        textStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge
+                                                !.color),
+                                      ),
+                                      Expanded(
+                                          child: CustomTextField(
+                                        hintText: getTranslated(
+                                            'number_hint', context),
+                                        isShowBorder: true,
+                                        controller: _emailController,
+                                        inputAction: TextInputAction.done,
+                                        inputType: TextInputType.phone,
+                                      )),
+                                    ])
+                                  : CustomTextField(
+                                      hintText:
+                                          getTranslated('demo_gmail', context),
+                                      isShowBorder: true,
+                                      controller: _emailController,
+                                      inputType: TextInputType.emailAddress,
+                                      inputAction: TextInputAction.done,
+                                    ),
                               SizedBox(height: 24),
                               !auth.isForgotPasswordLoading
                                   ? SizedBox(
-                                      width: double.infinity,
+                                      width: double?.infinity,
                                       child: CustomButton(
-                                        buttonText: getTranslated('send', context),
+                                        buttonText:
+                                            getTranslated('send', context),
                                         onPressed: () {
-                                          String _email = _emailController.text.trim();
-                                          if(Provider.of<SplashProvider>(context, listen: false).configModel.phoneVerification) {
-                                            String _phone = _countryDialCode+_email;
+                                          String? _email =
+                                              _emailController.text.trim();
+                                          if (Provider.of<SplashProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .configModel
+                                              .phoneVerification) {
+                                            String? _phone =
+                                                _countryDialCode! + _email;
                                             if (_email.isEmpty) {
-                                              showCustomSnackBar(getTranslated('enter_phone_number', context), context);
+                                              showCustomSnackBar(
+                                                  getTranslated(
+                                                      'enter_phone_number',
+                                                      context),
+                                                  context);
                                             } else {
-                                              Provider.of<AuthProvider>(context, listen: false).forgetPassword(_phone).then((value) {
+                                              Provider.of<AuthProvider>(context,
+                                                      listen: false)
+                                                  .forgetPassword(_phone)
+                                                  .then((value) {
                                                 if (value.isSuccess) {
-                                                  Navigator.of(context).pushNamed(
-                                                    RouteHelper.getVerifyRoute('forget-password', _phone),
-                                                    arguments: VerificationScreen(emailAddress: _phone),
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                    RouteHelper.getVerifyRoute(
+                                                        'forget-password',
+                                                        _phone),
+                                                    arguments:
+                                                        VerificationScreen(
+                                                            emailAddress:
+                                                                _phone),
                                                   );
                                                 } else {
-                                                  showCustomSnackBar(value.message, context);
+                                                  showCustomSnackBar(
+                                                      value.message, context);
                                                 }
                                               });
                                             }
-                                          }else {
+                                          } else {
                                             if (_email.isEmpty) {
-                                              showCustomSnackBar(getTranslated('enter_email_address', context), context);
-                                            } else if (EmailChecker.isNotValid(_email)) {
-                                              showCustomSnackBar(getTranslated('enter_valid_email', context), context);
+                                              showCustomSnackBar(
+                                                  getTranslated(
+                                                      'enter_email_address',
+                                                      context),
+                                                  context);
+                                            } else if (EmailChecker.isNotValid(
+                                                _email)) {
+                                              showCustomSnackBar(
+                                                  getTranslated(
+                                                      'enter_valid_email',
+                                                      context),
+                                                  context);
                                             } else {
-                                              Provider.of<AuthProvider>(context, listen: false).forgetPassword(_email).then((value) {
+                                              Provider.of<AuthProvider>(context,
+                                                      listen: false)
+                                                  .forgetPassword(_email)
+                                                  .then((value) {
                                                 if (value.isSuccess) {
-                                                  Navigator.of(context).pushNamed(
-                                                    RouteHelper.getVerifyRoute('forget-password', _email),
-                                                    arguments: VerificationScreen(emailAddress: _email),
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                    RouteHelper.getVerifyRoute(
+                                                        'forget-password',
+                                                        _email),
+                                                    arguments:
+                                                        VerificationScreen(
+                                                            emailAddress:
+                                                                _email),
                                                   );
                                                 } else {
-                                                  showCustomSnackBar(value.message, context);
+                                                  showCustomSnackBar(
+                                                      value.message, context);
                                                 }
                                               });
                                             }
@@ -153,7 +238,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       ),
                                     )
                                   : Center(
-                                      child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor))),
+                                      child: CircularProgressIndicator(
+                                          valueColor: AlwaysStoppedAnimation<
+                                                  Color>(
+                                              Theme.of(context).primaryColor))),
                             ],
                           ),
                         ),

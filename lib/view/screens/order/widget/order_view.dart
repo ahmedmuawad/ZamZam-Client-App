@@ -13,9 +13,10 @@ import 'package:flutter_grocery/view/base/no_data_screen.dart';
 import 'package:flutter_grocery/view/screens/order/order_details_screen.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class OrderView extends StatelessWidget {
-  final bool isRunning;
-  OrderView({@required this.isRunning});
+  late bool isRunning;
+  OrderView({required this.isRunning});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +25,8 @@ class OrderView extends StatelessWidget {
       body: Consumer<OrderProvider>(
         builder: (context, order, index) {
           List<OrderModel> orderList;
-          if (order.runningOrderList != null) {
-            orderList = isRunning ? order.runningOrderList.reversed.toList() : order.historyOrderList.reversed.toList();
-          }
-
+          orderList = isRunning ? order.runningOrderList.reversed.toList() : order.historyOrderList.reversed.toList();
+        
           return orderList != null ? orderList.length > 0 ? RefreshIndicator(
             onRefresh: () async {
               await Provider.of<OrderProvider>(context, listen: false).getOrderList(context);
@@ -45,7 +44,7 @@ class OrderView extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     boxShadow: [BoxShadow(
-                      color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 700 : 300],
+                      color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 700 : 300]!,
                       spreadRadius: 1, blurRadius: 5,
                     )],
                     borderRadius: BorderRadius.circular(10),
@@ -54,12 +53,12 @@ class OrderView extends StatelessWidget {
                     //date and money
                     Row(children: [
                       Text(
-                        DateConverter.isoDayWithDateString(orderList[index].updatedAt),
+                        DateConverter.isoDayWithDateString(orderList[index].updatedAt)!,
                         style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context)),
                       ),
                       Expanded(child: SizedBox.shrink()),
                       Text(
-                        PriceConverter.convertPrice(context, orderList[index].orderAmount),
+                        PriceConverter.convertPrice(context, orderList[index].orderAmount)!,
                         style: poppinsBold.copyWith(color: Theme.of(context).primaryColor),
                       ),
                     ]),
@@ -74,7 +73,7 @@ class OrderView extends StatelessWidget {
                       Icon(Icons.circle, color: Theme.of(context).primaryColor, size: 16),
                       SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                       Text(
-                        '${getTranslated('order_is', context)} ${getTranslated(orderList[index].orderStatus, context)}',
+                        '${getTranslated('order_is', context)} ${getTranslated(orderList[index].orderStatus!, context)}',
                         style: poppinsMedium.copyWith(color: Theme.of(context).primaryColor),
                       ),
                     ]),
@@ -86,7 +85,7 @@ class OrderView extends StatelessWidget {
                         InkWell(
                           onTap: () {
                             Navigator.of(context).pushNamed(
-                              RouteHelper.getOrderDetailsRoute(orderList[index].id),
+                              RouteHelper.getOrderDetailsRoute(orderList[index].id!),
                               arguments: OrderDetailsScreen(orderId: orderList[index].id, orderModel: orderList[index]),
                             );
                           },
@@ -98,7 +97,7 @@ class OrderView extends StatelessWidget {
                                 color: ColorResources.getGreyColor(context),
                                 boxShadow: [
                                   BoxShadow(
-                                      color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 600 : 100],
+                                      color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 600 : 100]!,
                                       spreadRadius: 1,
                                       blurRadius: 5)
                                 ],
@@ -119,7 +118,7 @@ class OrderView extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   side: BorderSide(width: 2, color: Theme.of(context).primaryColor))),
                           onPressed: () {
-                            Navigator.of(context).pushNamed(RouteHelper.getOrderTrackingRoute(orderList[index].id));
+                            Navigator.of(context).pushNamed(RouteHelper.getOrderTrackingRoute(orderList[index].id!));
                             },
                           child: Text(getTranslated('track_your_order', context),
                             style: poppinsRegular.copyWith(

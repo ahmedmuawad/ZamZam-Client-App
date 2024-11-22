@@ -1,4 +1,4 @@
-import 'package:country_code_picker/country_code.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/signup_model.dart';
 import 'package:flutter_grocery/helper/email_checker.dart';
@@ -36,8 +36,8 @@ class CreateAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _countryDialCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel.country).dialCode;
-    double _width = MediaQuery.of(context).size.width;
+    String? _countryDialCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel.country!).dialCode;
+    double? _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: ResponsiveHelper.isDesktop(context)? MainAppBar():null,
@@ -53,7 +53,7 @@ class CreateAccountScreen extends StatelessWidget {
                   padding: _width > 700 ? EdgeInsets.all(Dimensions.PADDING_SIZE_DEFAULT) : null,
                   decoration: _width > 700 ? BoxDecoration(
                     color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(10),
-                    boxShadow: [BoxShadow(color: Colors.grey[300], blurRadius: 5, spreadRadius: 1)],
+                    boxShadow: [BoxShadow(color: Colors.grey[300]!, blurRadius: 5, spreadRadius: 1)],
                   ) : null,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,8 +121,21 @@ class CreateAccountScreen extends StatelessWidget {
                           showDropDownButton: true,
                           padding: EdgeInsets.zero,
                           showFlagMain: true,
-                          textStyle: TextStyle(color: Theme.of(context).textTheme.headline1.color),
-
+                          textStyle: TextStyle(color: Theme.of(context).textTheme.displayLarge!.color),
+                          onInit: (CountryCode countryCode) {},
+                          searchStyle: TextStyle(),
+                          dialogTextStyle: TextStyle(),
+                          emptySearchBuilder: (context) => Container(),
+                          showFlagDialog: true,
+                          flagDecoration: BoxDecoration(),
+                          builder: (context) => Container(),
+                          barrierColor: Colors.black,
+                          backgroundColor: Colors.white,
+                          boxDecoration: BoxDecoration(),
+                          comparator: (a, b) => a.name!.compareTo(b.name!),
+                          countryFilter: [],
+                          dialogSize: Size(300, 500),
+                          dialogBackgroundColor: Colors.white,
                         ),
                         Expanded(child: CustomTextField(
                           hintText: getTranslated('number_hint', context),
@@ -202,12 +215,12 @@ class CreateAccountScreen extends StatelessWidget {
                           ? CustomButton(
                         buttonText: getTranslated('signup', context),
                         onPressed: () {
-                          String _firstName = _firstNameController.text.trim();
-                          String _lastName = _lastNameController.text.trim();
-                          String _number = _numberController.text.trim();
-                          String _email = _emailController.text.trim();
-                          String _password = _passwordController.text.trim();
-                          String _confirmPassword = _confirmPasswordController.text.trim();
+                          String? _firstName = _firstNameController.text.trim();
+                          String? _lastName = _lastNameController.text.trim();
+                          String? _number = _numberController.text.trim();
+                          String? _email = _emailController.text.trim();
+                          String? _password = _passwordController.text.trim();
+                          String? _confirmPassword = _confirmPasswordController.text.trim();
                           if(Provider.of<SplashProvider>(context, listen: false).configModel.emailVerification){
                             if (_firstName.isEmpty) {
                               showCustomSnackBar(getTranslated('enter_first_name', context), context);

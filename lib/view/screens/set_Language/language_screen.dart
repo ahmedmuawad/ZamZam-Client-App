@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_grocery/view/base/custom_button.dart';
 import 'package:flutter_grocery/view/screens/select_address/select_Address_Screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../../helper/route_helper.dart';
 import '../../../localization/language_constrants.dart';
 import '../../../provider/localization_provider.dart';
 import '../../../utill/app_constants.dart';
@@ -12,21 +10,21 @@ import '../../../utill/dimensions.dart';
 import '../../../utill/styles.dart';
 
 class LanguageScreen extends StatefulWidget {
-  bool isFirst;
+  final bool isFirst;
 
-  LanguageScreen({@required this.isFirst});
+  LanguageScreen({required this.isFirst});
 
   @override
   _LanguageScreenState createState() => _LanguageScreenState();
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
-  int selected_index = 0;
+  int? selected_index = 0;
 
   void set_Ar_Lang() {
     Provider.of<LocalizationProvider>(context, listen: false)
         .setLanguage(Locale(
-      AppConstants.languages[0].languageCode,
+      AppConstants.languages[0].languageCode!,
       AppConstants.languages[0].countryCode,
     ));
 
@@ -36,7 +34,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
   void set_En_Lang() {
     Provider.of<LocalizationProvider>(context, listen: false)
         .setLanguage(Locale(
-      AppConstants.languages[1].languageCode,
+      AppConstants.languages[1].languageCode!,
       AppConstants.languages[1].countryCode,
     ));
 
@@ -50,7 +48,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          getTranslated('select_lang', context),
+          getTranslated('select_lang', context) ?? '',
           style: TextStyle(color: Theme.of(context).primaryColor),
         ),
         elevation: 0,
@@ -63,7 +61,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
               height: MediaQuery.of(context).size.height * 0.1,
             ),
             Text(
-              getTranslated('choose_language', context),
+              getTranslated('choose_language', context) ?? '',
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: Dimensions.FONT_SIZE_OVER_LARGE),
@@ -104,7 +102,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text(getTranslated('languageAr', context),
+                                Text(getTranslated('languageAr', context)?? '',
                                     style: poppinsMedium.copyWith(
                                         color: Colors.white,
                                         fontSize: Dimensions.FONT_SIZE_LARGE)),
@@ -144,7 +142,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text(getTranslated('languageEn', context),
+                                Text(getTranslated('languageEn', context)?? '',
                                     style: poppinsMedium.copyWith(
                                         color: Colors.white,
                                         fontSize: Dimensions.FONT_SIZE_LARGE)),
@@ -200,7 +198,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         SizedBox(
                           width: 5,
                         ),
-                        Text(getTranslated('select_delivery_address', context),
+                        Text(getTranslated('select_delivery_address', context)?? '',
                             style: poppinsMedium.copyWith(
                                 color: Colors.white,
                                 fontSize: Dimensions.FONT_SIZE_LARGE)),

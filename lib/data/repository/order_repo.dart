@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 
 class OrderRepo {
   final DioClient dioClient;
-  OrderRepo({@required this.dioClient});
+  OrderRepo({required this.dioClient});
 
   Future<ApiResponse> getOrderList() async {
     try {
@@ -22,7 +22,7 @@ class OrderRepo {
     }
   }
 
-  Future<ApiResponse> getOrderDetails(String orderID) async {
+  Future<ApiResponse> getOrderDetails(String? orderID) async {
     try {
       final response = await dioClient.get('${AppConstants.ORDER_DETAILS_URI}$orderID');
       return ApiResponse.withSuccess(response);
@@ -31,7 +31,7 @@ class OrderRepo {
     }
   }
 
-  Future<ApiResponse> getOrderBalance(String orderID ,String token) async {
+  Future<ApiResponse> getOrderBalance(String? orderID ,String? token) async {
     try {
       final response = await dioClient.get('${AppConstants.ORDER_Balance_URI}$orderID',
         options: Options(headers: { 'Authorization': 'Bearer $token'})
@@ -43,9 +43,9 @@ class OrderRepo {
   }
 
 
-  Future<ApiResponse> cancelOrder(String orderID) async {
+  Future<ApiResponse> cancelOrder(String? orderID) async {
     try {
-      Map<String, dynamic> data = Map<String, dynamic>();
+      Map<String?, dynamic> data = Map<String?, dynamic>();
       data['order_id'] = orderID;
       data['_method'] = 'put';
       final response = await dioClient.post(AppConstants.ORDER_CANCEL_URI, data: data);
@@ -55,7 +55,7 @@ class OrderRepo {
     }
   }
 
-  Future<ApiResponse> trackOrder(String orderID) async {
+  Future<ApiResponse> trackOrder(String? orderID) async {
     try {
       final response = await dioClient.get('${AppConstants.TRACK_URI}$orderID');
       return ApiResponse.withSuccess(response);
@@ -75,7 +75,7 @@ class OrderRepo {
     }
   }
 
-  Future<ApiResponse> getDeliveryManData(String orderID) async {
+  Future<ApiResponse> getDeliveryManData(String? orderID) async {
     try {
       final response = await dioClient.get('${AppConstants.LAST_LOCATION_URI}$orderID');
       return ApiResponse.withSuccess(response);
@@ -93,17 +93,17 @@ class OrderRepo {
     }
   }
 
-  List<String> getDates(BuildContext context) {
-    List<String> _dates = [];
+  List<String?> getDates(BuildContext context) {
+    List<String?> _dates = [];
     _dates.add(DateFormat('yyyy-MM-dd').format(DateTime.now()));
     _dates.add(DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 1))));
     _dates.add(DateFormat('yyyy-MM-dd').format(DateTime.now().add(Duration(days: 2))));
     return _dates;
   }
 
-  Future<ApiResponse> updatePaymentMethod(String orderID) async {
+  Future<ApiResponse> updatePaymentMethod(String? orderID) async {
     try {
-      Map<String, dynamic> data = Map<String, dynamic>();
+      Map<String?, dynamic> data = Map<String?, dynamic>();
       data['order_id'] = orderID;
       data['_method'] = 'put';
       data['payment_method'] = 'cash_on_delivery';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/category_model.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
-import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/provider/category_provider.dart';
 import 'package:flutter_grocery/provider/localization_provider.dart';
 import 'package:flutter_grocery/provider/splash_provider.dart';
@@ -65,7 +64,7 @@ class AllCategoryScreen extends StatelessWidget {
                                     Provider.of<ThemeProvider>(context)
                                             .darkTheme
                                         ? 600
-                                        : 200],
+                                        : 200]!,
                                 spreadRadius: 3,
                                 blurRadius: 10)
                           ],
@@ -185,7 +184,7 @@ class AllCategoryScreen extends StatelessWidget {
                                                           .subCategoryList[
                                                               index]
                                                           .subCate[index1]
-                                                          .id,
+                                                          .id!,
                                                     ),
                                                     arguments:
                                                         CategoryProductScreen(
@@ -200,7 +199,7 @@ class AllCategoryScreen extends StatelessWidget {
                                                           .subCategoryList[
                                                               index]
                                                           .subCate[index1]
-                                                          .name,
+                                                          .name, subCate: [],
                                                     )),
                                                   );
                                                 },
@@ -232,12 +231,12 @@ class AllCategoryScreen extends StatelessWidget {
 }
 
 class CategoryItem extends StatelessWidget {
-  final String title;
-  final String icon;
+  final String? title;
+  final String? icon;
   final bool isSelected;
 
   CategoryItem(
-      {@required this.title, @required this.icon, @required this.isSelected});
+      {required this.title, required this.icon, required this.isSelected});
 
   Widget build(BuildContext context) {
     return Container(
@@ -281,7 +280,7 @@ class CategoryItem extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-            child: Text(title,
+            child: Text(title!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
@@ -302,7 +301,7 @@ class SubCategoryShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: 10,
-      itemBuilder: (BuildContext context, int index) {
+      itemBuilder: (BuildContext context, int? index) {
         return Shimmer(
           duration: Duration(seconds: 2),
           enabled:
@@ -320,11 +319,11 @@ class SubCategoryShimmer extends StatelessWidget {
 }
 
 class AllSubCategoryItem extends StatelessWidget {
-  final String name;
+  final String? name;
 
-  final String image;
+  final String? image;
 
-  AllSubCategoryItem({@required this.name, @required this.image});
+  AllSubCategoryItem({required this.name, required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -349,10 +348,10 @@ class AllSubCategoryItem extends StatelessWidget {
             ),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
-                child: !image.startsWith('ass')
+                child: !image!.startsWith('ass')
                     ? FadeInImage.assetNetwork(
                         placeholder: Images.placeholder,
-                        image: image,
+                        image: image!,
                         fit: BoxFit.cover,
                         width: 120,
                         height: 120,
@@ -362,12 +361,12 @@ class AllSubCategoryItem extends StatelessWidget {
                             width: 100,
                             fit: BoxFit.cover),
                       )
-                    : Image.asset(image)),
+                    : Image.asset(image!)),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-            child: Text(name,
+            child: Text(name!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

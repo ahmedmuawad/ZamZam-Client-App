@@ -1,11 +1,11 @@
 class TimeSlotModel {
-  int id;
-  String startTime;
-  String endTime;
-  String date;
-  int status;
-  String createdAt;
-  String updatedAt;
+  int? id;
+  String? startTime;
+  String? endTime;
+  String? date;
+  int? status;
+  String? createdAt;
+  String? updatedAt;
 
   TimeSlotModel(
       {this.id,
@@ -16,7 +16,7 @@ class TimeSlotModel {
         this.createdAt,
         this.updatedAt});
 
-  TimeSlotModel.fromJson(Map<String, dynamic> json) {
+  TimeSlotModel.fromJson(Map<String?, dynamic> json) {
     id = json['id'];
     startTime = json['start_time'];
     endTime = json['end_time'];
@@ -26,8 +26,8 @@ class TimeSlotModel {
     updatedAt = json['updated_at'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this.id;
     data['start_time'] = this.startTime;
     data['end_time'] = this.endTime;

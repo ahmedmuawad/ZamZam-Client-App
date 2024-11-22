@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_grocery/data/model/response/category_model.dart';
 import 'package:flutter_grocery/data/model/response/product_model.dart';
 import 'package:flutter_grocery/helper/product_type.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
@@ -13,7 +14,7 @@ import 'package:provider/provider.dart';
 class ProductView extends StatelessWidget {
   final ProductType productType;
   final ScrollController scrollController;
-  ProductView({@required this.productType, this.scrollController});
+  ProductView({required this.productType, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +31,18 @@ class ProductView extends StatelessWidget {
     }
 
     int offset = 1;
-    scrollController?.addListener(() {
+    scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent ==
               scrollController.position.pixels &&
-          Provider.of<ProductProvider>(context, listen: false)
-                  .popularProductList !=
-              null &&
           !Provider.of<ProductProvider>(context, listen: false).isLoading) {
-        int pageSize;
+        int? pageSize;
         if (productType == ProductType.POPULAR_PRODUCT) {
           pageSize = (Provider.of<ProductProvider>(context, listen: false)
                       .popularPageSize /
                   10)
               .ceil();
         }
-        if (offset < pageSize) {
+        if (offset < pageSize!) {
           offset++;
           print('end of the page');
           Provider.of<ProductProvider>(context, listen: false)
@@ -63,13 +61,13 @@ class ProductView extends StatelessWidget {
     });
     return SingleChildScrollView(child: Consumer<ProductProvider>(
       builder: (context, prodProvider, child) {
-        List<Product> productList;
+        List<Product>? productList;
         if (productType == ProductType.POPULAR_PRODUCT) {
           productList = prodProvider.popularProductList;
         }
 
         return Column(children: [
-          productList != null
+          productList! != null
               ? productList.length > 0
                   ? ListView.builder(
                       /* gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -86,8 +84,8 @@ class ProductView extends StatelessWidget {
                           horizontal: Dimensions.PADDING_SIZE_DEFAULT),
                       physics: BouncingScrollPhysics(),
                       shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ProductWidget(product: productList[index]);
+                      itemBuilder: (BuildContext context, int? index) {
+                        return ProductWidget(product: productList![index!], categoryModel: CategoryModel(subCate: []),);
                       },
                     )
                   : NoDataScreen()
@@ -106,7 +104,7 @@ class ProductView extends StatelessWidget {
                       horizontal: Dimensions.PADDING_SIZE_SMALL),
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
+                  itemBuilder: (BuildContext context, int? index) {
                     return ProductShimmer(isEnabled: productList == null);
                   },
                 ),

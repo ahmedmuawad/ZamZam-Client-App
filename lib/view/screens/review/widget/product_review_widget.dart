@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 class ProductReviewWidget extends StatelessWidget {
   final List<OrderDetailsModel> orderDetailsList;
-  ProductReviewWidget({@required this.orderDetailsList});
+  ProductReviewWidget({required this.orderDetailsList});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class ProductReviewWidget extends StatelessWidget {
                                 child: FadeInImage.assetNetwork(
                                   placeholder: Images.placeholder,
                                   image:
-                                      '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${orderDetailsList[index].productDetails.image[0]}',
+                                      '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${orderDetailsList[index].productDetails.image![0]}',
                                   height: 70,
                                   width: 85,
                                   fit: BoxFit.cover,
@@ -80,7 +80,7 @@ class ProductReviewWidget extends StatelessWidget {
                                   Text(
                                       orderDetailsList[index]
                                           .productDetails
-                                          .name,
+                                          .name!,
                                       style: poppinsMedium,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis),
@@ -90,7 +90,7 @@ class ProductReviewWidget extends StatelessWidget {
                                           context,
                                           orderDetailsList[index]
                                               .productDetails
-                                              .price),
+                                              .price)!,
                                       style: poppinsBold),
                                 ],
                               )),
@@ -131,11 +131,11 @@ class ProductReviewWidget extends StatelessWidget {
                               itemBuilder: (context, i) {
                                 return InkWell(
                                   child: Icon(
-                                    orderProvider.ratingList[index] < (i + 1)
+                                    orderProvider.ratingList[index]! < (i + 1)
                                         ? Icons.star_border
                                         : Icons.star,
                                     size: 25,
-                                    color: orderProvider.ratingList[index] <
+                                    color: orderProvider.ratingList[index]! <
                                             (i + 1)
                                         ? ColorResources.getTextColor(context)
                                         : Theme.of(context).primaryColor,
@@ -199,7 +199,7 @@ class ProductReviewWidget extends StatelessWidget {
                                                         context);
                                                   } else if (orderProvider
                                                       .reviewList[index]
-                                                      .isEmpty) {
+                                                      !.isEmpty) {
                                                     showCustomSnackBar(
                                                         getTranslated(
                                                             'write_a_review',

@@ -20,14 +20,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool _isLoggedIn;
+  bool? _isLoggedIn;
 
   @override
   void initState() {
     super.initState();
 
     _isLoggedIn = Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    if(_isLoggedIn) {
+    if(_isLoggedIn!) {
       Provider.of<ProfileProvider>(context, listen: false).getUserInfo(context);
     }
   }
@@ -47,11 +47,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: Text(getTranslated('profile', context),
             style: poppinsMedium.copyWith(
               fontSize: Dimensions.FONT_SIZE_SMALL,
-              color: Theme.of(context).textTheme.bodyText1.color,
+              color: Theme.of(context).textTheme.bodyLarge!.color,
             )),
       ),
       body: SafeArea(
-        child: _isLoggedIn ? Consumer<ProfileProvider>(
+        child: _isLoggedIn! ? Consumer<ProfileProvider>(
           builder: (context, profileProvider, child) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_EXTRA_SMALL),
             child: Scrollbar(
@@ -90,8 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Navigator.pushNamed(
                                     context,
                                     RouteHelper.getProfileEditRoute(
-                                      profileProvider.userInfoModel.fName, profileProvider.userInfoModel.lName,
-                                      profileProvider.userInfoModel.email, profileProvider.userInfoModel.phone,
+                                      profileProvider.userInfoModel.fName!, profileProvider.userInfoModel.lName!,
+                                      profileProvider.userInfoModel.email!, profileProvider.userInfoModel.phone!,
                                     ),
                                     arguments: ProfileEditScreen(userInfoModel: profileProvider.userInfoModel),
                                   );

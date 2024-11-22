@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter_grocery/helper/price_converter.dart';
 import 'package:flutter_grocery/provider/localization_provider.dart';
@@ -44,20 +43,19 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../cart/cart_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  final double amount;
-  final String orderType;
-  final double discount;
-  final String couponCode;
-  final double balance;
+  final double? amount;
+  final String? orderType;
+  final double? discount;
+  final String? couponCode;
+  final double? balance;
 
   CheckoutScreen(
-      {@required this.amount,
-      @required this.orderType,
-      @required this.discount,
-      @required this.couponCode,
+      {required this.amount,
+      required this.orderType,
+      required this.discount,
+      required this.couponCode,
       this.balance});
 
   @override
@@ -67,13 +65,13 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final GlobalKey<ScaffoldMessengerState> _scaffoldKey = GlobalKey();
   final TextEditingController _noteController = TextEditingController();
-  GoogleMapController _mapController;
+  GoogleMapController? _mapController;
   List<Branches> _branches = [];
   bool _loading = true;
   Set<Marker> _markers = HashSet<Marker>();
-  bool _isCashOnDeliveryActive;
-  bool _isDigitalPaymentActive;
-  bool _isLoggedIn;
+  bool? _isCashOnDeliveryActive;
+  bool? _isDigitalPaymentActive;
+  bool? _isLoggedIn;
 
   @override
   void initState() {
@@ -81,7 +79,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     _isLoggedIn =
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    if (_isLoggedIn) {
+    if (_isLoggedIn!) {
       Provider.of<OrderProvider>(context, listen: false)
           .setAddressIndex(-1, notify: false);
       Provider.of<OrderProvider>(context, listen: false)
@@ -108,7 +106,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     bool _kmWiseCharge = Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .deliveryManagement
+            .DeliveryManagement
             .status ==
         1;
     bool _selfPickup = widget.orderType == 'self_pickup';
@@ -118,24 +116,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         backgroundColor: Theme.of(context).cardColor,
         appBar: ResponsiveHelper.isDesktop(context)
             ? MainAppBar()
-            : CustomAppBar(title: getTranslated('checkout', context)),
-        body: _isLoggedIn
+            : CustomAppBar(title: getTranslated('checkout', context), onBackPressed: (){},),
+        body: _isLoggedIn!
             ? Consumer<OrderProvider>(
                 builder: (context, order, child) {
-                  double _deliveryCharge = order.distance *
+                  double? _deliveryCharge = order.distance! *
                       Provider.of<SplashProvider>(context, listen: false)
                           .configModel
-                          .deliveryManagement
+                          .DeliveryManagement
                           .shippingPerKm;
                   if (_deliveryCharge <
                       Provider.of<SplashProvider>(context, listen: false)
                           .configModel
-                          .deliveryManagement
+                          .DeliveryManagement
                           .minShippingCharge) {
                     _deliveryCharge =
                         Provider.of<SplashProvider>(context, listen: false)
                             .configModel
-                            .deliveryManagement
+                            .DeliveryManagement
                             .minShippingCharge;
                   }
                   if (!_kmWiseCharge || order.distance == -1) {
@@ -202,7 +200,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                         index);
                                                                     double.parse(
                                                                         _branches[index]
-                                                                            .latitude);
+                                                                            .latitude!);
                                                                     _setMarkers(
                                                                         index);
                                                                   } catch (e) {}
@@ -235,7 +233,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                   child: Text(
                                                                       _branches[
                                                                               index]
-                                                                          .name,
+                                                                          .name!,
                                                                       maxLines:
                                                                           1,
                                                                       overflow:
@@ -246,7 +244,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                         color: index ==
                                                                                 order.branchIndex
                                                                             ? Colors.white
-                                                                            : Theme.of(context).textTheme.bodyText1.color,
+                                                                            : Theme.of(context).textTheme.bodyLarge!.color,
                                                                       )),
                                                                 ),
                                                               ),
@@ -283,10 +281,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                         LatLng(
                                                                       double.parse(
                                                                           _branches[0]
-                                                                              .latitude),
+                                                                              .latitude!),
                                                                       double.parse(
                                                                           _branches[0]
-                                                                              .longitude),
+                                                                              .longitude!),
                                                                     ),
                                                                     zoom: 8),
                                                             zoomControlsEnabled:
@@ -378,26 +376,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 bool _isAvailable = _branches
                                                                             .length ==
                                                                         1 &&
-                                                                    (_branches[0].latitude ==
-                                                                            null ||
-                                                                        _branches[0]
+                                                                    (_branches[0]
                                                                             .latitude
-                                                                            .isEmpty);
+                                                                            !.isEmpty);
                                                                 if (!_isAvailable) {
-                                                                  double
+                                                                  double?
                                                                       _distance =
                                                                       Geolocator
                                                                               .distanceBetween(
-                                                                            double.parse(_branches[order.branchIndex].latitude),
-                                                                            double.parse(_branches[order.branchIndex].longitude),
-                                                                            double.parse(address.addressList[index].latitude),
-                                                                            double.parse(address.addressList[index].longitude),
+                                                                            double.parse(_branches[order.branchIndex!].latitude!),
+                                                                            double.parse(_branches[order.branchIndex!].longitude!),
+                                                                            double.parse(address.addressList[index].latitude!),
+                                                                            double.parse(address.addressList[index].longitude!),
                                                                           ) /
                                                                           1000;
                                                                   _isAvailable =
                                                                       _distance <
-                                                                          _branches[order.branchIndex]
-                                                                              .coverage;
+                                                                          _branches[order.branchIndex!]
+                                                                              .coverage!;
                                                                 }
 
                                                                 return Padding(
@@ -430,12 +426,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                               _isSuccess =
                                                                               await order.getDistanceInMeter(
                                                                             LatLng(
-                                                                              double.parse(_branches[order.branchIndex].latitude),
-                                                                              double.parse(_branches[order.branchIndex].longitude),
+                                                                              double?.parse(_branches[order.branchIndex!].latitude!),
+                                                                              double?.parse(_branches[order.branchIndex!].longitude!),
                                                                             ),
                                                                             LatLng(
-                                                                              double.parse(address.addressList[index].latitude),
-                                                                              double.parse(address.addressList[index].longitude),
+                                                                              double?.parse(address.addressList[index].latitude!),
+                                                                              double?.parse(address.addressList[index].longitude!),
                                                                             ),
                                                                           );
                                                                           Navigator.pop(
@@ -491,12 +487,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                                 SizedBox(width: 10),
                                                                                 Expanded(
                                                                                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
-                                                                                  Text(address.addressList[index].addressType,
+                                                                                  Text(address.addressList[index].addressType!,
                                                                                       style: poppinsBold.copyWith(
                                                                                         fontSize: Dimensions.FONT_SIZE_SMALL,
                                                                                         color: index == order.addressIndex ? ColorResources.getTextColor(context) : ColorResources.getHintColor(context).withOpacity(.8),
                                                                                       )),
-                                                                                  Text(address.addressList[index].address,
+                                                                                  Text(address.addressList[index].address!,
                                                                                       style: poppinsRegular.copyWith(
                                                                                         color: index == order.addressIndex ? ColorResources.getTextColor(context) : ColorResources.getHintColor(context).withOpacity(.8),
                                                                                       ),
@@ -603,7 +599,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                           context)
                                                                       .darkTheme
                                                                   ? 800
-                                                                  : 100],
+                                                                  : 100]!,
                                                               spreadRadius: .5,
                                                               blurRadius: .5)
                                                         ],
@@ -621,7 +617,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                         .now()
                                                                     .add(Duration(
                                                                         days:
-                                                                            2))),
+                                                                            2)))!,
                                                         style: poppinsRegular.copyWith(
                                                             fontSize: Dimensions
                                                                 .FONT_SIZE_LARGE,
@@ -697,7 +693,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                     BoxShadow(
                                                                         color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme
                                                                             ? 800
-                                                                            : 100],
+                                                                            : 100]!,
                                                                         spreadRadius:
                                                                             .5,
                                                                         blurRadius:
@@ -777,19 +773,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                     fontSize: Dimensions
                                                         .FONT_SIZE_LARGE)),
                                           ),
-                                          _isCashOnDeliveryActive
+                                          _isCashOnDeliveryActive!
                                               ? CustomCheckBox(
                                                   title: getTranslated(
                                                       'cash_on_delivery',
                                                       context),
                                                   index: 0)
                                               : SizedBox(),
-                                          _isDigitalPaymentActive
+                                          _isDigitalPaymentActive!
                                               ? CustomCheckBox(
                                                   title: getTranslated(
                                                       'digital_payment',
                                                       context),
-                                                  index: _isCashOnDeliveryActive
+                                                  index: _isCashOnDeliveryActive!
                                                       ? 1
                                                       : 0)
                                               : SizedBox(),
@@ -839,7 +835,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                   .convertPrice(
                                                                       context,
                                                                       widget
-                                                                          .amount),
+                                                                          .amount)!,
                                                               style: poppinsMedium
                                                                   .copyWith(
                                                                       fontSize:
@@ -905,8 +901,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                             PriceConverter
                                                                 .convertPrice(
                                                                     context,
-                                                                    widget.amount +
-                                                                        _deliveryCharge),
+                                                                    widget.amount! +
+                                                                        _deliveryCharge!)!,
                                                             style: poppinsMedium.copyWith(
                                                                 fontSize: Dimensions
                                                                     .FONT_SIZE_EXTRA_LARGE,
@@ -945,8 +941,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         milliseconds: 600),
                                                     backgroundColor:
                                                         Colors.red));
-                                          } else if (order.timeSlots == null ||
-                                              order.timeSlots.length == 0) {
+                                          } else if (order.timeSlots.length == 0) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                                     content: Text(getTranslated(
@@ -999,7 +994,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               carts.add(cart);
                                             }
                                             order.placeOrder(
-                                                _scaffoldKey.currentContext,
+                                                _scaffoldKey.currentContext!,
                                                 PlaceOrderBody(
                                                   cart: carts,
                                                   orderType: widget.orderType,
@@ -1007,7 +1002,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   orderNote:
                                                       _noteController.text,
                                                   branchId: _branches[
-                                                          order.branchIndex]
+                                                          order.branchIndex!]
                                                       .id,
                                                   deliveryAddressId: !_selfPickup
                                                       ? Provider.of<
@@ -1015,7 +1010,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                               context,
                                                               listen: false)
                                                           .addressList[order
-                                                              .addressIndex]
+                                                              .addressIndex!]
                                                           .id
                                                       : 0,
                                                   distance: _selfPickup
@@ -1028,10 +1023,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       .discount,
                                                   timeSlotId: order
                                                       .timeSlots[
-                                                          order.selectTimeSlot]
+                                                          order.selectTimeSlot!]
                                                       .id,
                                                   paymentMethod:
-                                                      _isCashOnDeliveryActive
+                                                      _isCashOnDeliveryActive!
                                                           ? order.paymentMethodIndex ==
                                                                   0
                                                               ? 'cash_on_delivery'
@@ -1039,10 +1034,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                           : null,
                                                   deliveryDate:
                                                       order.getDates(context)[
-                                                          order.selectDateSlot],
+                                                          order.selectDateSlot!],
                                                   couponDiscountTitle: '',
-                                                  orderAmount: widget.amount +
-                                                      _deliveryCharge,
+                                                  orderAmount: widget.amount! +
+                                                      _deliveryCharge!,
                                                   balance: widget.balance,
                                                 ),
                                                 _callback);
@@ -1065,7 +1060,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             : NotLoggedInScreen());
   }
 
-  void _callback(bool isSuccess, String message, String orderID) async {
+  void _callback(bool isSuccess, String? message, String? orderID) async {
     if (isSuccess) {
       Provider.of<ProductProvider>(context, listen: false)
           .getPopularProductList(
@@ -1078,7 +1073,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       );
       Provider.of<CartProvider>(context, listen: false).clearCartList();
       Provider.of<OrderProvider>(context, listen: false).stopLoader();
-      if (_isCashOnDeliveryActive &&
+      if (_isCashOnDeliveryActive! &&
           Provider.of<OrderProvider>(context, listen: false)
                   .paymentMethodIndex ==
               0) {
@@ -1093,7 +1088,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       } else {
         OrderModel _orderModel = OrderModel(
           paymentMethod: '',
-          id: int.parse(orderID),
+          id: int.parse(orderID!),
           userId: Provider.of<ProfileProvider>(context, listen: false)
               .userInfoModel
               .id,
@@ -1102,13 +1097,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           paymentStatus: 'unpaid',
           timeSlotId: Provider.of<OrderProvider>(context, listen: false)
               .timeSlots[Provider.of<OrderProvider>(context, listen: false)
-                  .selectTimeSlot]
+                  .selectTimeSlot!]
               .id,
           deliveryAddressId: widget.orderType != 'self_pickup'
               ? Provider.of<LocationProvider>(context, listen: false)
                   .addressList[
                       Provider.of<OrderProvider>(context, listen: false)
-                          .addressIndex]
+                          .addressIndex!]
                   .id
               : 0,
           deliveryCharge: Provider.of<SplashProvider>(context, listen: false)
@@ -1118,9 +1113,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           updatedAt: DateConverter.localDateToIsoString(DateTime.now()),
         );
         if (ResponsiveHelper.isWeb()) {
-          String hostname = html.window.location.hostname;
-          String protocol = html.window.location.protocol;
-          String selectedUrl =
+          String? hostname = html.window.location.hostname;
+          String? protocol = html.window.location.protocol;
+          String? selectedUrl =
               '${AppConstants.BASE_URL}/payment-mobile?order_id=$orderID&&customer_id=${Provider.of<ProfileProvider>(context, listen: false).userInfoModel.id}'
               '&&callback=$protocol//$hostname${RouteHelper.orderSuccessful}$orderID';
           html.window.open(selectedUrl, "_self");
@@ -1128,34 +1123,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           Navigator.pushReplacementNamed(
             context,
             RouteHelper.getPaymentRoute(
-                'checkout', _orderModel.id.toString(), _orderModel.userId),
+                'checkout', _orderModel.id.toString(), _orderModel.userId!),
             arguments:
                 PaymentScreen(orderModel: _orderModel, fromCheckout: true),
           );
         }
       }
     } else if (orderID == '-1') {
-      ScaffoldMessenger.of(_scaffoldKey.currentContext).showSnackBar(
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(
         SnackBar(
             content: Text(getTranslated(
-                'order_not_availble', _scaffoldKey.currentContext)),
+                'order_not_availble', _scaffoldKey.currentContext!)),
             duration: Duration(milliseconds: 2000),
             backgroundColor: Colors.red),
       );
-      Provider.of<CartProvider>(_scaffoldKey.currentContext, listen: false)
+      Provider.of<CartProvider>(_scaffoldKey.currentContext!, listen: false)
           .clearCartList();
-      Navigator.of(_scaffoldKey.currentContext).pop();
+      Navigator.of(_scaffoldKey.currentContext!).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(message),
+            content: Text(message!),
             duration: Duration(milliseconds: 600),
             backgroundColor: Colors.red),
       );
     }
   }
 
-  void _setMarkers(int selectedIndex) async {
+  void _setMarkers(int? selectedIndex) async {
     Uint8List activeImageData =
         await convertAssetToUnit8List(Images.restaurant_marker, width: 70);
     Uint8List inactiveImageData = await convertAssetToUnit8List(
@@ -1167,8 +1162,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     for (int index = 0; index < _branches.length; index++) {
       _markers.add(Marker(
         markerId: MarkerId('branch_$index'),
-        position: LatLng(double.parse(_branches[index].latitude),
-            double.parse(_branches[index].longitude)),
+        position: LatLng(double.parse(_branches[index].latitude!),
+            double.parse(_branches[index].longitude!)),
         infoWindow: InfoWindow(
             title: _branches[index].name, snippet: _branches[index].address),
         icon: BitmapDescriptor.fromBytes(
@@ -1176,24 +1171,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ));
     }
 
-    _mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    _mapController!.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(
-          double.parse(_branches[selectedIndex].latitude),
-          double.parse(_branches[selectedIndex].longitude),
+        double.parse(_branches[selectedIndex!].latitude ?? '0'),
+        double.parse(_branches[selectedIndex].longitude ?? '0'),
         ),
         zoom: 9)));
 
     setState(() {});
   }
 
-  Future<Uint8List> convertAssetToUnit8List(String imagePath,
-      {int width = 50}) async {
-    ByteData data = await rootBundle.load(imagePath);
+  Future<Uint8List> convertAssetToUnit8List(String? imagePath,
+      {int? width = 50}) async {
+    ByteData data = await rootBundle.load(imagePath!);
     Codec codec = await instantiateImageCodec(data.buffer.asUint8List(),
         targetWidth: width);
     FrameInfo fi = await codec.getNextFrame();
     return (await fi.image.toByteData(format: ImageByteFormat.png))
-        .buffer
+        !.buffer
         .asUint8List();
   }
 }

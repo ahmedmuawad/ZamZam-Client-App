@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/response_model.dart';
 import 'package:flutter_grocery/data/model/response/userinfo_model.dart';
@@ -13,31 +15,32 @@ import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
 import 'package:flutter_grocery/view/base/custom_text_field.dart';
 import 'package:flutter_grocery/view/base/main_app_bar.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProfileEditScreen extends StatefulWidget {
   final UserInfoModel userInfoModel;
 
-  ProfileEditScreen({this.userInfoModel});
+  ProfileEditScreen({required this.userInfoModel});
 
   @override
   _ProfileEditScreenState createState() => _ProfileEditScreenState();
 }
 
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
-  TextEditingController _firstNameController;
-  TextEditingController _lastNameController;
-  TextEditingController _emailController;
-  TextEditingController _phoneController;
-  TextEditingController _passwordController;
-  TextEditingController _confirmPasswordController;
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
+  late TextEditingController _emailController;
+  late TextEditingController _phoneController;
+  late TextEditingController _passwordController;
+  late TextEditingController _confirmPasswordController;
 
-  FocusNode firstNameFocus;
-  FocusNode lastNameFocus;
-  FocusNode emailFocus;
-  FocusNode phoneFocus;
-  FocusNode passwordFocus;
-  FocusNode confirmPasswordFocus;
+  late FocusNode firstNameFocus;
+  late FocusNode lastNameFocus;
+  late FocusNode emailFocus;
+  late FocusNode phoneFocus;
+  late FocusNode passwordFocus;
+  late FocusNode confirmPasswordFocus;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -78,10 +81,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               Provider.of<SplashProvider>(context, listen: false).setPageIndex(0);
               Navigator.of(context).pop();
             }),
-        title: Text(getTranslated('update_profile', context) ?? '',
+        title: Text(getTranslated('update_profile', context) ,
             style: poppinsMedium.copyWith(
               fontSize: Dimensions.FONT_SIZE_SMALL,
-              color: Theme.of(context).textTheme.bodyText1.color,
+              color: Theme.of(context).textTheme.bodyLarge!.color,
             )),
       ),
       body: SafeArea(
@@ -119,7 +122,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                 borderRadius: BorderRadius.circular(50),
                                 child: profileProvider.file != null
                                     ? Image.file(profileProvider.file, width: 80, height: 80, fit: BoxFit.fill) : profileProvider.data != null
-                                    ? Image.network(profileProvider.data.path, width: 80, height: 80, fit: BoxFit.fill) : ClipRRect(
+                                    ? Image.network(profileProvider.data!.path, width: 80, height: 80, fit: BoxFit.fill) : ClipRRect(
                                         borderRadius: BorderRadius.circular(50),
                                         child: FadeInImage.assetNetwork(
                                           placeholder: Images.placeholder,
@@ -252,7 +255,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20),
                                     child: Text(
-                                      getTranslated('phone_number', context) ?? '',
+                                      getTranslated('phone_number', context) ,
                                       style: poppinsRegular.copyWith(
                                         fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
                                         color: ColorResources.getHintColor(context),
@@ -283,7 +286,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20),
                                     child: Text(
-                                      getTranslated('password', context) ?? '',
+                                      getTranslated('password', context) ,
                                       style: poppinsRegular.copyWith(
                                         fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
                                         color: ColorResources.getHintColor(context),
@@ -313,7 +316,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20),
                                     child: Text(
-                                      getTranslated('confirm_password', context) ?? '',
+                                      getTranslated('confirm_password', context) ,
                                       style:
                                       poppinsRegular.copyWith(
                                         fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
@@ -341,11 +344,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       !profileProvider.isLoading
                           ? TextButton(
                               onPressed: () async {
-                                String _firstName = _firstNameController.text.trim();
-                                String _lastName = _lastNameController.text.trim();
-                                String _phoneNumber = _phoneController.text.trim();
-                                String _password = _passwordController.text.trim();
-                                String _confirmPassword = _confirmPasswordController.text.trim();
+                                String? _firstName = _firstNameController.text.trim();
+                                String? _lastName = _lastNameController.text.trim();
+                                String? _phoneNumber = _phoneController.text.trim();
+                                String? _password = _passwordController.text.trim();
+                                String? _confirmPassword = _confirmPasswordController.text.trim();
                                 if (profileProvider.userInfoModel.fName == _firstName &&
                                     profileProvider.userInfoModel.lName == _lastName &&
                                     profileProvider.userInfoModel.phone == _phoneNumber &&
@@ -367,13 +370,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                   showCustomSnackBar(getTranslated('password_did_not_match', context), context);
                                 } else {
                                   UserInfoModel updateUserInfoModel = profileProvider.userInfoModel;
-                                  updateUserInfoModel.fName = _firstNameController.text ?? "";
-                                  updateUserInfoModel.lName = _lastNameController.text ?? "";
-                                  updateUserInfoModel.phone = _phoneController.text ?? '';
+                                  updateUserInfoModel.fName = _firstNameController.text ;
+                                  updateUserInfoModel.lName = _lastNameController.text ;
+                                  updateUserInfoModel.phone = _phoneController.text ;
 
                                   ResponseModel _responseModel = await profileProvider.updateUserInfo(
                                     updateUserInfoModel,
-                                    profileProvider.file, profileProvider.data,
+                                    (profileProvider.file != null ? PickedFile(profileProvider.file.path) : null) as File, profileProvider.data as PickedFile,
                                     Provider.of<AuthProvider>(context, listen: false).getUserToken(),
                                   );
                                   if (_responseModel.isSuccess) {
@@ -383,7 +386,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                     ));
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(_responseModel.message), backgroundColor: Colors.red,
+                                      content: Text(_responseModel.message!), backgroundColor: Colors.red,
                                     ));
                                   }
                                   setState(() {});

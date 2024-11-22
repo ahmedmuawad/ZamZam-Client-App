@@ -17,17 +17,14 @@ import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import '../../../../provider/auth_provider.dart';
 import '../../../../provider/localization_provider.dart';
 
-import 'package:flutter/material.dart';
-
-import '../cart_screen.dart';
-
 class CartProductWidget extends StatefulWidget {
   final CartApiModel cart;
   final CartModel cartL;
-  final int index;
+  final int? index;
   bool _isLoading = false;
 
-  CartProductWidget({this.cart, this.cartL, @required this.index});
+  CartProductWidget(
+      {required this.cart, required this.cartL, required this.index});
 
   @override
   State<CartProductWidget> createState() => _CartProductWidgetState();
@@ -78,7 +75,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                             .removeCouponData(false);
 
                         Provider.of<CartProvider>(context, listen: false)
-                            .removeFromCart(widget.index, context);
+                            .removeFromCart(widget.index!, context);
                         setState(() {
                           widget._isLoading = false;
                         });
@@ -97,7 +94,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                               color: Colors.grey[
                                   Provider.of<ThemeProvider>(context).darkTheme
                                       ? 700
-                                      : 300],
+                                      : 300]!,
                               blurRadius: 5,
                               spreadRadius: 1,
                             )
@@ -109,7 +106,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                             child: FadeInImage.assetNetwork(
                               placeholder: Images.placeholder,
                               image:
-                                  '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${widget.cart.cartProduct.image}',
+                                  '${Provider.of<SplashProvider>(context, listen: false).baseUrls.productImageUrl}/${widget.cart.cartProduct!.image}',
                               height: 70,
                               width: 85,
                               imageErrorBuilder: (c, o, s) => Image.asset(
@@ -129,7 +126,8 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                 children: [
                                   Expanded(
                                       flex: 2,
-                                      child: Text(widget.cart.cartProduct.name,
+                                      child: Text(
+                                          widget.cart.cartProduct!.name!,
                                           style: poppinsRegular.copyWith(
                                               fontSize: Dimensions
                                                   .FONT_SIZE_EXTRA_SMALL),
@@ -139,21 +137,21 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                     children: [
                                       Text(
                                         PriceConverter.convertPrice(context,
-                                            widget.cart.cartProduct.price,
+                                            widget.cart.cartProduct!.price,
                                             discount: widget
-                                                .cart.cartProduct.discount,
-                                            discountType: widget
-                                                .cart.cartProduct.discountType),
+                                                .cart.cartProduct!.discount,
+                                            discountType: widget.cart
+                                                .cartProduct!.discountType)!,
                                         style: poppinsBold.copyWith(
                                             fontSize:
                                                 Dimensions.FONT_SIZE_SMALL),
                                       ),
-                                      widget.cart.cartProduct.discount > 0
+                                      widget.cart.cartProduct!.discount! > 0
                                           ? Text(
                                               PriceConverter.convertPrice(
                                                   context,
-                                                  widget
-                                                      .cart.cartProduct.price),
+                                                  widget.cart.cartProduct!
+                                                      .price)!,
                                               style: poppinsRegular.copyWith(
                                                 fontSize: Dimensions
                                                     .FONT_SIZE_EXTRA_SMALL,
@@ -178,8 +176,8 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                                 Dimensions.FONT_SIZE_SMALL))),
                                 InkWell(
                                   onTap: () async {
-                                    if (widget.cart.quantity > 0) {
-                                      if (widget.cart.quantity > 1) {
+                                    if (widget.cart.quantity! > 0) {
+                                      if (widget.cart.quantity! > 1) {
                                         Provider.of<CartProvider>(context,
                                                 listen: false)
                                             .decreamentProduct(
@@ -193,12 +191,12 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                                         listen: false)
                                                     .locale
                                                     .languageCode,
-                                                widget.cart.cartProduct.id);
-                                        if (widget.cart.quantity > 0) {
+                                                widget.cart.cartProduct!.id);
+                                        if (widget.cart.quantity! > 0) {
                                           Provider.of<CartProvider>(context,
                                                   listen: false)
-                                              .setQuantity(
-                                                  false, widget.index, context);
+                                              .setQuantity(false, widget.index!,
+                                                  context);
                                         }
 
                                         setState(() {});
@@ -212,7 +210,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                         Provider.of<CartProvider>(context,
                                                 listen: false)
                                             .removeFromCart(
-                                                widget.index, context);
+                                                widget.index!, context);
                                         setState(() {});
                                         Loader.hide();
                                       }
@@ -220,7 +218,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                       Provider.of<CartProvider>(context,
                                               listen: false)
                                           .removeFromCart(
-                                              widget.index, context);
+                                              widget.index!, context);
                                       setState(() {});
                                     }
                                   },
@@ -242,8 +240,8 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                         color: Theme.of(context).primaryColor)),
                                 InkWell(
                                   onTap: () {
-                                    if (widget.cart.quantity <
-                                        widget.cart.cartProduct.totalStock) {
+                                    if (widget.cart.quantity! <
+                                        widget.cart.cartProduct!.totalStock!) {
                                       Provider.of<CartProvider>(context,
                                               listen: false)
                                           .increamentProduct(
@@ -256,14 +254,14 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                                       listen: false)
                                                   .locale
                                                   .languageCode,
-                                              widget.cart.cartProduct.id);
+                                              widget.cart.cartProduct!.id);
                                       Provider.of<CouponProvider>(context,
                                               listen: false)
                                           .removeCouponData(false);
                                       Provider.of<CartProvider>(context,
                                               listen: false)
                                           .setQuantity(
-                                              true, widget.index, context);
+                                              true, widget.index!, context);
                                       setState(() {});
                                     } else {
                                       showCustomSnackBar(
@@ -307,7 +305,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                       Provider.of<CartProvider>(context,
                                               listen: false)
                                           .removeFromCart(
-                                              widget.index, context);
+                                              widget.index!, context);
                                       setState(() {});
                                     },
                                     icon: Icon(Icons.delete, color: Colors.red),
@@ -339,7 +337,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                       .removeCouponData(false);
 
                   Provider.of<CartProvider>(context, listen: false)
-                      .removeFromCart(widget.index, context);
+                      .removeFromCart(widget.index!, context);
                 },
                 child: Container(
                   height: 95,
@@ -354,7 +352,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                         color: Colors.grey[
                             Provider.of<ThemeProvider>(context).darkTheme
                                 ? 700
-                                : 300],
+                                : 300]!,
                         blurRadius: 5,
                         spreadRadius: 1,
                       )
@@ -386,14 +384,14 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                           children: [
                             Expanded(
                                 flex: 2,
-                                child: Text(widget.cartL.name,
+                                child: Text(widget.cartL.name!,
                                     style: poppinsRegular.copyWith(
                                         fontSize: Dimensions.FONT_SIZE_SMALL),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis)),
                             Text(
                               PriceConverter.convertPrice(
-                                  context, widget.cartL.price),
+                                  context, widget.cartL.price)!,
                               style: poppinsSemiBold.copyWith(
                                   fontSize: Dimensions.FONT_SIZE_SMALL),
                             ),
@@ -412,7 +410,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                               Provider.of<CouponProvider>(context,
                                       listen: false)
                                   .removeCouponData(false);
-                              if (widget.cartL.quantity > 1) {
+                              if (widget.cartL.quantity! > 1) {
                                 if (_isLogged) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
@@ -430,11 +428,11 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                 }
                                 Provider.of<CartProvider>(context,
                                         listen: false)
-                                    .setQuantity(false, widget.index, context);
+                                    .setQuantity(false, widget.index!, context);
                               } else if (widget.cartL.quantity == 1) {
                                 Provider.of<CartProvider>(context,
                                         listen: false)
-                                    .removeFromCart(widget.index, context);
+                                    .removeFromCart(widget.index!, context);
                               }
                             },
                             child: Padding(
@@ -482,7 +480,8 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                 context,
                                 isError: false);
                           } */
-                              if (widget.cartL.quantity < widget.cartL.stock) {
+                              if (widget.cartL.quantity! <
+                                  widget.cartL.stock!) {
                                 if (_isLogged) {
                                   Provider.of<CartProvider>(context,
                                           listen: false)
@@ -503,7 +502,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                     .removeCouponData(false);
                                 Provider.of<CartProvider>(context,
                                         listen: false)
-                                    .setQuantity(true, widget.index, context);
+                                    .setQuantity(true, widget.index!, context);
                               } else {
                                 showCustomSnackBar(
                                     getTranslated('out_of_stock', context),
@@ -542,7 +541,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                                   cart.id); */
                                 Provider.of<CartProvider>(context,
                                         listen: false)
-                                    .removeFromCart(widget.index, context);
+                                    .removeFromCart(widget.index!, context);
                               },
                               icon: Icon(Icons.delete, color: Colors.red),
                             ),

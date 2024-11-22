@@ -54,11 +54,11 @@ class CategoryView extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pushNamed(
                             RouteHelper.getCategoryProductsRoute(
-                                category.categoryList[index].id),
+                                category.categoryList[index].id!),
                             arguments: CategoryProductScreen(
                                 categoryModel: CategoryModel(
                               id: category.categoryList[index].id,
-                              name: category.categoryList[index].name,
+                              name: category.categoryList[index].name, subCate: [],
                             )),
                           );
                         },
@@ -74,7 +74,7 @@ class CategoryView extends StatelessWidget {
                                     ? null
                                     : [
                                         BoxShadow(
-                                            color: Colors.grey[200],
+                                            color: Colors.grey[200]!,
                                             spreadRadius: 1,
                                             blurRadius: 5)
                                       ],
@@ -117,7 +117,7 @@ class CategoryView extends StatelessWidget {
                                 padding: EdgeInsets.all(
                                     Dimensions.PADDING_SIZE_EXTRA_SMALL),
                                 child: Text(
-                                  category.categoryList[index].name,
+                                  category.categoryList[index].name!,
                                   style: poppinsRegular,
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
@@ -169,7 +169,7 @@ class CategoryShimmer extends StatelessWidget {
                 ? null
                 : [
                     BoxShadow(
-                        color: Colors.grey[200], spreadRadius: 1, blurRadius: 5)
+                        color: Colors.grey[200]!, spreadRadius: 1, blurRadius: 5)
                   ],
           ),
           child: Shimmer(

@@ -27,7 +27,7 @@ import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   final CustomDrawerController drawerController;
-  MainScreen({@required this.drawerController});
+  MainScreen({required this.drawerController});
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -35,8 +35,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   List<Widget> _screens = [];
-  List<String> _keys = [];
-  bool _isLoggedIn;
+  List<String?> _keys = [];
+  bool? _isLoggedIn;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
 
     _isLoggedIn =
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    if (_isLoggedIn) {
+    if (_isLoggedIn!) {
       Provider.of<ProfileProvider>(context, listen: false).getUserInfo(context);
       Provider.of<LocationProvider>(context, listen: false)
           .initAddressList(context);
@@ -113,7 +113,7 @@ class _MainScreenState extends State<MainScreen> {
                               height: 30,
                               width: 30),
                           onPressed: () {
-                            widget.drawerController.toggle();
+                            widget.drawerController.toggle!();
                           }),
                       title: splash.pageIndex == 0
                           ? Row(children: [
@@ -129,7 +129,7 @@ class _MainScreenState extends State<MainScreen> {
                               )),
                             ])
                           : Text(
-                              getTranslated(_keys[splash.pageIndex], context),
+                              getTranslated(_keys[splash.pageIndex!]!, context),
                               style: poppinsMedium.copyWith(
                                   fontSize: Dimensions.FONT_SIZE_LARGE,
                                   color: Theme.of(context).primaryColor),
@@ -142,8 +142,8 @@ class _MainScreenState extends State<MainScreen> {
                                     Image.asset(Images.cart_icon,
                                         color: Theme.of(context)
                                             .textTheme
-                                            .bodyText1
-                                            .color,
+                                            .bodyLarge
+                                            !.color,
                                         width: 25),
                                     Positioned(
                                         top: -7,
@@ -157,7 +157,7 @@ class _MainScreenState extends State<MainScreen> {
                                                   color: Theme.of(context)
                                                       .primaryColor),
                                               child: Text(
-                                                  _isLoggedIn
+                                                  _isLoggedIn!
                                                       ? '${cart.cartApiList.length}'
                                                       : '${cart.cartList.length}',
                                                   style: TextStyle(
@@ -179,8 +179,8 @@ class _MainScreenState extends State<MainScreen> {
                                       size: 30,
                                       color: Theme.of(context)
                                           .textTheme
-                                          .bodyText1
-                                          .color),
+                                          .bodyLarge
+                                          !.color),
                                   onPressed: () {
                                     Navigator.pushNamed(
                                         context, RouteHelper.searchProduct);
@@ -191,7 +191,7 @@ class _MainScreenState extends State<MainScreen> {
                                   Center(child: Consumer<CartProvider>(
                                     builder: (context, cart, child) {
                                       return Text(
-                                          _isLoggedIn
+                                          _isLoggedIn!
                                               ? '${cart.cartApiList.length} ${getTranslated('items', context)}'
                                               : '${cart.cartList.length} ${getTranslated('items', context)}',
                                           style: poppinsMedium.copyWith(
@@ -203,7 +203,7 @@ class _MainScreenState extends State<MainScreen> {
                                 ]
                               : null,
                     ),
-              body: _screens[splash.pageIndex],
+              body: _screens[splash.pageIndex!],
             ),
           ),
         );

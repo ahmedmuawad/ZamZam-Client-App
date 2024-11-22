@@ -17,8 +17,8 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final PageController _pageController = PageController();
-  int _pageIndex = 0;
-  List<Widget> _screens;
+  int? _pageIndex = 0;
+  List<Widget>? _screens;
   GlobalKey<ScaffoldMessengerState> _scaffoldKey = GlobalKey();
 
   @override
@@ -54,7 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           selectedItemColor: Theme.of(context).primaryColor,
           unselectedItemColor: Colors.grey,
           showUnselectedLabels: true,
-          currentIndex: _pageIndex,
+          currentIndex: _pageIndex!,
           type: BottomNavigationBarType.fixed,
           items: [
             _barItem(Images.home, getTranslated('home', context), 0),
@@ -66,32 +66,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _barItem(Images.chat, getTranslated('live_chat', context), 6),
             _barItem(Images.settings, getTranslated('settings', context), 7),
           ],
-          onTap: (int index) {
+          onTap: (int? index) {
             _setPage(index);
           },
         ),
         body: PageView.builder(
           controller: _pageController,
-          itemCount: _screens.length,
+          itemCount: _screens!.length,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            return _screens[index];
+            return _screens![index];
           },
         ),
       ),
     );
   }
 
-  BottomNavigationBarItem _barItem(String icon, String label, int index) {
+  BottomNavigationBarItem _barItem(String? icon, String? label, int? index) {
     return BottomNavigationBarItem(
-      icon: Image.asset(icon, color: index == _pageIndex ? Theme.of(context).primaryColor : Colors.grey, width: 25),
+      icon: Image.asset(icon!, color: index == _pageIndex ? Theme.of(context).primaryColor : Colors.grey, width: 25),
       label: label,
     );
   }
 
-  void _setPage(int pageIndex) {
+  void _setPage(int? pageIndex) {
     setState(() {
-      _pageController.jumpToPage(pageIndex);
+      _pageController.jumpToPage(pageIndex!);
       _pageIndex = pageIndex;
     });
   }

@@ -1,47 +1,17 @@
-import 'dart:collection';
-import 'dart:typed_data';
-import 'dart:ui';
-import 'package:flutter_grocery/data/model/response/address_model.dart';
-import 'package:flutter_grocery/helper/price_converter.dart';
-import 'package:flutter_grocery/provider/localization_provider.dart';
-import 'package:flutter_grocery/view/base/custom_divider.dart';
-import 'package:flutter_grocery/view/base/custom_snackbar.dart';
-import 'package:flutter_grocery/view/base/custom_text_field.dart';
 import 'package:flutter_grocery/view/base/main_app_bar.dart';
-import 'package:flutter_grocery/view/screens/checkout/widget/delivery_fee_dialog.dart';
 import 'package:flutter_grocery/view/screens/menu/menu_screen.dart';
-import 'package:universal_html/html.dart' as html;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_grocery/data/model/body/place_order_body.dart';
-import 'package:flutter_grocery/data/model/response/cart_model.dart';
 import 'package:flutter_grocery/data/model/response/config_model.dart';
-import 'package:flutter_grocery/data/model/response/order_model.dart';
-import 'package:flutter_grocery/helper/date_converter.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/provider/auth_provider.dart';
-import 'package:flutter_grocery/provider/cart_provider.dart';
-import 'package:flutter_grocery/provider/coupon_provider.dart';
 import 'package:flutter_grocery/provider/location_provider.dart';
-import 'package:flutter_grocery/provider/order_provider.dart';
-import 'package:flutter_grocery/provider/product_provider.dart';
-import 'package:flutter_grocery/provider/profile_provider.dart';
 import 'package:flutter_grocery/provider/splash_provider.dart';
-import 'package:flutter_grocery/provider/theme_provider.dart';
-import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:flutter_grocery/utill/color_resources.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
-import 'package:flutter_grocery/utill/images.dart';
-import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/custom_app_bar.dart';
 import 'package:flutter_grocery/view/base/custom_button.dart';
-import 'package:flutter_grocery/view/base/not_login_screen.dart';
-import 'package:flutter_grocery/view/screens/address/add_new_address_screen.dart';
-import 'package:flutter_grocery/view/screens/checkout/order_successful_screen.dart';
-import 'package:flutter_grocery/view/screens/checkout/payment_screen.dart';
-import 'package:flutter_grocery/view/screens/checkout/widget/custom_check_box.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -50,22 +20,21 @@ import '../address/widget/location_search_dialog.dart';
 import '../auth/login_screen.dart';
 
 class SelectAddressScreen extends StatefulWidget {
-  bool isFirst;
-  SelectAddressScreen({@required this.isFirst});
+  final bool isFirst;
+  SelectAddressScreen({required this.isFirst});
   @override
   _SelectAddressScreenState createState() => _SelectAddressScreenState();
 }
 
 class _SelectAddressScreenState extends State<SelectAddressScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  GoogleMapController _controller;
+  GoogleMapController? _controller;
   TextEditingController _locationController = TextEditingController();
-  CameraPosition _cameraPosition;
+  CameraPosition? _cameraPosition;
   List<Branches> _branches = [];
 
-  void showInSnackBar(String value) {
-    _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text(value)));
+  void showInSnackBar(String? value) {
+    ScaffoldMessenger.of(context).showSnackBar(new SnackBar(content: new Text(value!)));
   }
 
   @override
@@ -80,7 +49,7 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
+    _controller!.dispose();
   }
 
   void _openSearchDialog(
@@ -93,21 +62,19 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<LocationProvider>(context).address != null) {
-      _locationController.text =
-          '${Provider.of<LocationProvider>(context).address.name ?? ''}, '
-          '${Provider.of<LocationProvider>(context).address.subAdministrativeArea ?? ''}, '
-          '${Provider.of<LocationProvider>(context).address.isoCountryCode ?? ''}';
-    }
-    bool _isAvailable = _branches.length == 1 &&
-        (_branches[0].latitude == null || _branches[0].latitude.isEmpty);
+    _locationController.text =
+        '${Provider.of<LocationProvider>(context).address.name ?? ''}, '
+        '${Provider.of<LocationProvider>(context).address.subAdministrativeArea ?? ''}, '
+        '${Provider.of<LocationProvider>(context).address.isoCountryCode ?? ''}';
+      bool _isAvailable = _branches.length == 1 &&
+        (_branches[0].latitude!.isEmpty);
     return Scaffold(
       key: _scaffoldKey,
       appBar: ResponsiveHelper.isDesktop(context)
           ? MainAppBar()
           : CustomAppBar(
-              title: getTranslated('select_delivery_address', context),
-              isCenter: true),
+              title: getTranslated('select_delivery_address', context) ?? '',
+              isCenter: true, onBackPressed: () => Navigator.of(context).pop(),),
       body: Center(
         child: Container(
           width: 1170,
@@ -128,7 +95,7 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                   mapToolbarEnabled: true,
                   onCameraIdle: () {
                     locationProvider.updatePosition(
-                        _cameraPosition, false, null, context);
+                        _cameraPosition!, false, null, context);
                   },
                   onCameraMove: ((_position) => _cameraPosition = _position),
                   // markers: Set<Marker>.of(locationProvider.markers),
@@ -138,34 +105,32 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                         mapController: controller);
                   },
                 ),
-                locationProvider.pickAddress != null
-                    ? InkWell(
-                        onTap: () => _openSearchDialog(context, _controller),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimensions.PADDING_SIZE_LARGE,
-                              vertical: 18.0),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: Dimensions.PADDING_SIZE_LARGE,
-                              vertical: 23.0),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(
-                                  Dimensions.PADDING_SIZE_SMALL)),
-                          child: Row(children: [
-                            Expanded(
-                                child: Text(
-                                    locationProvider.pickAddress.name != null
-                                        ? '${locationProvider.pickAddress.name ?? ''} ${locationProvider.pickAddress.subAdministrativeArea ?? ''} ${locationProvider.pickAddress.isoCountryCode ?? ''}'
-                                        : '',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis)),
-                            Icon(Icons.search, size: 20),
-                          ]),
-                        ),
-                      )
-                    : SizedBox.shrink(),
+                InkWell(
+                  onTap: () => _openSearchDialog(context, _controller!),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimensions.PADDING_SIZE_LARGE,
+                        vertical: 18.0),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: Dimensions.PADDING_SIZE_LARGE,
+                        vertical: 23.0),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(
+                            Dimensions.PADDING_SIZE_SMALL)),
+                    child: Row(children: [
+                      Expanded(
+                          child: Text(
+                              locationProvider.pickAddress.name != null
+                                  ? '${locationProvider.pickAddress.name ?? ''} ${locationProvider.pickAddress.subAdministrativeArea ?? ''} ${locationProvider.pickAddress.isoCountryCode ?? ''}'
+                                  : '',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis)),
+                      Icon(Icons.search, size: 20),
+                    ]),
+                  ),
+                ),
                 Positioned(
                   bottom: 0,
                   right: 0,
@@ -202,18 +167,18 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                               Dimensions.PADDING_SIZE_LARGE),
                           child: CustomButton(
                             buttonText:
-                                getTranslated('select_location', context),
+                                getTranslated('select_location', context) ?? '',
                             onPressed: () {
                               if (!_isAvailable) {
-                                double _distance = Geolocator.distanceBetween(
-                                      double.parse(_branches[0].latitude),
-                                      double.parse(_branches[0].longitude),
+                                double? _distance = Geolocator.distanceBetween(
+                                      double.parse(_branches[0].latitude!),
+                                      double.parse(_branches[0].longitude!),
                                       locationProvider.pickPosition.latitude,
                                       locationProvider.pickPosition.longitude,
                                     ) /
                                     1000;
                                 _isAvailable =
-                                    _distance < _branches[0].coverage;
+                                    _distance < _branches[0].coverage!;
                               }
                               locationProvider.setAddAddressData();
                               if (_isAvailable) {

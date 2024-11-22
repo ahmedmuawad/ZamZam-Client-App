@@ -20,10 +20,10 @@ class PlutoMenuBar extends StatefulWidget {
   final List<MenuItem> menus;
 
   /// Text of the back button. (default. 'Go back')
-  final String goBackButtonText;
+  final String? goBackButtonText;
 
   /// menu height. (default. '45')
-  final double height;
+  final double? height;
 
   /// BackgroundColor. (default. 'white')
   final Color backgroundColor;
@@ -35,7 +35,7 @@ class PlutoMenuBar extends StatefulWidget {
   final Color menuIconColor;
 
   /// menu icon size. (default. '20')
-  final double menuIconSize;
+  final double? menuIconSize;
 
   /// more icon color. (default. 'black54')
   final Color moreIconColor;
@@ -47,7 +47,7 @@ class PlutoMenuBar extends StatefulWidget {
   final TextStyle textStyle;
 
   PlutoMenuBar({
-    this.menus,
+    required this.menus,
     this.goBackButtonText = 'Go back',
     this.height = 45,
     this.backgroundColor = Colors.white,
@@ -57,8 +57,7 @@ class PlutoMenuBar extends StatefulWidget {
     this.moreIconColor = Colors.black54,
     this.gradient = true,
     this.textStyle = const TextStyle(),
-  })  : assert(menus != null),
-        assert(menus.length > 0);
+  }) : assert(menus.length > 0);
 
   @override
   _PlutoMenuBarState createState() => _PlutoMenuBarState();
@@ -126,7 +125,7 @@ class _PlutoMenuBarState extends State<PlutoMenuBar> {
 
 class MenuItem {
   /// Menu title
-  final String title;
+  final String? title;
 
   final IconData icon;
 
@@ -138,16 +137,16 @@ class MenuItem {
 
   MenuItem({
     this.title,
-    this.icon,
-    this.onTap,
-    this.children,
+    required this.icon,
+    required this.onTap,
+    required this.children,
   }) : _key = GlobalKey();
 
-  MenuItem._back({
-    this.title,
+  MenuItem._back(
     this.icon,
-    this.onTap,
-    this.children,
+    this.onTap, {
+    this.title,
+    required this.children,
   })  : _key = GlobalKey(),
         _isBack = true;
 
@@ -156,47 +155,47 @@ class MenuItem {
   bool _isBack = false;
 
   Offset get _position {
-    RenderBox box = _key.currentContext.findRenderObject();
+    RenderBox box = _key.currentContext!.findRenderObject() as RenderBox;
 
     return box.localToGlobal(Offset.zero);
   }
 
-  bool get _hasChildren => children != null && children.length > 0;
+  bool get _hasChildren => children.length > 0;
 }
 
 class _MenuWidget extends StatelessWidget {
   final MenuItem menu;
 
-  final String goBackButtonText;
+  final String? goBackButtonText;
 
-  final double height;
+  final double? height;
 
   final Color backgroundColor;
 
   final Color menuIconColor;
 
-  final double menuIconSize;
+  final double? menuIconSize;
 
   final Color moreIconColor;
 
   final TextStyle textStyle;
 
   _MenuWidget(
-      this.menu, {
-        this.goBackButtonText,
-        this.height,
-        this.backgroundColor,
-        this.menuIconColor,
-        this.menuIconSize,
-        this.moreIconColor,
-        this.textStyle,
-      }) : super(key: menu._key);
+    this.menu, {
+    this.goBackButtonText,
+    this.height,
+    required this.backgroundColor,
+    required this.menuIconColor,
+    required this.menuIconSize,
+    required this.moreIconColor,
+    required this.textStyle,
+  }) : super(key: menu._key);
 
   Widget _buildPopupItem(MenuItem _menu) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        if (_menu.icon != null) ...[
+        ...[
           Icon(
             _menu.icon,
             color: menuIconColor,
@@ -210,7 +209,7 @@ class _MenuWidget extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 3),
             child: Text(
-              _menu.title,
+              _menu.title ?? '',
               style: textStyle,
               maxLines: 1,
               overflow: TextOverflow.visible,
@@ -227,14 +226,14 @@ class _MenuWidget extends StatelessWidget {
   }
 
   Future<MenuItem> _showPopupMenu(
-      BuildContext context,
-      List<MenuItem> menuItems,
-      ) async {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    BuildContext context,
+    List<MenuItem> menuItems,
+  ) async {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
 
-    final Offset position = menu._position + Offset(0, height - 11);
+    final Offset position = menu._position + Offset(0, height! - 11);
 
-    return await showMenu(
+    return await showMenu<MenuItem>(
       context: context,
       position: RelativeRect.fromLTRB(
         position.dx,
@@ -250,40 +249,36 @@ class _MenuWidget extends StatelessWidget {
       }).toList(),
       // elevation: 2.0,
       color: backgroundColor,
-    );
+    ) ?? menuItems.first;
   }
 
   Widget _getMenu(
-      BuildContext context,
-      MenuItem menu,
-      ) {
+    BuildContext context,
+    MenuItem menu,
+  ) {
     Future<MenuItem> _getSelectedMenu(
-        MenuItem menu, {
-          MenuItem previousMenu,
-          int stackIdx,
-          List<MenuItem> stack,
-        }) async {
+      MenuItem menu, {
+      MenuItem? previousMenu,
+      int? stackIdx,
+      List<MenuItem>? stack,
+    }) async {
       if (!menu._hasChildren) {
         return menu;
       }
 
       final items = [...menu.children];
 
-      if (previousMenu != null) {
-        items.add(MenuItem._back(
-          title: goBackButtonText,
-          children: previousMenu.children,
-        ));
-      }
+      items.add(MenuItem._back(
+        Icons.arrow_back,
+        () {},
+        title: goBackButtonText,
+        children: previousMenu!.children,
+      ));
 
       MenuItem _selectedMenu = await _showPopupMenu(
         context,
         items,
       );
-
-      if (_selectedMenu == null) {
-        return null;
-      }
 
       MenuItem _previousMenu = menu;
 
@@ -292,20 +287,17 @@ class _MenuWidget extends StatelessWidget {
       }
 
       if (_selectedMenu._isBack) {
-        --stackIdx;
-        if (stackIdx < 0) {
-          _previousMenu = null;
+        if (stackIdx != null) {
+          --stackIdx;
+        }
+        if (stackIdx! < 0) {
+          _previousMenu = menu;
         } else {
-          _previousMenu = stack[stackIdx];
+          _previousMenu = stack![stackIdx];
         }
       } else {
-        if (stackIdx == null) {
-          stackIdx = 0;
-          stack = [menu];
-        } else {
-          stackIdx += 1;
-          stack.add(menu);
-        }
+        stackIdx = (stackIdx ?? 0) + 1;
+        stack!.add(menu);
       }
 
       return await _getSelectedMenu(
@@ -321,37 +313,49 @@ class _MenuWidget extends StatelessWidget {
         if (menu._hasChildren) {
           MenuItem selectedMenu = await _getSelectedMenu(menu);
 
-          if (selectedMenu?.onTap != null) {
-            selectedMenu.onTap();
-          }
-        } else if (menu?.onTap != null) {
+          selectedMenu.onTap();
+        } else
           menu.onTap();
-        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (menu.icon != null) ...[
+            ...[
               Stack(
-                clipBehavior: Clip.none, children: [
-                Icon(menu.icon, size: menuIconSize,color: menuIconColor,),
-                menu.title.isEmpty? Positioned(
-                  top: -7, right: -7,
-                  child: Container(
-                    padding: EdgeInsets.all(4),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red),
-                    child: Center(
-                      child: Text(
-                        Provider.of<CartProvider>(context).cartList.length.toString(),
-                        style: TextStyle(color: Colors.white, fontSize: 8) //rubikMedium.copyWith(color: ColorResources.COLOR_WHITE, fontSize: 8),
-                      ),
-                    ),
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(
+                    menu.icon,
+                    size: menuIconSize,
+                    color: menuIconColor,
                   ),
-                ):SizedBox()
-              ],
+                  menu.title!.isEmpty
+                      ? Positioned(
+                          top: -7,
+                          right: -7,
+                          child: Container(
+                            padding: EdgeInsets.all(4),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.red),
+                            child: Center(
+                              child: Text(
+                                  Provider.of<CartProvider>(context)
+                                      .cartList
+                                      .length
+                                      .toString(),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize:
+                                          8) //rubikMedium.copyWith(color: ColorResources.COLOR_WHITE, fontSize: 8),
+                                  ),
+                            ),
+                          ),
+                        )
+                      : SizedBox()
+                ],
               ),
               // menu.icon,
               // color: menuIconColor,
@@ -362,7 +366,7 @@ class _MenuWidget extends StatelessWidget {
               ),
             ],
             Text(
-              menu.title,
+              menu.title!,
               style: textStyle,
             ),
           ],

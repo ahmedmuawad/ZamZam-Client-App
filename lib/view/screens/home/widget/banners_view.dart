@@ -6,16 +6,13 @@ import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/provider/banner_provider.dart';
-import 'package:flutter_grocery/provider/category_provider.dart';
 import 'package:flutter_grocery/provider/splash_provider.dart';
 import 'package:flutter_grocery/utill/color_resources.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/view/screens/coupon/coupon_screen.dart';
-import 'package:flutter_grocery/view/screens/product/product_details_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import '../../menu/widget/menu_button.dart';
 import '../../product/category_product_screen.dart';
 
 class BannersView extends StatelessWidget {
@@ -64,58 +61,24 @@ class BannersView extends StatelessWidget {
                                             )),
                                   );
                                 }
-                                if (banner.bannerList[index].productId !=
-                                    null) {
-                                  Product product;
-                                  for (Product prod in banner.productList) {
-                                    if (prod.id ==
-                                        banner.bannerList[index].productId) {
-                                      product = prod;
-                                      break;
-                                    }
-                                  }
-                                  if (product != null) {
-                                    Navigator.of(context).pushNamed(
-                                      RouteHelper.getCategoryProductsRoute(
-                                          product.id),
-                                      arguments: CategoryProductScreen(
-                                          categoryModel: CategoryModel(
-                                        id: product.id,
-                                        name: product.name,
-                                      )),
-                                    );
-                                  }
-                                } else if (banner
-                                        .bannerList[index].categoryId !=
-                                    null) {
-                                  CategoryModel category;
-                                  for (CategoryModel categoryModel
-                                      in Provider.of<CategoryProvider>(context,
-                                              listen: false)
-                                          .categoryList) {
-                                    if (categoryModel.id ==
-                                        banner.bannerList[index].categoryId) {
-                                      category = categoryModel;
-                                      break;
-                                    }
-                                  }
-                                  if (category != null) {
-                                    /* Navigator.of(context).pushNamed(
-                                      RouteHelper.getCategoryProductsRoute(
-                                          category.id),
-                                    ); */
-                                    Navigator.of(context).pushNamed(
-                                      RouteHelper.getCategoryProductsRoute(
-                                          category.id),
-                                      arguments: CategoryProductScreen(
-                                          categoryModel: CategoryModel(
-                                        id: category.id,
-                                        name: category.name,
-                                      )),
-                                    );
+                                Product? product;
+                                for (Product prod in banner.productList) {
+                                  if (prod.id ==
+                                      banner.bannerList[index].productId) {
+                                    product = prod;
+                                    break;
                                   }
                                 }
-                              },
+                                Navigator.of(context).pushNamed(
+                                  RouteHelper.getCategoryProductsRoute(
+                                      product!.id!),
+                                  arguments: CategoryProductScreen(
+                                      categoryModel: CategoryModel(
+                                    id: product.id,
+                                    name: product.name, subCate: [],
+                                  )),
+                                );
+                                                                                          },
                               child: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 10),
                                 decoration: BoxDecoration(
@@ -144,7 +107,7 @@ class BannersView extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: banner.bannerList.map((bnr) {
-                              int index = banner.bannerList.indexOf(bnr);
+                              int? index = banner.bannerList.indexOf(bnr);
                               return TabPageSelectorIndicator(
                                 backgroundColor: index == banner.currentIndex
                                     ? Theme.of(context).primaryColor

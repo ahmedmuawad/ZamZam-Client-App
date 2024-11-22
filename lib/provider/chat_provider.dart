@@ -10,11 +10,11 @@ import 'package:image_picker/image_picker.dart';
 
 class ChatProvider extends ChangeNotifier {
   final ChatRepo chatRepo;
-  ChatProvider({@required this.chatRepo});
+  ChatProvider({required this.chatRepo});
 
-  List<ChatModel> _chatList;
-  List<bool> _showDate;
-  List<DateTime> _dateList;
+  late List<ChatModel> _chatList;
+  late List<bool> _showDate;
+  late List<DateTime> _dateList;
   bool _isSendButtonActive = false;
 
   List<ChatModel> get chatList => _chatList;
@@ -23,10 +23,10 @@ class ChatProvider extends ChangeNotifier {
 
 
   void getChatList(BuildContext context) async {
-    _chatList = null;
+    _chatList = [];
     _file = null;
     ApiResponse apiResponse = await chatRepo.getChatList();
-    if (apiResponse.response != null && apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _chatList = [];
       _showDate = [];
       _dateList = [];
@@ -49,30 +49,14 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> sendMessage(String message, String token, int userID, BuildContext context) async {
-    PickedFile _imageFile = _file;
+  Future<void> sendMessage(String? message, String? token, int? userID, BuildContext context) async {
+    PickedFile _imageFile = _file!;
     _file = null;
     notifyListeners();
     http.StreamedResponse response = await chatRepo.sendMessage(message, _imageFile, token);
     if (response.statusCode == 200) {
-      if(_imageFile != null) {
-        getChatList(context);
-      }else {
-        ChatModel _chatModel = ChatModel(
-          userId: userID, image: null, message: message, reply: null,
-          createdAt: DateTime.now().toUtc().toIso8601String(),
-        );
-        DateTime _originalDateTime = DateConverter.isoStringToLocalDate(_chatModel.createdAt);
-        DateTime _convertedDate = DateTime(_originalDateTime.year, _originalDateTime.month, _originalDateTime.day);
-        bool _addDate = false;
-        if(!_dateList.contains(_convertedDate)) {
-          _addDate = true;
-          _dateList.add(_convertedDate);
-        }
-        _chatList.add(_chatModel);
-        _showDate.add(_addDate);
-      }
-    } else {
+      getChatList(context);
+        } else {
       print('${response.statusCode} ${response.reasonPhrase}');
     }
     _isSendButtonActive = false;
@@ -90,35 +74,27 @@ class ChatProvider extends ChangeNotifier {
   }
 
 
-  PickedFile _file;
-  PickedFile get file => _file;
+  PickedFile? _file;
+  PickedFile? get file => _file;
   final picker = ImagePicker();
 
   void choosePhotoFromGallery() async {
-    PickedFile pickedFile = await picker.getImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      _file = pickedFile;
-    } else {
-      print('No image selected.');
-    }
+    XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    _file = pickedFile != null ? PickedFile(pickedFile.path) : null;
     _isSendButtonActive = true;
 
     notifyListeners();
   }
   void choosePhotoFromCamera() async {
-    PickedFile pickedFile = await picker.getImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _file = pickedFile;
-    } else {
-      print('No image selected.');
-    }
+    XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
+    _file = pickedFile != null ? PickedFile(pickedFile.path) : null;
     _isSendButtonActive = true;
     notifyListeners();
   }
 
-  void removeImage(String text) {
+  void removeImage(String? text) {
     _file = null;
-    text.isEmpty ? _isSendButtonActive = false : _isSendButtonActive = true;
+    text!.isEmpty ? _isSendButtonActive = false : _isSendButtonActive = true;
     notifyListeners();
   }
 

@@ -14,8 +14,8 @@ import 'package:provider/provider.dart';
 class AddressWidget extends StatelessWidget {
 
   final AddressModel addressModel;
-  final int index;
-  AddressWidget({@required this.addressModel, @required this.index});
+  final int? index;
+  AddressWidget({required this.addressModel, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +24,15 @@ class AddressWidget extends StatelessWidget {
         padding: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_SMALL),
         child: InkWell(
           onTap: () {
-            if(addressModel != null) {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => MapWidget(address: addressModel)));
-            }
-          },
+            Navigator.push(context, MaterialPageRoute(builder: (_) => MapWidget(address: addressModel)));
+                    },
           child: Container(
             padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7),
               color: ColorResources.getCardBgColor(context),
               boxShadow: [
-                BoxShadow(color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 700 : 200], spreadRadius: 0.5, blurRadius: 0.5)
+                BoxShadow(color: Colors.grey[Provider.of<ThemeProvider>(context).darkTheme ? 700 : 200]!, spreadRadius: 0.5, blurRadius: 0.5)
               ],
             ),
             child: Column(
@@ -55,11 +53,11 @@ class AddressWidget extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  addressModel.addressType,
+                                  addressModel.addressType!,
                                   style: poppinsMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.FONT_SIZE_LARGE),
                                 ),
                                 Text(
-                                  addressModel.address,
+                                  addressModel.address!,
                                   style: poppinsRegular.copyWith(color: ColorResources.getTextColor(context), fontSize: Dimensions.FONT_SIZE_LARGE),
                                 ),
                               ],
@@ -68,9 +66,9 @@ class AddressWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    PopupMenuButton<String>(
+                    PopupMenuButton<String?>(
                       padding: EdgeInsets.all(0),
-                      onSelected: (String result) {
+                      onSelected: (String? result) {
                         if (result == 'delete') {
                           showDialog(context: context, barrierDismissible: false, builder: (context) => Center(
                             child: CircularProgressIndicator(
@@ -78,29 +76,29 @@ class AddressWidget extends StatelessWidget {
                             ),
                           ));
                           Provider.of<LocationProvider>(context, listen: false).deleteUserAddressByID(addressModel.id, index,
-                                  (bool isSuccessful, String message) {
+                                  (bool isSuccessful, String? message) {
                             Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       backgroundColor: isSuccessful ? Colors.green : Colors.red,
-                                      content: Text(message),
+                                      content: Text(message!),
                                     ));
                               });
                         } else {
                           Navigator.of(context).pushNamed(
                             RouteHelper.getUpdateAddressRoute(
-                              addressModel.address, addressModel.addressType, addressModel.latitude, addressModel.longitude, addressModel.contactPersonName,
-                              addressModel.contactPersonNumber, addressModel.id, addressModel.userId,
+                              addressModel.address!, addressModel.addressType!, addressModel.latitude!, addressModel.longitude!, addressModel.contactPersonName!,
+                              addressModel.contactPersonNumber!, addressModel.id!, addressModel.userId!,
                             ),
                             arguments: AddNewAddressScreen(isEnableUpdate: true, address: addressModel),
                           );
                         }
                       },
-                      itemBuilder: (BuildContext c) => <PopupMenuEntry<String>>[
-                        PopupMenuItem<String>(
+                      itemBuilder: (BuildContext c) => <PopupMenuEntry<String?>>[
+                        PopupMenuItem<String?>(
                           value: 'edit',
                           child: Text(getTranslated('edit', context), style: poppinsMedium),
                         ),
-                        PopupMenuItem<String>(
+                        PopupMenuItem<String?>(
                           value: 'delete',
                           child: Text(getTranslated('delete', context), style: poppinsMedium),
                         ),

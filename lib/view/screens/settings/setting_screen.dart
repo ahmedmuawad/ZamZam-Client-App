@@ -29,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
               SwitchListTile(
                 value: Provider.of<ThemeProvider>(context).darkTheme,
                 onChanged: (bool isActive) =>Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
-                title: Text(getTranslated('dark_theme', context), style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                title: Text(getTranslated('dark_theme', context) ?? '', style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
               ),
 
               TitleButton(
@@ -48,15 +48,15 @@ class SettingsScreen extends StatelessWidget {
 
 class TitleButton extends StatelessWidget {
   final IconData icon;
-  final String title;
-  final Function onTap;
-  TitleButton({@required this.icon, @required this.title, @required this.onTap});
+  final String? title;
+  final VoidCallback? onTap;
+  TitleButton({required this.icon, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).primaryColor),
-      title: Text(title, style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+      title: Text(title!, style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
       onTap: onTap,
     );
   }

@@ -22,7 +22,7 @@ class AddNewAddressScreen extends StatefulWidget {
   final bool isEnableUpdate;
   final bool fromCheckout;
   final AddressModel address;
-  AddNewAddressScreen({this.isEnableUpdate = false, this.address, this.fromCheckout = false});
+  AddNewAddressScreen({this.isEnableUpdate = false, required this.address, this.fromCheckout = false});
 
   @override
   State<AddNewAddressScreen> createState() => _AddNewAddressScreenState();
@@ -34,8 +34,8 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
   final FocusNode _addressNode = FocusNode();
   final FocusNode _nameNode = FocusNode();
   final FocusNode _numberNode = FocusNode();
-  GoogleMapController _controller;
-  CameraPosition _cameraPosition;
+  late GoogleMapController _controller;
+  late CameraPosition _cameraPosition;
   bool _updateAddress = true;
 
   @override
@@ -46,10 +46,10 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
     Provider.of<LocationProvider>(context, listen: false).updateAddressStatusMessae(message: '');
     Provider.of<LocationProvider>(context, listen: false).updateErrorMessage(message: '');
 
-    if (widget.isEnableUpdate && widget.address != null) {
+    if (widget.isEnableUpdate) {
       _updateAddress = false;
       Provider.of<LocationProvider>(context, listen: false)
-          .updatePosition(CameraPosition(target: LatLng(double.parse(widget.address.latitude), double.parse(widget.address.longitude))), true, widget.address.address, context);
+          .updatePosition(CameraPosition(target: LatLng(double.parse(widget.address.latitude!), double.parse(widget.address.longitude!))), true, widget.address.address, context);
       _contactPersonNameController.text = '${widget.address.contactPersonName}';
       _contactPersonNumberController.text = '${widget.address.contactPersonNumber}';
       if (widget.address.addressType == 'Home') {
@@ -69,7 +69,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ResponsiveHelper.isDesktop(context)? MainAppBar(): CustomAppBar(title: widget.isEnableUpdate ? getTranslated('update_address', context) : getTranslated('add_new_address', context)),
+      appBar: ResponsiveHelper.isDesktop(context)? MainAppBar(): CustomAppBar(title: widget.isEnableUpdate ? getTranslated('update_address', context) : getTranslated('add_new_address', context), onBackPressed: (){},),
       body: Consumer<LocationProvider>(
         builder: (context, locationProvider, child) {
           // if (locationProvider.address != null && _updateAddress) {
@@ -102,8 +102,8 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                                     mapType: MapType.normal,
                                     initialCameraPosition: CameraPosition(
                                       target: widget.isEnableUpdate
-                                          ? LatLng(double.parse(widget.address.latitude) ?? 0.0, double.parse(widget.address.longitude) ?? 0.0)
-                                          : LatLng(locationProvider.position.latitude ?? 0.0, locationProvider.position.longitude ?? 0.0),
+                                          ? LatLng(double.parse(widget.address.latitude!) , double.parse(widget.address.longitude!) )
+                                          : LatLng(locationProvider.position.latitude , locationProvider.position.longitude ),
                                       zoom: 17,
                                     ),
                                     onTap: (latLng) {
@@ -126,7 +126,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                                     onCameraMove: ((_position) => _cameraPosition = _position),
                                     onMapCreated: (GoogleMapController controller) {
                                       _controller = controller;
-                                      if (!widget.isEnableUpdate && _controller != null) {
+                                      if (!widget.isEnableUpdate) {
                                         Provider.of<LocationProvider>(context, listen: false).getCurrentLocation(context, true, mapController: _controller);
                                       }
                                     },
@@ -201,7 +201,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                                   child: Text(
                                     getTranslated('add_the_location_correctly', context),
                                     style:
-                                    Theme.of(context).textTheme.headline2.copyWith(color: ColorResources.getTextColor(context), fontSize: Dimensions.FONT_SIZE_SMALL),
+                                    Theme.of(context).textTheme.displayMedium!.copyWith(color: ColorResources.getTextColor(context), fontSize: Dimensions.FONT_SIZE_SMALL),
                                   )),
                             ),
 
@@ -211,7 +211,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                               child: Text(
                                 getTranslated('label_us', context),
                                 style:
-                                Theme.of(context).textTheme.headline3.copyWith(color: ColorResources.getHintColor(context), fontSize: Dimensions.FONT_SIZE_LARGE),
+                                Theme.of(context).textTheme.displaySmall!.copyWith(color: ColorResources.getHintColor(context), fontSize: Dimensions.FONT_SIZE_LARGE),
                               ),
                             ),
 
@@ -241,7 +241,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                                             ? Theme.of(context).primaryColor
                                             : ColorResources.getCardBgColor(context)),
                                     child: Text(
-                                      getTranslated(locationProvider.getAllAddressType[index].toLowerCase(), context),
+                                      getTranslated(locationProvider.getAllAddressType[index]!.toLowerCase(), context),
                                       style: poppinsRegular.copyWith(
                                           color: locationProvider.selectAddressIndex == index
                                               ? Theme.of(context).cardColor
@@ -257,7 +257,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                               child: Text(
                                 getTranslated('delivery_address', context),
                                 style:
-                                Theme.of(context).textTheme.headline3.copyWith(color: ColorResources.getHintColor(context), fontSize: Dimensions.FONT_SIZE_LARGE),
+                                Theme.of(context).textTheme.displaySmall!.copyWith(color: ColorResources.getHintColor(context), fontSize: Dimensions.FONT_SIZE_LARGE),
                               ),
                             ),
 
@@ -325,13 +325,13 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                   ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  locationProvider.addressStatusMessage.length > 0 ? CircleAvatar(backgroundColor: Colors.green, radius: 5) : SizedBox.shrink(),
+                  locationProvider.addressStatusMessage!.length > 0 ? CircleAvatar(backgroundColor: Colors.green, radius: 5) : SizedBox.shrink(),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       locationProvider.addressStatusMessage ?? "",
                       style:
-                      Theme.of(context).textTheme.headline2.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Colors.green, height: 1),
+                      Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Colors.green, height: 1),
                     ),
                   )
                 ],
@@ -339,7 +339,7 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                   : Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  locationProvider.errorMessage.length > 0
+                  locationProvider.errorMessage!.length > 0
                       ? CircleAvatar(backgroundColor: Theme.of(context).primaryColor, radius: 5)
                       : SizedBox.shrink(),
                   SizedBox(width: 8),
@@ -348,8 +348,8 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                       locationProvider.errorMessage ?? "",
                       style: Theme.of(context)
                           .textTheme
-                          .headline2
-                          .copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Theme.of(context).primaryColor, height: 1),
+                          .displayMedium
+                          !.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Theme.of(context).primaryColor, height: 1),
                     ),
                   )
                 ],
@@ -362,14 +362,14 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                 child: !locationProvider.isLoading ? CustomButton(
                   buttonText: widget.isEnableUpdate ? getTranslated('update_address', context) : getTranslated('save_location', context),
                   onPressed: locationProvider.loading ? null : () { AddressModel addressModel = AddressModel(
-                    addressType: locationProvider.getAllAddressType[locationProvider.selectAddressIndex],
-                    contactPersonName: _contactPersonNameController.text ?? '',
-                    contactPersonNumber: _contactPersonNumberController.text ?? '',
-                    address: locationProvider.locationController.text ?? '',
-                    latitude: widget.isEnableUpdate ? locationProvider.position.latitude.toString() ?? widget.address.latitude
-                        : locationProvider.position.latitude.toString() ?? '',
-                    longitude: widget.isEnableUpdate ? locationProvider.position.longitude.toString() ?? widget.address.longitude
-                        : locationProvider.position.longitude.toString() ?? '',
+                    addressType: locationProvider.getAllAddressType[locationProvider.selectAddressIndex!],
+                    contactPersonName: _contactPersonNameController.text ,
+                    contactPersonNumber: _contactPersonNumberController.text ,
+                    address: locationProvider.locationController.text ,
+                    latitude: widget.isEnableUpdate ? locationProvider.position.latitude.toString() 
+                        : locationProvider.position.latitude.toString() ,
+                    longitude: widget.isEnableUpdate ? locationProvider.position.longitude.toString() 
+                        : locationProvider.position.longitude.toString() ,
                   );
                   if (widget.isEnableUpdate) {
                     addressModel.id = widget.address.id;
@@ -384,10 +384,10 @@ class _AddNewAddressScreenState extends State<AddNewAddressScreen> {
                           Provider.of<LocationProvider>(context, listen: false).initAddressList(context);
                           Provider.of<OrderProvider>(context, listen: false).setAddressIndex(-1);
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value.message), duration: Duration(milliseconds: 600), backgroundColor: Colors.green));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value.message!), duration: Duration(milliseconds: 600), backgroundColor: Colors.green));
                         }
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value.message), duration: Duration(milliseconds: 600), backgroundColor: Colors.red));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value.message!), duration: Duration(milliseconds: 600), backgroundColor: Colors.red));
                       }
                     });
                   }

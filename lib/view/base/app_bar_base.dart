@@ -19,7 +19,7 @@ class AppBarBase extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
             icon: Stack(clipBehavior: Clip.none, children: [
               Image.asset(Images.cart_icon,
-                  color: Theme.of(context).textTheme.bodyText1.color,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
                   width: 25),
               Positioned(
                 top: -7,
@@ -43,7 +43,7 @@ class AppBarBase extends StatelessWidget implements PreferredSizeWidget {
             }),
         IconButton(
             icon: Icon(Icons.search,
-                size: 30, color: Theme.of(context).textTheme.bodyText1.color),
+                size: 30, color: Theme.of(context).textTheme.bodyLarge!.color),
             onPressed: () {
               Navigator.pushNamed(context, RouteHelper.searchProduct);
               // Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));

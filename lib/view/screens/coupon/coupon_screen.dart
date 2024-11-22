@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_grocery/helper/date_converter.dart';
-import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/provider/auth_provider.dart';
 import 'package:flutter_grocery/provider/coupon_provider.dart';
@@ -11,15 +9,13 @@ import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/app_bar_base.dart';
-import 'package:flutter_grocery/view/base/main_app_bar.dart';
 import 'package:flutter_grocery/view/base/no_data_screen.dart';
 import 'package:flutter_grocery/view/base/not_login_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../base/custom_app_bar.dart';
 
 class CouponScreen extends StatelessWidget {
-  int index = 0;
+  int? index = 0;
   CouponScreen({this.index});
   @override
   Widget build(BuildContext context) {
@@ -63,7 +59,7 @@ class CouponScreen extends StatelessWidget {
                                             onTap: () {
                                               Clipboard.setData(ClipboardData(
                                                   text: coupon
-                                                      .couponList[index].code));
+                                                      .couponList[index].code!));
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
                                                       content: Text(getTranslated(
@@ -114,7 +110,7 @@ class CouponScreen extends StatelessWidget {
                                                             coupon
                                                                 .couponList[
                                                                     index]
-                                                                .title,
+                                                                .title!,
                                                             style: poppinsSemiBold
                                                                 .copyWith(
                                                                     color: Colors
@@ -127,7 +123,7 @@ class CouponScreen extends StatelessWidget {
                                                             coupon
                                                                 .couponList[
                                                                     index]
-                                                                .code,
+                                                                .code!,
                                                             style: poppinsMedium
                                                                 .copyWith(
                                                                     color: Colors

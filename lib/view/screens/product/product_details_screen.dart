@@ -28,22 +28,23 @@ import '../../../provider/auth_provider.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   final Product product;
-  final CartModel cart;
-  final int index;
-  ProductDetailsScreen({@required this.product, this.index, this.cart});
+  final CartModel? cart;
+  final int? index;
+  ProductDetailsScreen({required this.product, this.index, this.cart});
 
   @override
   Widget build(BuildContext context) {
     Provider.of<SplashProvider>(context, listen: false).initSharedData();
     Provider.of<CartProvider>(context, listen: false).getCartData();
 
-    Variations _variation;
+    ProductProvider productProvider = Provider.of<ProductProvider>(context, listen: false);
+    Variations _variation = productProvider.product.variations.first;
     final GlobalKey<DetailsAppBarState> _key = GlobalKey();
 
     Provider.of<ProductProvider>(context, listen: false).getProductDetails(
       context,
       product,
-      cart,
+      cart!,
       Provider.of<LocalizationProvider>(context, listen: false)
           .locale
           .languageCode,
@@ -53,88 +54,86 @@ class ProductDetailsScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).cardColor,
       appBar: ResponsiveHelper.isDesktop(context)
           ? MainAppBar()
-          : DetailsAppBar(key: _key),
+          : DetailsAppBar(),
       body: Consumer<ProductProvider>(
         builder: (context, productProvider, child) {
-          double price = 0;
-          int _stock = 0;
-          double priceWithQuantity = 0;
+          double? price = 0;
+          int? _stock = 0;
+          double? priceWithQuantity = 0;
           bool isExistInCart = false;
           CartModel _cartModel;
-          int cardIndex;
+          int? cardIndex;
 
-          if (productProvider.product != null) {
-            List<String> _variationList = [];
-            for (int index = 0;
-                index < productProvider.product.choiceOptions.length;
-                index++) {
-              _variationList.add(productProvider.product.choiceOptions[index]
-                  .options[productProvider.variationIndex[index]]
-                  .replaceAll(' ', ''));
+          List<String> _variationList = [];
+          for (int index = 0;
+              index < productProvider.product.choiceOptions.length;
+              index++) {
+            _variationList.add(productProvider.product.choiceOptions[index]
+                .options![productProvider.variationIndex[index]]
+                .replaceAll(' ', ''));
+          }
+          String? variationType = '';
+          bool isFirst = true;
+          _variationList.forEach((variation) {
+            if (isFirst) {
+              variationType = '$variationType$variation';
+              isFirst = false;
+            } else {
+              variationType = '$variationType-$variation';
             }
-            String variationType = '';
-            bool isFirst = true;
-            _variationList.forEach((variation) {
-              if (isFirst) {
-                variationType = '$variationType$variation';
-                isFirst = false;
-              } else {
-                variationType = '$variationType-$variation';
-              }
-            });
+          });
 
-            price = productProvider.product.price;
-            _stock = productProvider.product.totalStock;
-            for (Variations variation in productProvider.product.variations) {
-              if (variation.type == variationType) {
-                price = double.parse(variation.price);
-                _variation = variation;
-                _stock = variation.stock;
-                break;
-              }
+          price = productProvider.product.price;
+          _stock = productProvider.product.totalStock;
+          for (Variations variation in productProvider.product.variations) {
+            if (variation.type == variationType) {
+              price = double.parse(variation.price!);
+              _variation = variation;
+              _stock = variation.stock;
+              break;
             }
-            double priceWithDiscount = PriceConverter.convertWithDiscount(
+          }
+          double? priceWithDiscount = PriceConverter.convertWithDiscount(
+              context,
+              price,
+              productProvider.product.discount,
+              productProvider.product.discountType);
+          priceWithQuantity = priceWithDiscount! * productProvider.quantity;
+
+          _cartModel = CartModel(
+            productProvider.product.id,
+            productProvider.product.image[0],
+            productProvider.product.name,
+            price,
+            PriceConverter.convertWithDiscount(
                 context,
                 price,
                 productProvider.product.discount,
-                productProvider.product.discountType);
-            priceWithQuantity = priceWithDiscount * productProvider.quantity;
-
-            _cartModel = CartModel(
-              productProvider.product.id,
-              productProvider.product.image[0],
-              productProvider.product.name,
-              price,
-              PriceConverter.convertWithDiscount(
-                  context,
-                  price,
-                  productProvider.product.discount,
-                  productProvider.product.discountType),
-              productProvider.quantity,
-              _variation,
-              (price -
-                  PriceConverter.convertWithDiscount(
-                      context,
-                      price,
-                      productProvider.product.discount,
-                      productProvider.product.discountType)),
-              (price -
-                  PriceConverter.convertWithDiscount(
-                      context,
-                      price,
-                      productProvider.product.tax,
-                      productProvider.product.taxType)),
-              productProvider.product.capacity,
-              productProvider.product.unit,
-              _stock,
-            );
-            isExistInCart =
-                Provider.of<CartProvider>(context).isExistInCart(_cartModel) !=
-                    -1;
-            cardIndex = Provider.of<CartProvider>(context, listen: false)
-                .isExistInCart(_cartModel);
-          }
-
+                productProvider.product.discountType),
+            productProvider.quantity,
+            _variation,
+            (price! -
+                PriceConverter.convertWithDiscount(
+                    context,
+                    price,
+                    productProvider.product.discount,
+                    productProvider.product.discountType)!),
+            (price -
+                PriceConverter.convertWithDiscount(
+                    context,
+                    price,
+                    productProvider.product.tax,
+                    productProvider.product.taxType)!),
+            productProvider.product.capacity,
+            productProvider.product.unit,
+            _stock,
+          );
+          isExistInCart =
+              Provider.of<CartProvider>(context).isExistInCart(_cartModel) !=
+                  -1;
+          cardIndex = Provider.of<CartProvider>(context, listen: false)
+              .isExistInCart(_cartModel);
+        
           return productProvider.product != null
               ? Column(
                   children: [
@@ -175,7 +174,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                               .PADDING_SIZE_EXTRA_SMALL),
                                       Text(
                                           PriceConverter.convertPrice(
-                                              context, priceWithQuantity),
+                                              context, priceWithQuantity)!,
                                           style: poppinsBold.copyWith(
                                             color:
                                                 Theme.of(context).primaryColor,
@@ -188,10 +187,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                       height: Dimensions.PADDING_SIZE_LARGE),
 
                                   //Description
-                                  (productProvider.product.description !=
-                                              null &&
-                                          productProvider
-                                              .product.description.isNotEmpty)
+                                  (productProvider
+                                              .product.description!.isNotEmpty)
                                       ? Container(
                                           padding: EdgeInsets.all(
                                               Dimensions.PADDING_SIZE_SMALL),
@@ -203,12 +200,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                                       'description', context),
                                                   isDetailsPage: true,
                                                   onTap: () {
-                                                    List<int> _encoded = utf8
+                                                    List<int?> _encoded = utf8
                                                         .encode(productProvider
                                                             .product
-                                                            .description);
-                                                    String _data =
-                                                        base64Encode(_encoded);
+                                                            .description!);
+                                                    String? _data =
+                                                        base64Encode(_encoded.cast<int>());
                                                     _data = _data.replaceAll(
                                                         '+', '-');
                                                     Navigator.of(context)
@@ -253,13 +250,13 @@ class ProductDetailsScreen extends StatelessWidget {
                             buttonText: getTranslated(
                                 isExistInCart
                                     ? 'already_added'
-                                    : _stock <= 0
+                                    : _stock! <= 0
                                         ? 'out_of_stock'
                                         : 'add_to_card',
                                 context),
-                            onPressed: (!isExistInCart && _stock > 0)
+                            onPressed: (!isExistInCart && _stock! > 0)
                                 ? () async {
-                                    if (!isExistInCart && _stock > 0) {
+                                    if (!isExistInCart && _stock! > 0) {
                                       bool isLogged = Provider.of<AuthProvider>(
                                               context,
                                               listen: false)
@@ -286,7 +283,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                 _cartModel.quantity);
                                       }
 
-                                      _key.currentState.shake();
+                                      _key.currentState!.shake();
 
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(

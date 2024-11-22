@@ -13,7 +13,7 @@ void showAnimatedDialog(BuildContext context, Widget dialog, {bool isFlip = fals
       if(isFlip) {
         return Rotation3DTransition(
           alignment: Alignment.center,
-          turns: Tween<double>(begin: math.pi, end: 2.0 * math.pi).animate(CurvedAnimation(parent: a1, curve: Interval(0.0, 1.0, curve: Curves.linear))),
+          turns: Tween<double?>(begin: math.pi, end: 2.0 * math.pi).animate(CurvedAnimation(parent: a1, curve: Interval(0.0, 1.0, curve: Curves.linear))),
           child: FadeTransition(
             opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: a1, curve: Interval(0.5, 1.0, curve: Curves.elasticOut))),
             child: widget,
@@ -34,24 +34,22 @@ void showAnimatedDialog(BuildContext context, Widget dialog, {bool isFlip = fals
 
 class Rotation3DTransition extends AnimatedWidget {
   const Rotation3DTransition({
-    Key key,
-    @required Animation<double> turns,
+    required Animation<double?> turns,
     this.alignment = Alignment.center,
-    this.child,
-  })  : assert(turns != null),
-        super(key: key, listenable: turns);
+    required this.child,
+  })  : super( listenable: turns);
 
-  Animation<double> get turns => listenable;
+  Animation<double> get turns => listenable as Animation<double>;
 
   final Alignment alignment;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final double turnsValue = turns.value;
+    final double? turnsValue = turns.value;
     final Matrix4 transform = Matrix4.identity()
       ..setEntry(3, 2, 0.0006)
-      ..rotateY(turnsValue);
+      ..rotateY(turnsValue!);
     return Transform(
       transform: transform,
       alignment: FractionalOffset(0.5, 0.5),

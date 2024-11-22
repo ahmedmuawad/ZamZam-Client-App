@@ -14,58 +14,61 @@ import 'package:flutter_grocery/helper/api_checker.dart';
 import 'package:flutter_grocery/data/model/response/delivery_man_model.dart';
 import 'package:flutter_grocery/helper/date_converter.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
-import 'package:flutter_grocery/view/screens/cart/cart_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 
-import '../helper/route_helper.dart';
-import 'cart_provider.dart';
 
 class OrderProvider extends ChangeNotifier {
   final OrderRepo orderRepo;
-  OrderProvider({@required this.orderRepo});
+  OrderProvider({required this.orderRepo})
+      : _runningOrderList = [],
+        _historyOrderList = [],
+        _orderDetails = [],
+        _timeSlots = [],
+        _allTimeSlots = [],
+        _trackModel = OrderModel(),
+        _responseModel = ResponseModel(false, ''),
+        _deliveryManModel = DeliveryManModel();
 
-  String _balance;
+  String? _balance;
   List<OrderModel> _runningOrderList;
   List<OrderModel> _historyOrderList;
   List<OrderDetailsModel> _orderDetails;
-  int _paymentMethodIndex = 0;
+  int? _paymentMethodIndex = 0;
   OrderModel _trackModel;
-  int _addressIndex = -1;
+  int? _addressIndex = -1;
   bool _isLoading = false;
   bool _showCancelled = false;
   List<TimeSlotModel> _timeSlots;
   List<TimeSlotModel> _allTimeSlots;
   bool _isActiveOrder = true;
-  int _branchIndex = 0;
-  String _orderType = 'delivery';
+  int? _branchIndex = 0;
+  String? _orderType = 'delivery';
   ResponseModel _responseModel;
   DeliveryManModel _deliveryManModel;
-  double _distance = -1;
+  double? _distance = -1;
 
   List<TimeSlotModel> get timeSlots => _timeSlots;
   List<TimeSlotModel> get allTimeSlots => _allTimeSlots;
   List<OrderModel> get runningOrderList => _runningOrderList;
   List<OrderModel> get historyOrderList => _historyOrderList;
   List<OrderDetailsModel> get orderDetails => _orderDetails;
-  int get paymentMethodIndex => _paymentMethodIndex;
+  int? get paymentMethodIndex => _paymentMethodIndex;
   OrderModel get trackModel => _trackModel;
-  int get addressIndex => _addressIndex;
+  int? get addressIndex => _addressIndex;
   bool get isLoading => _isLoading;
   bool get showCancelled => _showCancelled;
   bool get isActiveOrder => _isActiveOrder;
-  int get branchIndex => _branchIndex;
-  String get orderType => _orderType;
+  int? get branchIndex => _branchIndex;
+  String? get orderType => _orderType;
   ResponseModel get responseModel => _responseModel;
   DeliveryManModel get deliveryManModel => _deliveryManModel;
-  double get distance => _distance;
-  String get balance => _balance;
+  double? get distance => _distance;
+  String? get balance => _balance;
 
   Future<void> getOrderList(BuildContext context) async {
     ApiResponse apiResponse = await orderRepo.getOrderList();
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _runningOrderList = [];
       _historyOrderList = [];
       apiResponse.response.data.forEach((order) {
@@ -89,8 +92,7 @@ class OrderProvider extends ChangeNotifier {
   Future<void> initializeTimeSlot(BuildContext context) async {
     _distance = -1;
     ApiResponse apiResponse = await orderRepo.getTimeSlot();
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _timeSlots = [];
       _allTimeSlots = [];
       apiResponse.response.data.forEach((timeSlot) {
@@ -104,31 +106,29 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> getDates(BuildContext context) {
+  List<String?> getDates(BuildContext context) {
     return orderRepo.getDates(context);
   }
 
-  int _selectDateSlot = 0;
-  int _selectTimeSlot = 0;
+  int? _selectDateSlot = 0;
+  int? _selectTimeSlot = 0;
 
-  int get selectDateSlot => _selectDateSlot;
-  int get selectTimeSlot => _selectTimeSlot;
+  int? get selectDateSlot => _selectDateSlot;
+  int? get selectTimeSlot => _selectTimeSlot;
 
-  void updateTimeSlot(int index) {
+  void updateTimeSlot(int? index) {
     _selectTimeSlot = index;
     notifyListeners();
   }
 
-  void updateDateSlot(int index) {
+  void updateDateSlot(int? index) {
     _selectDateSlot = index;
-    if (_allTimeSlots != null) {
-      validateSlot(_allTimeSlots, index);
-    }
-    _selectTimeSlot = index;
+    validateSlot(_allTimeSlots, index);
+      _selectTimeSlot = index;
     notifyListeners();
   }
 
-  void validateSlot(List<TimeSlotModel> slots, int dateIndex) {
+  void validateSlot(List<TimeSlotModel> slots, int? dateIndex) {
     _timeSlots = [];
     if (dateIndex == 0) {
       DateTime _date = DateTime.now();
@@ -151,8 +151,8 @@ class OrderProvider extends ChangeNotifier {
   double totalPrice = 0;
 
   Future<List<OrderDetailsModel>> getOrderDetails(
-      String orderID, BuildContext context) async {
-    _orderDetails = null;
+      String? orderID, BuildContext context) async {
+    _orderDetails = [];
     _isLoading = true;
     _showCancelled = false;
     subTotal = 0;
@@ -161,8 +161,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
     ApiResponse apiResponse = await orderRepo.getOrderDetails(orderID);
     _isLoading = false;
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _orderDetails = [];
       apiResponse.response.data.forEach((orderDetail) =>
           _orderDetails.add(OrderDetailsModel.fromJson(orderDetail)));
@@ -179,11 +178,10 @@ class OrderProvider extends ChangeNotifier {
   }
 
   Future<void> getOrderBalance(
-      String orderID, String token, BuildContext context) async {
+      String? orderID, String? token, BuildContext context) async {
     ApiResponse apiResponse = await orderRepo.getOrderBalance(orderID, token);
     _isLoading = false;
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _balance = GetOrderBalance.fromJson(apiResponse.response.data).balance;
 
       print('Balance ======================================= $_balance');
@@ -193,7 +191,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPaymentMethod(int index) {
+  void setPaymentMethod(int? index) {
     _paymentMethodIndex = index;
     notifyListeners();
   }
@@ -203,10 +201,9 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getDeliveryManData(String orderID, BuildContext context) async {
+  Future<void> getDeliveryManData(String? orderID, BuildContext context) async {
     ApiResponse apiResponse = await orderRepo.getDeliveryManData(orderID);
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _deliveryManModel = DeliveryManModel.fromJson(apiResponse.response.data);
     } else {
       ApiChecker.checkApi(context, apiResponse);
@@ -214,34 +211,17 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<ResponseModel> trackOrder(String orderID, OrderModel orderModel,
+  Future<ResponseModel> trackOrder(String? orderID, OrderModel orderModel,
       BuildContext context, bool fromTracking) async {
-    _trackModel = null;
+    _trackModel = OrderModel();
     ResponseModel _responseModel;
     if (!fromTracking) {
-      _orderDetails = null;
+      _orderDetails = [];
     }
     _showCancelled = false;
-    if (orderModel == null) {
-      _isLoading = true;
-      ApiResponse apiResponse = await orderRepo.trackOrder(orderID);
-      if (apiResponse.response != null &&
-          apiResponse.response.statusCode == 200) {
-        _trackModel = OrderModel.fromJson(apiResponse.response.data);
-        _responseModel =
-            ResponseModel(true, apiResponse.response.data.toString());
-      } else {
-        _responseModel =
-            ResponseModel(false, apiResponse.error.errors[0].message);
-        ApiChecker.checkApi(context, apiResponse);
-      }
-      _isLoading = false;
-      notifyListeners();
-    } else {
-      _trackModel = orderModel;
-      _responseModel = ResponseModel(true, 'Successful');
-    }
-    return _responseModel;
+    _trackModel = orderModel;
+    _responseModel = ResponseModel(true, 'Successful');
+      return _responseModel;
   }
 
   Future<void> placeOrder(BuildContext context, PlaceOrderBody placeOrderBody,
@@ -251,19 +231,18 @@ class OrderProvider extends ChangeNotifier {
     print(placeOrderBody.toJson());
     ApiResponse apiResponse = await orderRepo.placeOrder(placeOrderBody);
     _isLoading = false;
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
-      String message = apiResponse.response.data['message'];
-      String orderID = apiResponse.response.data['order_id'].toString();
+    if (apiResponse.response.statusCode == 200) {
+      String? message = apiResponse.response.data['message'];
+      String? orderID = apiResponse.response.data['order_id'].toString();
       callback(true, message, orderID);
       print('-------- Order placed successfully $orderID ----------');
-    } else if (apiResponse.error is String) {
+    } else if (apiResponse.error is String?) {
       print('-------- Order placed Notsuccessfully ----------');
       //callback(false , getTranslated('order_not_availble', context),0);
       callback(false, getTranslated('order_not_availble', context), '-1');
     } else {
-      String errorMessage;
-      if (apiResponse.error is String) {
+      String? errorMessage;
+      if (apiResponse.error is String?) {
         print(apiResponse.error.toString());
         errorMessage = apiResponse.error.toString();
       } else {
@@ -281,7 +260,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setAddressIndex(int index, {bool notify = true}) {
+  void setAddressIndex(int? index, {bool notify = true}) {
     _addressIndex = index;
     if (notify) {
       notifyListeners();
@@ -289,7 +268,7 @@ class OrderProvider extends ChangeNotifier {
   }
 
   void cancelOrder(
-    String orderID,
+    String? orderID,
     bool fromOrder,
     Function callback,
   ) async {
@@ -297,10 +276,9 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
     ApiResponse apiResponse = await orderRepo.cancelOrder(orderID);
     _isLoading = false;
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       if (fromOrder) {
-        OrderModel orderModel;
+        OrderModel? orderModel;
         _runningOrderList.forEach((order) {
           if (order.id.toString() == orderID) {
             orderModel = order;
@@ -317,14 +295,14 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setBranchIndex(int index) {
+  void setBranchIndex(int? index) {
     _branchIndex = index;
     _addressIndex = -1;
     _distance = -1;
     notifyListeners();
   }
 
-  void setOrderType(String type, {bool notify = true}) {
+  void setOrderType(String? type, {bool notify = true}) {
     _orderType = type;
     if (notify) {
       notifyListeners();
@@ -332,7 +310,7 @@ class OrderProvider extends ChangeNotifier {
   }
 
   Future<void> updatePaymentMethod(
-    String orderID,
+    String? orderID,
     bool fromOrder,
     Function callback,
   ) async {
@@ -340,20 +318,17 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
     ApiResponse apiResponse = await orderRepo.updatePaymentMethod(orderID);
     _isLoading = false;
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       if (fromOrder) {
-        int orderIndex;
+        int orderIndex = 0;
         for (int index = 0; index < _runningOrderList.length; index++) {
           if (_runningOrderList[index].id.toString() == orderID) {
             orderIndex = index;
             break;
           }
         }
-        if (orderIndex != null) {
-          _runningOrderList[orderIndex].paymentMethod = 'cash_on_delivery';
-        }
-      }
+        _runningOrderList[orderIndex].paymentMethod = 'cash_on_delivery';
+            }
       _trackModel.paymentMethod = 'cash_on_delivery';
       callback(apiResponse.response.data['message'], true);
     } else {
@@ -363,17 +338,17 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<int> _ratingList = [];
-  List<String> _reviewList = [];
+  List<int?> _ratingList = [];
+  List<String?> _reviewList = [];
   List<bool> _loadingList = [];
   List<bool> _submitList = [];
-  int _deliveryManRating = 0;
+  int? _deliveryManRating = 0;
 
-  List<int> get ratingList => _ratingList;
-  List<String> get reviewList => _reviewList;
+  List<int?> get ratingList => _ratingList;
+  List<String?> get reviewList => _reviewList;
   List<bool> get loadingList => _loadingList;
   List<bool> get submitList => _submitList;
-  int get deliveryManRating => _deliveryManRating;
+  int? get deliveryManRating => _deliveryManRating;
 
   void initRatingData(List<OrderDetailsModel> orderDetailsList) {
     _ratingList = [];
@@ -389,12 +364,12 @@ class OrderProvider extends ChangeNotifier {
     });
   }
 
-  void setRating(int index, int rate) {
+  void setRating(int index, int? rate) {
     _ratingList[index] = rate;
     notifyListeners();
   }
 
-  void setReview(int index, String review) {
+  void setReview(int index, String? review) {
     _reviewList[index] = review;
   }
 
@@ -409,13 +384,13 @@ class OrderProvider extends ChangeNotifier {
 
     ApiResponse response = await orderRepo.submitReview(reviewBody);
     ResponseModel responseModel;
-    if (response.response != null && response.response.statusCode == 200) {
+    if (response.response.statusCode == 200) {
       _submitList[index] = true;
       responseModel = ResponseModel(true, 'Review submitted successfully');
       notifyListeners();
     } else {
-      String errorMessage;
-      if (response.error is String) {
+      String? errorMessage;
+      if (response.error is String?) {
         errorMessage = response.error.toString();
       } else {
         errorMessage = response.error.errors[0].message;
@@ -432,13 +407,13 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
     ApiResponse response = await orderRepo.submitDeliveryManReview(reviewBody);
     ResponseModel responseModel;
-    if (response.response != null && response.response.statusCode == 200) {
+    if (response.response.statusCode == 200) {
       _deliveryManRating = 0;
       responseModel = ResponseModel(true, 'Review submitted successfully');
       notifyListeners();
     } else {
-      String errorMessage;
-      if (response.error is String) {
+      String? errorMessage;
+      if (response.error is String?) {
         errorMessage = response.error.toString();
       } else {
         errorMessage = response.error.errors[0].message;
@@ -463,8 +438,8 @@ class OrderProvider extends ChangeNotifier {
         _distance = DistanceModel.fromJson(response.response.data)
                 .rows[0]
                 .elements[0]
-                .distance
-                .value /
+                .distance!
+                .value! /
             1000;
       } else {
         _distance = Geolocator.distanceBetween(

@@ -13,14 +13,14 @@ import '../../coupon/coupon_screen.dart';
 
 class MenuButton extends StatelessWidget {
   final CustomDrawerController drawerController;
-  final int index;
-  final String icon;
-  final String title;
+  final int? index;
+  final String? icon;
+  final String? title;
   MenuButton(
-      {@required this.drawerController,
-      @required this.index,
-      @required this.icon,
-      @required this.title});
+      {required this.drawerController,
+      required this.index,
+      required this.icon,
+      required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +60,12 @@ class MenuButton extends StatelessWidget {
             } else if (ResponsiveHelper.isWeb() && index == 10) {
               Navigator.pushNamed(context, RouteHelper.getAboutUsRoute());
             }
-            drawerController.toggle();
+            drawerController.toggle!();
           },
           selected: splash.pageIndex == index,
           selectedTileColor: Colors.black.withAlpha(30),
           leading: Image.asset(
-            icon,
+            icon!,
             color: Provider.of<ThemeProvider>(context).darkTheme
                 ? ColorResources.getTextColor(context)
                 : ResponsiveHelper.isDesktop(context)
@@ -74,7 +74,7 @@ class MenuButton extends StatelessWidget {
             width: 25,
             height: 25,
           ),
-          title: Text(title,
+          title: Text(title!,
               style: poppinsRegular.copyWith(
                 fontSize: Dimensions.FONT_SIZE_LARGE,
                 color: Provider.of<ThemeProvider>(context).darkTheme

@@ -1,4 +1,4 @@
-import 'package:country_code_picker/country_code.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/helper/email_checker.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
@@ -26,16 +26,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   FocusNode _emailFocus = FocusNode();
   FocusNode _numberFocus = FocusNode();
   FocusNode _passwordFocus = FocusNode();
-  TextEditingController _emailController;
-  TextEditingController _passwordController;
-  GlobalKey<FormState> _formKeyLogin;
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
+  late GlobalKey<FormState> _formKeyLogin;
   bool email = true;
-  bool phone =false;
-  String _countryDialCode = '+880';
+  bool phone = false;
+  String? _countryDialCode = '+880';
 
   @override
   void initState() {
@@ -44,9 +43,15 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
 
-    _emailController.text = Provider.of<AuthProvider>(context, listen: false).getUserNumber() ?? null;
-    _passwordController.text = Provider.of<AuthProvider>(context, listen: false).getUserPassword() ?? null;
-    _countryDialCode = CountryCode.fromCountryCode(Provider.of<SplashProvider>(context, listen: false).configModel.country).dialCode;
+    _emailController.text =
+        Provider.of<AuthProvider>(context, listen: false).getUserNumber();
+    _passwordController.text =
+        Provider.of<AuthProvider>(context, listen: false).getUserPassword();
+    _countryDialCode = CountryCode.fromCountryCode(
+            Provider.of<SplashProvider>(context, listen: false)
+                .configModel
+                .country!)
+        .dialCode;
   }
 
   @override
@@ -58,10 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
+    double? _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: ResponsiveHelper.isDesktop(context)? MainAppBar():null,
+      appBar: ResponsiveHelper.isDesktop(context) ? MainAppBar() : null,
       body: SafeArea(
         child: Scrollbar(
           child: SingleChildScrollView(
@@ -69,18 +74,28 @@ class _LoginScreenState extends State<LoginScreen> {
             physics: BouncingScrollPhysics(),
             child: Center(
               child: Container(
-                  width: _width > 700 ? 700 : _width,
-                  padding: _width > 700 ? EdgeInsets.all(Dimensions.PADDING_SIZE_DEFAULT) : null,
-                  decoration: _width > 700 ? BoxDecoration(
-                    color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(10),
-                    boxShadow: [BoxShadow(color: Colors.grey[300], blurRadius: 5, spreadRadius: 1)],
-                  ) : null,
-                  child: Consumer<AuthProvider>(
+                width: _width > 700 ? 700 : _width,
+                padding: _width > 700
+                    ? EdgeInsets.all(Dimensions.PADDING_SIZE_DEFAULT)
+                    : null,
+                decoration: _width > 700
+                    ? BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey[300]!,
+                              blurRadius: 5,
+                              spreadRadius: 1)
+                        ],
+                      )
+                    : null,
+                child: Consumer<AuthProvider>(
                   builder: (context, authProvider, child) => Form(
                     key: _formKeyLogin,
                     child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                    //  physics: BouncingScrollPhysics(),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //  physics: BouncingScrollPhysics(),
                       children: [
                         //SizedBox(height: 30),
                         Center(
@@ -94,55 +109,125 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         //SizedBox(height: 20),
-                        Center(child: Text(
+                        Center(
+                            child: Text(
                           getTranslated('login', context),
-                          style: poppinsMedium.copyWith(fontSize: 24, color: ColorResources.getTextColor(context)),
+                          style: poppinsMedium.copyWith(
+                              fontSize: 24,
+                              color: ColorResources.getTextColor(context)),
                         )),
                         SizedBox(height: 35),
-                        Provider.of<SplashProvider>(context, listen: false).configModel.emailVerification ?
-                        Text(
-                          getTranslated('email', context),
-                          style: poppinsRegular.copyWith(color: ColorResources.getHintColor(context)),
-                        ):Text(
-                          getTranslated('mobile_number', context),
-                          style: poppinsRegular.copyWith(color: ColorResources.getHintColor(context)),
-                        ),
+                        Provider.of<SplashProvider>(context, listen: false)
+                                .configModel
+                                .emailVerification
+                            ? Text(
+                                getTranslated('email', context),
+                                style: poppinsRegular.copyWith(
+                                    color:
+                                        ColorResources.getHintColor(context)),
+                              )
+                            : Text(
+                                getTranslated('mobile_number', context),
+                                style: poppinsRegular.copyWith(
+                                    color:
+                                        ColorResources.getHintColor(context)),
+                              ),
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                        Provider.of<SplashProvider>(context, listen: false).configModel.emailVerification ?
-                        CustomTextField(
-                          hintText: getTranslated('demo_gmail', context),
-                          isShowBorder: true,
-                          focusNode: _emailFocus,
-                          nextFocus: _passwordFocus,
-                          controller: _emailController,
-                          inputType: TextInputType.emailAddress,
-                        ):Row(children: [
-                          CodePickerWidget(
-                            onChanged: (CountryCode countryCode) {
-                              _countryDialCode = countryCode.dialCode;
-                            },
-                            initialSelection: _countryDialCode,
-                            favorite: [_countryDialCode],
-                            showDropDownButton: true,
-                            padding: EdgeInsets.zero,
-                            showFlagMain: true,
-                            textStyle: TextStyle(color: Theme.of(context).textTheme.headline1.color),
-
-                          ),
-                          Expanded(child: CustomTextField(
-                            hintText: getTranslated('number_hint', context),
-                            isShowBorder: true,
-                            focusNode: _numberFocus,
-                            nextFocus: _passwordFocus,
-                            controller: _emailController,
-                            inputType: TextInputType.phone,
-                          )),
-                        ]),
+                        Provider.of<SplashProvider>(context, listen: false)
+                                .configModel
+                                .emailVerification
+                            ? CustomTextField(
+                                hintText: getTranslated('demo_gmail', context),
+                                isShowBorder: true,
+                                focusNode: _emailFocus,
+                                nextFocus: _passwordFocus,
+                                controller: _emailController,
+                                inputType: TextInputType.emailAddress,
+                              )
+                            : Row(children: [
+                                CodePickerWidget(
+                                  onChanged: (CountryCode countryCode) {
+                                    _countryDialCode = countryCode.dialCode;
+                                  },
+                                  onInit: (CountryCode countryCode) {
+                                    _countryDialCode = countryCode.dialCode;
+                                  },
+                                  initialSelection: _countryDialCode,
+                                  favorite: [_countryDialCode],
+                                  showDropDownButton: true,
+                                  padding: EdgeInsets.zero,
+                                  showFlagMain: true,
+                                  textStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge!
+                                          .color),
+                                  searchStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge!
+                                          .color),
+                                  dialogTextStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge!
+                                          .color),
+                                  emptySearchBuilder: (BuildContext context) {
+                                    return Center(
+                                      child: Text(
+                                        getTranslated(
+                                            'no_result_found', context),
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge!
+                                                .color),
+                                      ),
+                                    );
+                                  },
+                                  showFlagDialog: true,
+                                  flagDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  builder: (CountryCode countryCode) {
+                                    return Text(
+                                      countryCode.toString(),
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .displayLarge
+                                              !.color),
+                                    );
+                                  },
+                                  barrierColor: Colors.black.withOpacity(0.5),
+                                  backgroundColor: Theme.of(context).cardColor,
+                                  boxDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  comparator: (a, b) =>
+                                      a.name!.compareTo(b.name!),
+                                  countryFilter: ['US', 'CA', 'MX'],
+                                  dialogSize: Size(300, 400),
+                                  dialogBackgroundColor:
+                                      Theme.of(context).cardColor,
+                                ),
+                                Expanded(
+                                    child: CustomTextField(
+                                  hintText:
+                                      getTranslated('number_hint', context),
+                                  isShowBorder: true,
+                                  focusNode: _numberFocus,
+                                  nextFocus: _passwordFocus,
+                                  controller: _emailController,
+                                  inputType: TextInputType.phone,
+                                )),
+                              ]),
 
                         SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                         Text(
                           getTranslated('password', context),
-                          style: poppinsRegular.copyWith(color: ColorResources.getHintColor(context)),
+                          style: poppinsRegular.copyWith(
+                              color: ColorResources.getHintColor(context)),
                         ),
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                         CustomTextField(
@@ -165,27 +250,44 @@ class _LoginScreenState extends State<LoginScreen> {
                                 authProvider.toggleRememberMe();
                               },
                               child: Padding(
-                                padding: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                                padding: EdgeInsets.all(
+                                    Dimensions.PADDING_SIZE_EXTRA_SMALL),
                                 child: Row(
                                   children: [
                                     Container(
-                                      width: 18, height: 18,
+                                      width: 18,
+                                      height: 18,
                                       decoration: BoxDecoration(
-                                        color: authProvider.isActiveRememberMe ? Theme.of(context).primaryColor : ColorResources.getCardBgColor(context),
-                                        border: Border.all(color: authProvider.isActiveRememberMe ? Colors.transparent : Theme.of(context).primaryColor),
+                                        color: authProvider.isActiveRememberMe
+                                            ? Theme.of(context).primaryColor
+                                            : ColorResources.getCardBgColor(
+                                                context),
+                                        border: Border.all(
+                                            color:
+                                                authProvider.isActiveRememberMe
+                                                    ? Colors.transparent
+                                                    : Theme.of(context)
+                                                        .primaryColor),
                                         borderRadius: BorderRadius.circular(3),
                                       ),
                                       child: authProvider.isActiveRememberMe
-                                          ? Icon(Icons.done, color: Colors.white, size: 17)
+                                          ? Icon(Icons.done,
+                                              color: Colors.white, size: 17)
                                           : SizedBox.shrink(),
                                     ),
-                                    SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+                                    SizedBox(
+                                        width: Dimensions.PADDING_SIZE_SMALL),
                                     Text(
                                       getTranslated('remember_me', context),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline2
-                                          .copyWith(fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL, color: ColorResources.getHintColor(context)),
+                                          .displayMedium
+                                          !.copyWith(
+                                              fontSize: Dimensions
+                                                  .FONT_SIZE_EXTRA_SMALL,
+                                              color:
+                                                  ColorResources.getHintColor(
+                                                      context)),
                                     )
                                   ],
                                 ),
@@ -193,7 +295,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.of(context).pushNamed(RouteHelper.forgetPassword, arguments: ForgotPasswordScreen());
+                                Navigator.of(context).pushNamed(
+                                    RouteHelper.forgetPassword,
+                                    arguments: ForgotPasswordScreen());
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -201,8 +305,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   getTranslated('forgot_password', context),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline2
-                                      .copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: ColorResources.getHintColor(context)),
+                                      .displayMedium
+                                      !.copyWith(
+                                          fontSize: Dimensions.FONT_SIZE_SMALL,
+                                          color: ColorResources.getHintColor(
+                                              context)),
                                 ),
                               ),
                             )
@@ -214,13 +321,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             authProvider.loginErrorMessage.length > 0
-                                ? CircleAvatar(backgroundColor: Theme.of(context).primaryColor, radius: 5)
+                                ? CircleAvatar(
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                    radius: 5)
                                 : SizedBox.shrink(),
                             SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 authProvider.loginErrorMessage ?? "",
-                                style: Theme.of(context).textTheme.headline2.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayMedium
+                                    !.copyWith(
                                       fontSize: Dimensions.FONT_SIZE_SMALL,
                                       color: Theme.of(context).primaryColor,
                                     ),
@@ -233,50 +346,89 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 10),
                         !authProvider.isLoading
                             ? CustomButton(
-                          buttonText: getTranslated('login', context),
-                          onPressed: () async {
-                            String _email = _emailController.text.trim();
-                            if(!Provider.of<SplashProvider>(context, listen: false).configModel.emailVerification) {
-                              _email = _countryDialCode + _emailController.text.trim();
-                            }
-                            String _password = _passwordController.text.trim();
-                            if (_email.isEmpty) {
-                              if(Provider.of<SplashProvider>(context, listen: false).configModel.emailVerification){
-                                showCustomSnackBar(getTranslated('enter_email_address', context), context);
-                              }else {
-                                showCustomSnackBar(getTranslated('enter_phone_number', context), context);
-                              }
-                            }else if (Provider.of<SplashProvider>(context, listen: false).configModel.emailVerification
-                                && EmailChecker.isNotValid(_email)) {
-                              showCustomSnackBar(getTranslated('enter_valid_email', context), context);
-                            }else if (_password.isEmpty) {
-                              showCustomSnackBar(getTranslated('enter_password', context), context);
-                            }else if (_password.length < 6) {
-                              showCustomSnackBar(getTranslated('password_should_be', context), context);
-                            }else {
-                              authProvider.login(_email, _password).then((status) async {
-                                if (status.isSuccess) {
-                                  if (authProvider.isActiveRememberMe) {
-                                    authProvider.saveUserNumberAndPassword(_emailController.text, _password);
-                                  } else {
-                                    authProvider.clearUserNumberAndPassword();
+                                buttonText: getTranslated('login', context),
+                                onPressed: () async {
+                                  String? _email = _emailController.text.trim();
+                                  if (!Provider.of<SplashProvider>(context,
+                                          listen: false)
+                                      .configModel
+                                      .emailVerification) {
+                                    _email = _countryDialCode! +
+                                        _emailController.text.trim();
                                   }
-                                  Navigator.pushNamedAndRemoveUntil(context, RouteHelper.menu, (route) => false, arguments: MenuScreen());
-                                }
-                              });
-                            }
-                          },
-                        ) : Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-                            )),
-
+                                  String? _password =
+                                      _passwordController.text.trim();
+                                  if (_email.isEmpty) {
+                                    if (Provider.of<SplashProvider>(context,
+                                            listen: false)
+                                        .configModel
+                                        .emailVerification) {
+                                      showCustomSnackBar(
+                                          getTranslated(
+                                              'enter_email_address', context),
+                                          context);
+                                    } else {
+                                      showCustomSnackBar(
+                                          getTranslated(
+                                              'enter_phone_number', context),
+                                          context);
+                                    }
+                                  } else if (Provider.of<SplashProvider>(
+                                              context,
+                                              listen: false)
+                                          .configModel
+                                          .emailVerification &&
+                                      EmailChecker.isNotValid(_email)) {
+                                    showCustomSnackBar(
+                                        getTranslated(
+                                            'enter_valid_email', context),
+                                        context);
+                                  } else if (_password.isEmpty) {
+                                    showCustomSnackBar(
+                                        getTranslated(
+                                            'enter_password', context),
+                                        context);
+                                  } else if (_password.length < 6) {
+                                    showCustomSnackBar(
+                                        getTranslated(
+                                            'password_should_be', context),
+                                        context);
+                                  } else {
+                                    authProvider
+                                        .login(_email, _password)
+                                        .then((status) async {
+                                      if (status.isSuccess) {
+                                        if (authProvider.isActiveRememberMe) {
+                                          authProvider
+                                              .saveUserNumberAndPassword(
+                                                  _emailController.text,
+                                                  _password);
+                                        } else {
+                                          authProvider
+                                              .clearUserNumberAndPassword();
+                                        }
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            RouteHelper.menu,
+                                            (route) => false,
+                                            arguments: MenuScreen());
+                                      }
+                                    });
+                                  }
+                                },
+                              )
+                            : Center(
+                                child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Theme.of(context).primaryColor),
+                              )),
 
                         // for create an account
                         SizedBox(height: 20),
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).pushNamed(RouteHelper.signUp, arguments: SignUpScreen());
+                            Navigator.of(context).pushNamed(RouteHelper.signUp,
+                                arguments: SignUpScreen());
                           },
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
@@ -285,19 +437,27 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 Text(
                                   getTranslated('create_an_account', context),
-                                  style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: ColorResources.getHintColor(context)),
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: Dimensions.FONT_SIZE_SMALL,
+                                      color:
+                                          ColorResources.getHintColor(context)),
                                 ),
                                 SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                                 Text(
                                   getTranslated('signup', context),
-                                  style: poppinsMedium.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: ColorResources.getTextColor(context)),
+                                  style: poppinsMedium.copyWith(
+                                      fontSize: Dimensions.FONT_SIZE_SMALL,
+                                      color:
+                                          ColorResources.getTextColor(context)),
                                 ),
                               ],
                             ),
                           ),
                         ),
 
-                        Center(child: Text(getTranslated('OR', context), style: poppinsRegular.copyWith(fontSize: 12))),
+                        Center(
+                            child: Text(getTranslated('OR', context),
+                                style: poppinsRegular.copyWith(fontSize: 12))),
 
                         Center(
                           child: TextButton(
@@ -305,11 +465,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               minimumSize: Size(1, 40),
                             ),
                             onPressed: () {
-                              Navigator.pushReplacementNamed(context, RouteHelper.menu, arguments: MenuScreen());
+                              Navigator.pushReplacementNamed(
+                                  context, RouteHelper.menu,
+                                  arguments: MenuScreen());
                             },
-                            child: RichText(text: TextSpan(children: [
-                              TextSpan(text: '${getTranslated('login_as_a', context)} ',  style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: ColorResources.getHintColor(context))),
-                              TextSpan(text: getTranslated('guest', context), style: poppinsRegular.copyWith(color: Theme.of(context).textTheme.bodyText1.color)),
+                            child: RichText(
+                                text: TextSpan(children: [
+                              TextSpan(
+                                  text:
+                                      '${getTranslated('login_as_a', context)} ',
+                                  style: poppinsRegular.copyWith(
+                                      fontSize: Dimensions.FONT_SIZE_SMALL,
+                                      color: ColorResources.getHintColor(
+                                          context))),
+                              TextSpan(
+                                  text: getTranslated('guest', context),
+                                  style: poppinsRegular.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          !.color)),
                             ])),
                           ),
                         ),

@@ -7,13 +7,12 @@ import 'package:flutter_grocery/data/model/response/base/api_response.dart';
 import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as Http;
 
 class LocationRepo {
   final DioClient dioClient;
   final SharedPreferences sharedPreferences;
 
-  LocationRepo({this.dioClient, this.sharedPreferences});
+  LocationRepo({required this.dioClient, required this.sharedPreferences});
 
   Future<ApiResponse> getAllAddress() async {
     try {
@@ -24,7 +23,7 @@ class LocationRepo {
     }
   }
 
-  Future<ApiResponse> removeAddressByID(int id) async {
+  Future<ApiResponse> removeAddressByID(int? id) async {
     try {
       final response = await dioClient.post('${AppConstants.REMOVE_ADDRESS_URI}$id', data: {"_method": "delete"});
       return ApiResponse.withSuccess(response);
@@ -45,7 +44,7 @@ class LocationRepo {
     }
   }
 
-  Future<ApiResponse> updateAddress(AddressModel addressModel, int addressId) async {
+  Future<ApiResponse> updateAddress(AddressModel addressModel, int? addressId) async {
     try {
       Response response = await dioClient.post(
         '${AppConstants.UPDATE_ADDRESS_URI}$addressId',
@@ -57,7 +56,7 @@ class LocationRepo {
     }
   }
 
-  List<String> getAllAddressType({BuildContext context}) {
+  List<String?> getAllAddressType({BuildContext? context}) {
     return [
       'Home',
       'Workplace',
@@ -74,7 +73,7 @@ class LocationRepo {
     }
   }
 
-  Future<ApiResponse> searchLocation(String text) async {
+  Future<ApiResponse> searchLocation(String? text) async {
     try {
       Response response = await dioClient.get('${AppConstants.SEARCH_LOCATION_URI}?search_text=$text');
       return ApiResponse.withSuccess(response);
@@ -83,7 +82,7 @@ class LocationRepo {
     }
   }
 
-  Future<ApiResponse> getPlaceDetails(String placeID) async {
+  Future<ApiResponse> getPlaceDetails(String? placeID) async {
     try {
       Response response = await dioClient.get('${AppConstants.PLACE_DETAILS_URI}?placeid=$placeID');
       return ApiResponse.withSuccess(response);

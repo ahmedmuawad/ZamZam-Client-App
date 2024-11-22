@@ -1,22 +1,22 @@
 class SubSubCate {
-  int _id;
-  String _name;
-  String _image;
-  int _parentId;
-  int _position;
-  int _status;
-  String _createdAt;
-  String _updatedAt;
+  int? _id;
+  String? _name;
+  String? _image;
+  int? _parentId;
+  int? _position;
+  int? _status;
+  String? _createdAt;
+  String? _updatedAt;
 
   SubSubCate(
-      {int id,
-      String name,
-      String image,
-      int parentId,
-      int position,
-      int status,
-      String createdAt,
-      String updatedAt}) {
+      {int? id,
+      String? name,
+      String? image,
+      int? parentId,
+      int? position,
+      int? status,
+      String? createdAt,
+      String? updatedAt}) {
     this._id = id;
     this._name = name;
     this._image = image;
@@ -27,16 +27,16 @@ class SubSubCate {
     this._updatedAt = updatedAt;
   }
 
-  int get id => _id;
-  String get name => _name;
-  String get image => _image;
-  int get parentId => _parentId;
-  int get position => _position;
-  int get status => _status;
-  String get createdAt => _createdAt;
-  String get updatedAt => _updatedAt;
+  int? get id => _id;
+  String? get name => _name;
+  String? get image => _image;
+  int? get parentId => _parentId;
+  int? get position => _position;
+  int? get status => _status;
+  String? get createdAt => _createdAt;
+  String? get updatedAt => _updatedAt;
 
-  SubSubCate.fromJson(Map<String, dynamic> json) {
+  SubSubCate.fromJson(Map<String?, dynamic> json) {
     _id = json['id'];
     _name = json['name'];
     _image = json['image'];
@@ -47,8 +47,8 @@ class SubSubCate {
     _updatedAt = json['updated_at'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this._id;
     data['name'] = this._name;
     data['image'] = this._image;

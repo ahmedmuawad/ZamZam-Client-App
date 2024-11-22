@@ -12,10 +12,10 @@ import 'package:flutter_grocery/view/screens/menu/menu_screen.dart';
 import 'package:flutter_grocery/view/screens/order/track_order_screen.dart';
 
 class OrderSuccessfulScreen extends StatelessWidget {
-  final String orderID;
-  final int status;
+  final String? orderID;
+  final int? status;
 
-  OrderSuccessfulScreen({@required this.orderID, this.status,});
+  OrderSuccessfulScreen({required this.orderID, this.status,});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class OrderSuccessfulScreen extends StatelessWidget {
                     buttonText: getTranslated(status == 0 ? 'track_order' : 'back_home', context),
                     onPressed: () {
                       if (status == 0) {
-                        Navigator.pushReplacementNamed(context, RouteHelper.getOrderTrackingRoute(int.parse(orderID)), arguments: TrackOrderScreen(orderID: orderID, isBackButton: true));
+                        Navigator.pushReplacementNamed(context, RouteHelper.getOrderTrackingRoute(int.parse(orderID!)), arguments: TrackOrderScreen(orderID: orderID, isBackButton: true));
                       } else {
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => MenuScreen()), (route) => false);
                       }

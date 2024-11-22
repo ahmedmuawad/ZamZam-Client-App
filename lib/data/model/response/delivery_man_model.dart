@@ -1,24 +1,24 @@
 class DeliveryManModel {
-  int _id;
-  int _orderId;
-  int _deliverymanId;
-  String _time;
-  String _longitude;
-  String _latitude;
-  String _location;
-  String _createdAt;
-  String _updatedAt;
+  int? _id;
+  int? _orderId;
+  int? _deliverymanId;
+  String? _time;
+  String? _longitude;
+  String? _latitude;
+  String? _location;
+  String? _createdAt;
+  String? _updatedAt;
 
   DeliveryManModel(
-      {int id,
-        int orderId,
-        int deliverymanId,
-        String time,
-        String longitude,
-        String latitude,
-        String location,
-        String createdAt,
-        String updatedAt}) {
+      {int? id,
+        int? orderId,
+        int? deliverymanId,
+        String? time,
+        String? longitude,
+        String? latitude,
+        String? location,
+        String? createdAt,
+        String? updatedAt}) {
     this._id = id;
     this._orderId = orderId;
     this._deliverymanId = deliverymanId;
@@ -30,17 +30,17 @@ class DeliveryManModel {
     this._updatedAt = updatedAt;
   }
 
-  int get id => _id;
-  int get orderId => _orderId;
-  int get deliverymanId => _deliverymanId;
-  String get time => _time;
-  String get longitude => _longitude;
-  String get latitude => _latitude;
-  String get location => _location;
-  String get createdAt => _createdAt;
-  String get updatedAt => _updatedAt;
+  int? get id => _id;
+  int? get orderId => _orderId;
+  int? get deliverymanId => _deliverymanId;
+  String? get time => _time;
+  String? get longitude => _longitude;
+  String? get latitude => _latitude;
+  String? get location => _location;
+  String? get createdAt => _createdAt;
+  String? get updatedAt => _updatedAt;
 
-  DeliveryManModel.fromJson(Map<String, dynamic> json) {
+  DeliveryManModel.fromJson(Map<String?, dynamic> json) {
     _id = json['id'];
     _orderId = json['order_id'];
     _deliverymanId = json['deliveryman_id'];
@@ -52,8 +52,8 @@ class DeliveryManModel {
     _updatedAt = json['updated_at'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this._id;
     data['order_id'] = this._orderId;
     data['deliveryman_id'] = this._deliverymanId;

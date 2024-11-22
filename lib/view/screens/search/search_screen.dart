@@ -50,13 +50,19 @@ class _SearchScreenState extends State<SearchScreen> {
                         children: [
                           Expanded(
                             child: CustomTextField(
-                              hintText: getTranslated('search_item_here', context),
+                              hintText: getTranslated('search_item_here', context) ?? '',
                               isShowBorder: true,
                               isShowPrefixIcon: true,
                               prefixIconUrl: Icons.search,
                               controller: _searchController,
                               inputAction: TextInputAction.search,
                               isIcon: true,
+                              focusNode: FocusNode(),
+                              nextFocus: FocusNode(),
+                              onSuffixTap: () {},
+                              fillColor: Colors.white,
+                              
+                              onChanged: (text) {},
                               onSubmit: (text) {
                                 if (_searchController.text.length > 0) {
                                   List<int> _encoded = utf8.encode(_searchController.text);
@@ -78,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               shadowColor: Theme.of(context).primaryColor,
                             ),
                               child: Text(
-                                getTranslated('cancel', context),
+                                getTranslated('cancel', context)!,
                                 style: poppinsRegular.copyWith(color: ColorResources.getTextColor(context))),
                               )
                         ],
@@ -89,14 +95,14 @@ class _SearchScreenState extends State<SearchScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            getTranslated('recent_search', context),
+                            getTranslated('recent_search', context)!,
                             style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context),fontSize: Dimensions.FONT_SIZE_LARGE),
                           ),
                           searchProvider.historyList.length > 0
                               ? TextButton(
                                   onPressed: searchProvider.clearSearchAddress,
                                   child: Text(
-                                    getTranslated('remove_all', context),
+                                    getTranslated('remove_all', context)!,
                                     style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context),fontSize: Dimensions.FONT_SIZE_LARGE),
                                   ))
                               : SizedBox.shrink(),
@@ -129,8 +135,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                               searchProvider.historyList[index],
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline2
-                                                  .copyWith(color: ColorResources.getHintColor(context), fontSize: Dimensions.FONT_SIZE_SMALL),
+                                                  .displayMedium
+                                                  !.copyWith(color: ColorResources.getHintColor(context), fontSize: Dimensions.FONT_SIZE_SMALL),
                                             )
                                           ],
                                         ),

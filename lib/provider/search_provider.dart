@@ -7,7 +7,9 @@ import 'package:flutter_grocery/helper/api_checker.dart';
 class SearchProvider with ChangeNotifier {
   final SearchRepo searchRepo;
 
-  SearchProvider({@required this.searchRepo});
+  SearchProvider({required this.searchRepo})
+      : _filterProductList = [],
+        _searchProductList = [];
 
   int _filterIndex = 0;
   double _lowerValue = 0;
@@ -75,24 +77,23 @@ class SearchProvider with ChangeNotifier {
   void searchProduct(String query, BuildContext context) async {
     _searchText = query;
     _isClear = false;
-    _searchProductList = null;
-    _filterProductList = null;
+    _searchProductList = [];
+    _filterProductList = [];
     _upperValue = 0;
     _lowerValue = 0;
     notifyListeners();
 
     ApiResponse apiResponse = await searchRepo.getSearchProductList(query);
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       if (query.isEmpty) {
         _searchProductList = [];
       } else {
         _searchProductList = [];
         _searchProductList
-            .addAll(ProductModel.fromJson(apiResponse.response.data).products);
+            .addAll(ProductModel.fromJson(apiResponse.response.data).products!);
         _filterProductList = [];
         _filterProductList
-            .addAll(ProductModel.fromJson(apiResponse.response.data).products);
+            .addAll(ProductModel.fromJson(apiResponse.response.data).products!);
       }
     } else {
       ApiChecker.checkApi(context, apiResponse);
@@ -105,25 +106,25 @@ class SearchProvider with ChangeNotifier {
     _searchProductList.addAll(_filterProductList);
     if (upperValue > 0) {
       _searchProductList.removeWhere((product) =>
-          (product.price) <= _lowerValue || (product.price) >= _upperValue);
+          (product.price)! <= _lowerValue || (product.price)! >= _upperValue);
     }
 
     if (_filterIndex == 0) {
       _searchProductList.sort(
-          (product1, product2) => product1.price.compareTo(product2.price));
+          (product1, product2) => product1.price!.compareTo(product2.price!));
     } else if (_filterIndex == 1) {
       _searchProductList.sort(
-          (product1, product2) => product1.price.compareTo(product2.price));
+          (product1, product2) => product1.price!.compareTo(product2.price!));
       Iterable iterable = _searchProductList.reversed;
-      _searchProductList = iterable.toList();
+      _searchProductList = iterable.toList() as List<Product>;
     } else if (_filterIndex == 2) {
       _searchProductList.sort((product1, product2) =>
-          product1.name.toLowerCase().compareTo(product2.name.toLowerCase()));
+          product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
     } else if (_filterIndex == 3) {
       _searchProductList.sort((product1, product2) =>
-          product1.name.toLowerCase().compareTo(product2.name.toLowerCase()));
+          product1.name!.toLowerCase().compareTo(product2.name!.toLowerCase()));
       Iterable iterable = _searchProductList.reversed;
-      _searchProductList = iterable.toList();
+      _searchProductList = iterable.toList() as List<Product>;
     }
     notifyListeners();
   }

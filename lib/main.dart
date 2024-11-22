@@ -34,7 +34,7 @@ import 'di_container.dart' as di;
 import 'localization/app_localization.dart';
 import 'helper/notification_helper.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+final FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin =
     (Platform.isAndroid || Platform.isIOS)
         ? FlutterLocalNotificationsPlugin()
         : null;
@@ -44,17 +44,15 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await di.init();
-  int _orderID;
+  int? _orderID;
   try {
     if (!kIsWeb) {
-      final RemoteMessage remoteMessage =
+      final RemoteMessage? remoteMessage =
           await FirebaseMessaging.instance.getInitialMessage();
-      if (remoteMessage != null) {
-        _orderID = remoteMessage.notification.titleLocKey != null
-            ? int.parse(remoteMessage.notification.titleLocKey)
-            : null;
-      }
-      await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+      _orderID = remoteMessage!.notification!.titleLocKey != null
+          ? int.parse(remoteMessage.notification!.titleLocKey!)
+          : null;
+          await NotificationHelper.initialize(flutterLocalNotificationsPlugin!);
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
     }
   } catch (e) {}
@@ -86,10 +84,10 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
-  final int orderID;
+  final int? orderID;
   final bool isWeb;
 
-  MyApp({@required this.orderID, @required this.isWeb});
+  MyApp({required this.orderID, required this.isWeb});
 
   static final navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -132,20 +130,16 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     List<Locale> _locals = [];
     AppConstants.languages.forEach((language) {
-      _locals.add(Locale(language.languageCode, language.countryCode));
+      _locals.add(Locale(language.languageCode!, language.countryCode));
     });
     return Consumer<SplashProvider>(
       builder: (context, splashProvider, child) {
-        return (kIsWeb && splashProvider.configModel == null)
-            ? SizedBox()
-            : MaterialApp(
-                title: splashProvider.configModel != null
-                    ? splashProvider.configModel.ecommerceName ?? ''
-                    : AppConstants.APP_NAME,
+        return MaterialApp(
+                title: splashProvider.configModel.ecommerceName ?? AppConstants.APP_NAME,
                 initialRoute: ResponsiveHelper.isMobilePhone()
                     ? widget.orderID == null
                         ? RouteHelper.splash
-                        : RouteHelper.getOrderDetailsRoute(widget.orderID)
+                        : RouteHelper.getOrderDetailsRoute(widget.orderID!)
                     : Provider.of<SplashProvider>(context, listen: false)
                             .configModel
                             .maintenanceMode

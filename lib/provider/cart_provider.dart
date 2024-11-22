@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_grocery/data/model/response/cart_api_model.dart';
 import 'package:flutter_grocery/data/model/response/cart_model.dart';
 import 'package:flutter_grocery/data/repository/cart_repo.dart';
-import 'package:flutter_grocery/helper/price_converter.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/view/base/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +13,7 @@ import 'localization_provider.dart';
 
 class CartProvider extends ChangeNotifier {
   final CartRepo cartRepo;
-  CartProvider({@required this.cartRepo});
+  CartProvider({required this.cartRepo});
   List<CartApiModel> _cartApiList = [];
   bool connection = true;
   List<CartModel> _cartList = [];
@@ -36,11 +35,10 @@ class CartProvider extends ChangeNotifier {
   }
 
   Future<void> getMyCartData(
-      BuildContext context, String token, String languageCode) async {
+      BuildContext context, String? token, String? languageCode) async {
     ApiResponse apiResponse =
         await cartRepo.getMyCartDataList(token, languageCode);
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
       _cartApiList = [];
       apiResponse.response.data.forEach(
           (category) => _cartApiList.add(CartApiModel.fromJson(category)));
@@ -50,12 +48,11 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addToMyCart(BuildContext context, String token,
-      String languageCode, int id, int quantity) async {
+  Future<void> addToMyCart(BuildContext context, String? token,
+      String? languageCode, int? id, int? quantity) async {
     ApiResponse apiResponse =
         await cartRepo.addToMyCart(token, languageCode, id, quantity);
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
     } else {
       //ApiChecker.checkApi(context, apiResponse);
     }
@@ -63,10 +60,9 @@ class CartProvider extends ChangeNotifier {
   }
 
   Future<void> increamentProduct(
-      BuildContext context, String token, String languageCode, int id) async {
+      BuildContext context, String? token, String? languageCode, int? id) async {
     ApiResponse apiResponse = await cartRepo.increment(token, languageCode, id);
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
     } else {
       //ApiChecker.checkApi(context, apiResponse);
     }
@@ -74,10 +70,9 @@ class CartProvider extends ChangeNotifier {
   }
 
   Future<void> decreamentProduct(
-      BuildContext context, String token, String languageCode, int id) async {
+      BuildContext context, String? token, String? languageCode, int? id) async {
     ApiResponse apiResponse = await cartRepo.decrement(token, languageCode, id);
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
     } else {
       ApiChecker.checkApi(context, apiResponse);
     }
@@ -85,10 +80,9 @@ class CartProvider extends ChangeNotifier {
   }
 
   Future<void> delete(
-      BuildContext context, String token, String languageCode, int id) async {
+      BuildContext context, String? token, String? languageCode, int? id) async {
     ApiResponse apiResponse = await cartRepo.delete(token, languageCode, id);
-    if (apiResponse.response != null &&
-        apiResponse.response.statusCode == 200) {
+    if (apiResponse.response.statusCode == 200) {
     } else {
       //ApiChecker.checkApi(context, apiResponse);
     }
@@ -100,23 +94,23 @@ class CartProvider extends ChangeNotifier {
     _amount = 0.0;
     _cartList.addAll(cartRepo.getCartList());
     _cartList.forEach((cart) {
-      _amount = _amount + (cart.discountedPrice * cart.quantity);
-      _amount = double.parse((_amount).toStringAsFixed(2));
+      _amount = _amount + (cart.discountedPrice! * cart.quantity!);
+      _amount = double?.parse((_amount).toStringAsFixed(2));
     });
   }
 
   void addToCart(CartModel cartModel) {
     _cartList.add(cartModel);
     cartRepo.addToCartList(_cartList);
-    _amount = _amount + (cartModel.discountedPrice * cartModel.quantity);
+    _amount = _amount + (cartModel.discountedPrice! * cartModel.quantity!);
     _amount = double.parse((_amount).toStringAsFixed(2));
     notifyListeners();
   }
 
   void setQuantity(bool isIncrement, int index, BuildContext context) {
     if (isIncrement) {
-      _cartList[index].quantity = _cartList[index].quantity + 1;
-      _amount = _amount + _cartList[index].discountedPrice;
+      _cartList[index].quantity = _cartList[index].quantity! + 1;
+      _amount = _amount + _cartList[index].discountedPrice!;
       _amount = double.parse((_amount).toStringAsFixed(2));
     } else {
       bool isLoged =
@@ -124,10 +118,10 @@ class CartProvider extends ChangeNotifier {
       if (isLoged) {
         connectionChecker();
         if (connection) {
-          if (_cartList[index].quantity > 1) {
-            _cartList[index].quantity = _cartList[index].quantity - 1;
+          if (_cartList[index].quantity! > 1) {
+            _cartList[index].quantity = _cartList[index].quantity! - 1;
           } else if (_cartList[index].quantity == 1) {
-            _cartList[index].quantity = _cartList[index].quantity - 1;
+            _cartList[index].quantity = _cartList[index].quantity! - 1;
             _cartList.removeAt(index);
             Provider.of<CartProvider>(context, listen: false).delete(
                 context,
@@ -138,23 +132,23 @@ class CartProvider extends ChangeNotifier {
                     .languageCode,
                 cartList[index].id);
           }
-          if (_cartList[index].quantity > 1) {
-            _cartList[index].quantity = _cartList[index].quantity - 1;
+          if (_cartList[index].quantity! > 1) {
+            _cartList[index].quantity = _cartList[index].quantity! - 1;
           } else if (_cartList[index].quantity == 1) {
-            _cartList[index].quantity = _cartList[index].quantity - 1;
+            _cartList[index].quantity = _cartList[index].quantity! - 1;
             _cartList.removeAt(index);
           }
-          _amount = _amount - _cartList[index].discountedPrice;
+          _amount = _amount - _cartList[index].discountedPrice!;
           _amount = double.parse((_amount).toStringAsFixed(2));
         }
       } else {
-        if (_cartList[index].quantity > 1) {
-          _cartList[index].quantity = _cartList[index].quantity - 1;
+        if (_cartList[index].quantity! > 1) {
+          _cartList[index].quantity = _cartList[index].quantity! - 1;
         } else if (_cartList[index].quantity == 1) {
-          _cartList[index].quantity = _cartList[index].quantity - 1;
+          _cartList[index].quantity = _cartList[index].quantity! - 1;
           _cartList.removeAt(index);
         }
-        _amount = _amount - _cartList[index].discountedPrice;
+        _amount = _amount - _cartList[index].discountedPrice!;
         _amount = double.parse((_amount).toStringAsFixed(2));
       }
     }
@@ -175,14 +169,14 @@ class CartProvider extends ChangeNotifier {
               .languageCode,
           cartList[index].id);
       _amount = _amount -
-          (cartList[index].discountedPrice * cartList[index].quantity);
+          (cartList[index].discountedPrice! * cartList[index].quantity!);
       _amount = double.parse((_amount).toStringAsFixed(2));
       showCustomSnackBar(getTranslated('remove_from_cart', context), context);
       _cartList.removeAt(index);
       cartRepo.addToCartList(_cartList);
     } else {
       _amount = _amount -
-          (cartList[index].discountedPrice * cartList[index].quantity);
+          (cartList[index].discountedPrice! * cartList[index].quantity!);
       _amount = double.parse((_amount).toStringAsFixed(2));
       showCustomSnackBar(getTranslated('remove_from_cart', context), context);
       _cartList.removeAt(index);
@@ -199,12 +193,10 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int isExistInCart(CartModel cartModel) {
-    for (int index = 0; index < _cartList.length; index++) {
+  int? isExistInCart(CartModel cartModel) {
+    for (int? index = 0; index! < _cartList.length; index++) {
       if (_cartList[index].id == cartModel.id &&
-          (_cartList[index].variation != null
-              ? _cartList[index].variation.type == cartModel.variation.type
-              : true)) {
+          _cartList[index].variation.type == cartModel.variation.type) {
         return index;
       }
     }

@@ -9,38 +9,25 @@ import 'package:flutter_grocery/view/base/main_app_bar.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
-import 'package:universal_ui/universal_ui.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 class HtmlViewerScreen extends StatelessWidget {
   final HtmlType htmlType;
-  HtmlViewerScreen({@required this.htmlType});
+  HtmlViewerScreen({required this.htmlType});
   
   @override
   Widget build(BuildContext context) {
-    String _data = htmlType == HtmlType.TERMS_AND_CONDITION ? Provider.of<SplashProvider>(context, listen: false).configModel.termsAndConditions
+    String? _data = htmlType == HtmlType.TERMS_AND_CONDITION ? Provider.of<SplashProvider>(context, listen: false).configModel.termsAndConditions
         : htmlType == HtmlType.ABOUT_US ? Provider.of<SplashProvider>(context, listen: false).configModel.aboutUs
         : htmlType == HtmlType.PRIVACY_POLICY ? Provider.of<SplashProvider>(context, listen: false).configModel.privacyPolicy : null;
 
-    if(_data != null && _data.isNotEmpty) {
+    if(_data!.isNotEmpty) {
       _data = _data.replaceAll('href=', 'target="_blank" href=');
     }
 
-    String _viewID = htmlType.toString();
-    if(ResponsiveHelper.isWeb()) {
-      try{
-        ui.platformViewRegistry.registerViewFactory(_viewID, (int viewId) {
-          html.IFrameElement _ife = html.IFrameElement();
-          _ife.width = '1170';
-          _ife.height = MediaQuery.of(context).size.height.toString();
-          _ife.srcdoc = _data;
-          _ife.contentEditable = 'false';
-          _ife.style.border = 'none';
-          _ife.allowFullscreen = true;
-          return _ife;
-        });
-      }catch(e) {}
-    }
+    String? _viewID = htmlType.toString();
+    
     return Scaffold(
       appBar: ResponsiveHelper.isDesktop(context) ? MainAppBar() : null,
       body: Center(
@@ -67,10 +54,15 @@ class HtmlViewerScreen extends StatelessWidget {
               _data,
               key: Key(htmlType.toString()),
               textStyle: poppinsRegular.copyWith(color: Colors.black),
-              onTapUrl: (String url) {
-                launch(url);
+              onTapUrl: (String? url) {
+                return launch(url!);
               },
-              hyperlinkColor: Colors.blue,
+              customStylesBuilder: (element) {
+                if (element.localName == 'a') {
+                  return {'color': 'blue'};
+                }
+                return null;
+              },
             ),
           ),
         ),

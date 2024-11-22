@@ -6,38 +6,38 @@ import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DioClient {
-  final String baseUrl;
-  final LoggingInterceptor loggingInterceptor;
-  final SharedPreferences sharedPreferences;
+  final String? baseUrl;
+  final LoggingInterceptor? loggingInterceptor;
+  final SharedPreferences? sharedPreferences;
 
   Dio dio;
-  String token;
+  String? token;
 
-  DioClient(this.baseUrl,
+  DioClient( this.baseUrl,
       Dio dioC, {
         this.loggingInterceptor,
         this.sharedPreferences,
       }) {
-    token = sharedPreferences.getString(AppConstants.TOKEN);
+    token = sharedPreferences!.getString(AppConstants.TOKEN);
     print(token);
     dio = dioC ?? Dio();
     dio
-      ..options.baseUrl = baseUrl
-      ..options.connectTimeout = 30000
-      ..options.receiveTimeout = 30000
+      ..options.baseUrl = baseUrl!
+      ..options.connectTimeout = const Duration(milliseconds: 30000)
+      ..options.receiveTimeout = const Duration(milliseconds: 30000)
       ..httpClientAdapter
       ..options.headers = {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token'
       };
-    dio.interceptors.add(loggingInterceptor);
+    dio.interceptors.add(loggingInterceptor!);
   }
 
   Future<Response> get(String uri, {
-    Map<String, dynamic> queryParameters,
-    Options options,
-    CancelToken cancelToken,
-    ProgressCallback onReceiveProgress,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onReceiveProgress,
   }) async {
     try {
       var response = await dio.get(
@@ -59,11 +59,11 @@ class DioClient {
 
   Future<Response> post(String uri, {
     data,
-    Map<String, dynamic> queryParameters,
-    Options options,
-    CancelToken cancelToken,
-    ProgressCallback onSendProgress,
-    ProgressCallback onReceiveProgress,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
   }) async {
     try {
       var response = await dio.post(
@@ -85,11 +85,11 @@ class DioClient {
 
   Future<Response> put(String uri, {
     data,
-    Map<String, dynamic> queryParameters,
-    Options options,
-    CancelToken cancelToken,
-    ProgressCallback onSendProgress,
-    ProgressCallback onReceiveProgress,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
   }) async {
     try {
       var response = await dio.put(
@@ -111,9 +111,9 @@ class DioClient {
 
   Future<Response> delete(String uri, {
     data,
-    Map<String, dynamic> queryParameters,
-    Options options,
-    CancelToken cancelToken,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
   }) async {
     try {
       var response = await dio.delete(

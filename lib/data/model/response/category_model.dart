@@ -1,27 +1,27 @@
 import 'package:flutter_grocery/data/model/response/sub_sub_category.dart';
 
 class CategoryModel {
-  int _id;
-  String _name;
-  String _image;
-  int _parentId;
-  int _position;
-  int _status;
-  String _createdAt;
-  String _updatedAt;
-  List<SubSubCate> _subCate ;
+  int? _id;
+  String? _name;
+  String? _image;
+  int? _parentId;
+  int? _position;
+  int? _status;
+  String? _createdAt;
+  String? _updatedAt;
+  late List<SubSubCate> _subCate;
 
 
   CategoryModel(
-      {int id,
-        String name,
-        String image,
-        int parentId,
-        int position,
-        int status,
-        String createdAt,
-        String updatedAt ,
-      List<SubSubCate> subCate}) {
+      {int? id,
+        String? name,
+        String? image,
+        int? parentId,
+        int? position,
+        int? status,
+        String? createdAt,
+        String? updatedAt ,
+      required List<SubSubCate> subCate}) {
     this._id = id;
     this._name = name;
     this._image = image;
@@ -33,17 +33,17 @@ class CategoryModel {
     this._subCate = subCate;
   }
 
-  int get id => _id;
-  String get name => _name;
-  String get image => _image;
-  int get parentId => _parentId;
-  int get position => _position;
-  int get status => _status;
-  String get createdAt => _createdAt;
-  String get updatedAt => _updatedAt;
+  int? get id => _id;
+  String? get name => _name;
+  String? get image => _image;
+  int? get parentId => _parentId;
+  int? get position => _position;
+  int? get status => _status;
+  String? get createdAt => _createdAt;
+  String? get updatedAt => _updatedAt;
   List<SubSubCate> get subCate => _subCate;
 
-  CategoryModel.fromJson(Map<String, dynamic> json) {
+  CategoryModel.fromJson(Map<String?, dynamic> json) {
     _id = json['id'];
     _name = json['name'];
     _image = json['image'];
@@ -61,8 +61,8 @@ class CategoryModel {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this._id;
     data['name'] = this._name;
     data['image'] = this._image;
@@ -71,10 +71,8 @@ class CategoryModel {
     data['status'] = this._status;
     data['created_at'] = this._createdAt;
     data['updated_at'] = this._updatedAt;
-    if (this._subCate != null) {
-      data['subsubcategories'] = this._subCate.map((v) => v.toJson()).toList();
-    }
-
+    data['subsubcategories'] = this._subCate.map((v) => v.toJson()).toList();
+  
     return data;
   }
 }

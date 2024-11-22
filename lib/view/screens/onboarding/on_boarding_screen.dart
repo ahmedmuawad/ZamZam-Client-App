@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_grocery/helper/route_helper.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/provider/onboarding_provider.dart';
 import 'package:flutter_grocery/utill/color_resources.dart';
 import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
-import 'package:flutter_grocery/view/screens/auth/login_screen.dart';
 import 'package:flutter_grocery/view/screens/onboarding/widget/on_boarding_widget.dart';
 import 'package:flutter_grocery/view/screens/set_Language/language_screen.dart';
 import 'package:provider/provider.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   final PageController _pageController = PageController();
-  final String index;
+  final String? index;
 
-  OnBoardingScreen({@required this.index});
+  OnBoardingScreen({required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +37,12 @@ class OnBoardingScreen extends StatelessWidget {
                                     RouteHelper.login,
                                     arguments: LoginScreen());
                               } else {*/
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          LanguageScreen(isFirst: true)),
-                                );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        LanguageScreen(isFirst: true)),
+                              );
                               /*}*/
 
                               /*Navigator.of(context).pushReplacementNamed(RouteHelper.login, arguments: LoginScreen());*/
@@ -97,7 +95,7 @@ class OnBoardingScreen extends StatelessWidget {
                               child: CircularProgressIndicator(
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                     Theme.of(context).primaryColor),
-                                value: (onBoarding.selectedIndex + 1) /
+                                value: (onBoarding.selectedIndex! + 1) /
                                     onBoarding.onBoardingList.length,
                               ),
                             ),
@@ -113,12 +111,12 @@ class OnBoardingScreen extends StatelessWidget {
                                         RouteHelper.login,
                                         arguments: LoginScreen());
                                   } else {*/
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              LanguageScreen(isFirst: true)),
-                                    );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            LanguageScreen(isFirst: true)),
+                                  );
                                   /*}*/
 
                                   /*Navigator.of(context).pushReplacementNamed(RouteHelper.login, arguments: LoginScreen());*/

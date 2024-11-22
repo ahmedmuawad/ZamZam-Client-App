@@ -19,12 +19,10 @@ class ErrorResponse {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    var map = <String, dynamic>{};
-    if (_errors != null) {
-      map["errors"] = _errors.map((v) => v.toJson()).toList();
-    }
-    return map;
+  Map<String?, dynamic> toJson() {
+    var map = <String?, dynamic>{};
+    map["errors"] = _errors.map((v) => v.toJson()).toList();
+      return map;
   }
 
 }
@@ -33,15 +31,15 @@ class ErrorResponse {
 /// message : "The last name field is required."
 
 class Errors {
-  String _code;
-  String _message;
+  String? _code;
+  String? _message;
 
-  String get code => _code;
-  String get message => _message;
+  String? get code => _code;
+  String? get message => _message;
 
   Errors({
-    String code,
-    String message}){
+    String? code,
+    String? message}){
     _code = code;
     _message = message;
   }
@@ -51,8 +49,8 @@ class Errors {
     _message = json["message"];
   }
 
-  Map<String, dynamic> toJson() {
-    var map = <String, dynamic>{};
+  Map<String?, dynamic> toJson() {
+    var map = <String?, dynamic>{};
     map["code"] = _code;
     map["message"] = _message;
     return map;

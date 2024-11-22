@@ -1,20 +1,20 @@
 import 'package:flutter_grocery/data/model/response/sub_sub_category.dart';
 
 class SubSubCategoryHome {
-  String _subCateName;
+  String? _subCateName;
 
-  List<SubSubCate> _subSubList;
+  late List<SubSubCate> _subSubList;
 
-  SubSubCategoryHome({String subCateName, List<SubSubCate> subSubList}) {
+  SubSubCategoryHome({String? subCateName, required List<SubSubCate> subSubList}) {
     this._subCateName = subCateName;
     this._subSubList = subSubList;
   }
 
-  String get name => _subCateName;
+  String? get name => _subCateName;
 
   List<SubSubCate> get subSubList => _subSubList;
 
-  SubSubCategoryHome.fromJson(Map<String, dynamic> json) {
+  SubSubCategoryHome.fromJson(Map<String?, dynamic> json) {
     _subCateName = json['sub_category'];
     if (json['sub_sub_category'] != null) {
       _subSubList = [];
@@ -24,14 +24,12 @@ class SubSubCategoryHome {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['sub_category'] = this._subCateName;
 
-    if (this._subSubList != null) {
-      data['sub_sub_category'] =
-          this._subSubList.map((v) => v.toJson()).toList();
-    }
-    return data;
+    data['sub_sub_category'] =
+        this._subSubList.map((v) => v.toJson()).toList();
+      return data;
   }
 }

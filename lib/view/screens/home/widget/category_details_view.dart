@@ -1,27 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/provider/category_provider.dart';
-import 'package:flutter_grocery/provider/product_provider.dart';
-import 'package:flutter_grocery/view/screens/home/widget/category_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../data/model/response/cart_model.dart';
-import '../../../../data/model/response/product_model.dart';
 import '../../../../helper/price_converter.dart';
-import '../../../../helper/responsive_helper.dart';
 import '../../../../helper/route_helper.dart';
-import '../../../../localization/language_constrants.dart';
 import '../../../../provider/auth_provider.dart';
 import '../../../../provider/cart_provider.dart';
 import '../../../../provider/localization_provider.dart';
 import '../../../../provider/splash_provider.dart';
-import '../../../../provider/theme_provider.dart';
 import '../../../../utill/color_resources.dart';
 import '../../../../utill/dimensions.dart';
 import '../../../../utill/images.dart';
 import '../../../../utill/styles.dart';
-import '../../../base/no_data_screen.dart';
-import '../../../base/product_shimmer.dart';
-import '../../../base/product_widget.dart';
 import '../../../base/title_widget.dart';
 import '../../product/product_details_screen.dart';
 
@@ -59,26 +50,26 @@ class CategoryDetails extends StatelessWidget {
                                               Dimensions.PADDING_SIZE_SMALL),
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index) {
-                                        double _startingPrice;
-                                        double _endingPrice;
+                                        double? _startingPrice;
+                                        double? _endingPrice;
                                         if (category
                                                 .subCategoryData[index1]
                                                 .products[index]
                                                 .variations
                                                 .length !=
                                             0) {
-                                          List<double> _priceList = [];
+                                          List<double?> _priceList = [];
                                           category.subCategoryData[index1]
                                               .products[index].variations
                                               .forEach((variation) =>
                                                   _priceList.add(double.parse(
-                                                      variation.price)));
+                                                      variation.price!)));
                                           _priceList
-                                              .sort((a, b) => a.compareTo(b));
+                                              .sort((a, b) => a!.compareTo(b!));
                                           _startingPrice = _priceList[0];
-                                          if (_priceList[0] <
+                                          if (_priceList[0]! <
                                               _priceList[
-                                                  _priceList.length - 1]) {
+                                                  _priceList.length - 1]!) {
                                             _endingPrice = _priceList[
                                                 _priceList.length - 1];
                                           }
@@ -132,7 +123,7 @@ class CategoryDetails extends StatelessWidget {
                                                                           index1]
                                                                       .products[
                                                                           index]
-                                                                      .id),
+                                                                      .id!),
                                                               arguments: ProductDetailsScreen(
                                                                   product: category
                                                                       .subCategoryData[
@@ -179,7 +170,7 @@ class CategoryDetails extends StatelessWidget {
                                                               .subCategoryData[
                                                                   index1]
                                                               .products[index]
-                                                              .name,
+                                                              .name!,
                                                           style: poppinsMedium
                                                               .copyWith(
                                                                   fontSize:
@@ -232,13 +223,13 @@ class CategoryDetails extends StatelessWidget {
                                                                           .products[
                                                                               index]
                                                                           .discountType,
-                                                                    ),
+                                                                    )!,
                                                                     style: poppinsBold.copyWith(
                                                                         fontSize:
                                                                             Dimensions.FONT_SIZE_SMALL),
                                                                   ),
                                                                   category.subCategoryData[index1].products[index]
-                                                                              .discount >
+                                                                              .discount! >
                                                                           0
                                                                       ? Text(
                                                                           '${PriceConverter.convertPrice(context, _startingPrice)}'
@@ -273,13 +264,13 @@ class CategoryDetails extends StatelessWidget {
                                                                 ),
                                                                 child: InkWell(
                                                                   onTap: () {
-                                                                    double _price = category
+                                                                    double? _price = category
                                                                         .subCategoryData[
                                                                             index1]
                                                                         .products[
                                                                             index]
                                                                         .price;
-                                                                    int _stock = category.subCategoryData[index1].products[index].variations.length >
+                                                                    int? _stock = category.subCategoryData[index1].products[index].variations.length >
                                                                             0
                                                                         ? category
                                                                             .subCategoryData[
@@ -335,19 +326,19 @@ class CategoryDetails extends StatelessWidget {
                                                                               .subCategoryData[index1]
                                                                               .products[index]
                                                                               .variations[0]
-                                                                          : null,
-                                                                      (_price -
+                                                                          : null!,
+                                                                      (_price! -
                                                                           PriceConverter.convertWithDiscount(
                                                                               context,
                                                                               _price,
                                                                               category.subCategoryData[index1].products[index].discount,
-                                                                              category.subCategoryData[index1].products[index].discountType)),
+                                                                              category.subCategoryData[index1].products[index].discountType)!),
                                                                       (_price -
                                                                           PriceConverter.convertWithDiscount(
                                                                               context,
                                                                               _price,
                                                                               category.subCategoryData[index1].products[index].tax,
-                                                                              category.subCategoryData[index1].products[index].taxType)),
+                                                                              category.subCategoryData[index1].products[index].taxType)!),
                                                                       category
                                                                           .subCategoryData[
                                                                               index1]
@@ -366,12 +357,12 @@ class CategoryDetails extends StatelessWidget {
                                                                         isExistInCart =
                                                                         Provider.of<CartProvider>(context, listen: false).isExistInCart(_cartModel) !=
                                                                             -1;
-                                                                    int cardIndex = Provider.of<CartProvider>(
+                                                                    int? cardIndex = Provider.of<CartProvider>(
                                                                             context,
                                                                             listen:
                                                                                 false)
                                                                         .isExistInCart(
-                                                                            _cartModel);
+                                                                            _cartModel)!;
                                                                     if (!isExistInCart) {
                                                                       Provider.of<CartProvider>(context, listen: false).addToMyCart(
                                                                           context,

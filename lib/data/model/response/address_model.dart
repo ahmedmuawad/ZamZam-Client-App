@@ -1,15 +1,15 @@
 class AddressModel {
-  int id;
-  String addressType;
-  String contactPersonNumber;
-  String address;
-  String latitude;
-  String longitude;
-  String createdAt;
-  String updatedAt;
-  int userId;
-  String method;
-  String contactPersonName;
+  int? id;
+  String? addressType;
+  String? contactPersonNumber;
+  String? address;
+  String? latitude;
+  String? longitude;
+  String? createdAt;
+  String? updatedAt;
+  int? userId;
+  String? method;
+  String? contactPersonName;
 
   AddressModel(
       {this.id,
@@ -24,7 +24,7 @@ class AddressModel {
       this.method,
       this.contactPersonName});
 
-  AddressModel.fromJson(Map<String, dynamic> json) {
+  AddressModel.fromJson(Map<String?, dynamic> json) {
     id = json['id'];
     addressType = json['address_type'];
     contactPersonNumber = json['contact_person_number'];
@@ -38,8 +38,8 @@ class AddressModel {
     contactPersonName = json['contact_person_name'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+  Map<String?, dynamic> toJson() {
+    final Map<String?, dynamic> data = new Map<String?, dynamic>();
     data['id'] = this.id;
     data['address_type'] = this.addressType;
     data['contact_person_number'] = this.contactPersonNumber;

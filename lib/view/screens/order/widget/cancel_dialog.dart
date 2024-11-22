@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/provider/order_provider.dart';
@@ -8,10 +7,10 @@ import 'package:flutter_grocery/utill/styles.dart';
 import 'package:provider/provider.dart';
 
 class OrderCancelDialog extends StatelessWidget {
-  final String orderID;
+  final String? orderID;
   final Function callback;
   final bool fromOrder;
-  OrderCancelDialog({@required this.orderID, @required this.callback, @required this.fromOrder});
+  OrderCancelDialog({required this.orderID, required this.callback, required this.fromOrder});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class OrderCancelDialog extends StatelessWidget {
             !order.isLoading ? Row(children: [
               Expanded(child: InkWell(
                 onTap: () {
-                  Provider.of<OrderProvider>(context, listen: false).cancelOrder(orderID, fromOrder, (String message, bool isSuccess, String orderID) {
+                  Provider.of<OrderProvider>(context, listen: false).cancelOrder(orderID, fromOrder, (String? message, bool isSuccess, String? orderID) {
                     Navigator.pop(context);
                     callback(message, isSuccess, orderID);
                   });

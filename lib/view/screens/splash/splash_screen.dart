@@ -7,18 +7,13 @@ import 'package:flutter_grocery/provider/auth_provider.dart';
 import 'package:flutter_grocery/provider/cart_provider.dart';
 import 'package:flutter_grocery/provider/splash_provider.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
-import 'package:flutter_grocery/utill/app_constants.dart';
 import 'package:flutter_grocery/utill/images.dart';
-import 'package:flutter_grocery/utill/styles.dart';
-import 'package:flutter_grocery/view/screens/auth/login_screen.dart';
-import 'package:flutter_grocery/view/screens/menu/menu_screen.dart';
 import 'package:flutter_grocery/view/screens/onboarding/on_boarding_screen.dart';
 import 'package:flutter_grocery/view/screens/set_Language/language_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/model/response/config_model.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -27,21 +22,20 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   GlobalKey<ScaffoldMessengerState> _globalKey = GlobalKey();
-  StreamSubscription<ConnectivityResult> _onConnectivityChanged;
-  LatLng currentPostion;
-  List<Branches> _branches = [];
-  bool _isAvailable ;
-  String index ;
+  StreamSubscription<ConnectivityResult>? _onConnectivityChanged;
+  late LatLng currentPostion;
+  
+  String? index;
   @override
   void dispose() {
     super.dispose();
 
-    _onConnectivityChanged.cancel();
+    _onConnectivityChanged!.cancel();
   }
 
   void _getUserLocation() async {
     var position = await GeolocatorPlatform.instance
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        .getCurrentPosition();
 
     setState(() {
       currentPostion = LatLng(position.latitude, position.longitude);
@@ -52,22 +46,28 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-
     bool _firstTime = true;
-    _onConnectivityChanged = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if(!_firstTime) {
-        bool isNotConnected = result != ConnectivityResult.wifi && result != ConnectivityResult.mobile;
+    _onConnectivityChanged = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      if (!_firstTime) {
+        bool isNotConnected = result != ConnectivityResult.wifi &&
+            result != ConnectivityResult.mobile;
         print('-----------------${isNotConnected ? 'Not' : 'Yes'}');
-        isNotConnected ? SizedBox() : ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        isNotConnected
+            ? SizedBox()
+            : ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: isNotConnected ? Colors.red : Colors.green,
           duration: Duration(seconds: isNotConnected ? 6000 : 3),
           content: Text(
-            isNotConnected ? getTranslated('no_connection', context) : getTranslated('connected', context),
+            isNotConnected
+                ? getTranslated('no_connection', context) ?? ''
+                : getTranslated('connected', context) ?? '',
             textAlign: TextAlign.center,
           ),
         ));
-        if(!isNotConnected) {
+        if (!isNotConnected) {
           _route();
         }
       }
@@ -82,7 +82,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _route() {
-    Provider.of<SplashProvider>(context, listen: false).initConfig(context).then((bool isSuccess) {
+    Provider.of<SplashProvider>(context, listen: false)
+        .initConfig(context)
+        .then((bool isSuccess) {
       /*if (isSuccess) {
         _branches = Provider.of<SplashProvider>(context, listen: false).configModel.branches;
         _isAvailable = _branches.length == 1 && (_branches[0].latitude == null || _branches[0].latitude.isEmpty);
@@ -90,8 +92,8 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.pushNamedAndRemoveUntil(context, RouteHelper.getMaintenanceRoute(), (route) => false);
         }else {
           if(!_isAvailable) {
-            double _distance = Geolocator.distanceBetween(
-              double.parse(_branches[0].latitude), double.parse(_branches[0].longitude),
+            double? _distance = Geolocator.distanceBetween(
+              double?.parse(_branches[0].latitude), double?.parse(_branches[0].longitude),
                 currentPostion.latitude,currentPostion.longitude ,
             ) / 1000;
             _isAvailable = _distance < _branches[0].coverage;
@@ -105,12 +107,12 @@ class _SplashScreenState extends State<SplashScreen> {
                 Provider.of<AuthProvider>(context, listen: false).updateToken();
                 Navigator.of(context).pushNamedAndRemoveUntil(RouteHelper.set_lang, (route) => false, arguments: LanguageScreen(isFirst: false));
               } else {
-                *//*Navigator.push(
+                */ /*Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
                           OnBoardingScreen(index: index,)),
-                );*//*
+                );*/ /*
                 Navigator.pushAndRemoveUntil(context,  MaterialPageRoute(builder: (context) => OnBoardingScreen(index: index,)), (route) => false);
                 //Navigator.pushNamedAndRemoveUntil(context, RouteHelper.onBoarding, (route) => false, arguments: OnBoardingScreen(index: index,));
               }
@@ -134,7 +136,9 @@ class _SplashScreenState extends State<SplashScreen> {
       Timer(Duration(seconds: 3), () async {
         if (Provider.of<AuthProvider>(context, listen: false).isLoggedIn()) {
           Provider.of<AuthProvider>(context, listen: false).updateToken();
-          Navigator.of(context).pushNamedAndRemoveUntil(RouteHelper.set_lang, (route) => false, arguments: LanguageScreen(isFirst: false));
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              RouteHelper.set_lang, (route) => false,
+              arguments: LanguageScreen(isFirst: false));
         } else {
           /*Navigator.push(
                   context,
@@ -142,12 +146,17 @@ class _SplashScreenState extends State<SplashScreen> {
                       builder: (context) =>
                           OnBoardingScreen(index: index,)),
                 );*/
-          Navigator.pushAndRemoveUntil(context,  MaterialPageRoute(builder: (context) => OnBoardingScreen(index: index,)), (route) => false);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OnBoardingScreen(
+                        index: index,
+                      )),
+              (route) => false);
           //Navigator.pushNamedAndRemoveUntil(context, RouteHelper.onBoarding, (route) => false, arguments: OnBoardingScreen(index: index,));
         }
       });
     });
-
   }
 
   @override
@@ -159,10 +168,15 @@ class _SplashScreenState extends State<SplashScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
-          Image.asset(Images.splash_animation, height: 130, ),
+          Image.asset(
+            Images.splash_animation,
+            height: 130,
+          ),
           SizedBox(height: 10),
-          Image.asset(Images.app_logo,width: MediaQuery.of(context).size.width, height: 100, color: Theme.of(context).primaryColor),
+          Image.asset(Images.app_logo,
+              width: MediaQuery.of(context).size.width,
+              height: 100,
+              color: Theme.of(context).primaryColor),
           SizedBox(height: 30),
           /*Text(AppConstants.APP_NAME,
               textAlign: TextAlign.center,

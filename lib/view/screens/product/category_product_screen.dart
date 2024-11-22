@@ -17,14 +17,13 @@ import 'package:flutter_grocery/view/base/product_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
-import '../../../helper/price_converter.dart';
 
 class CategoryProductScreen extends StatefulWidget {
   int flag = 0;
 
   final CategoryModel categoryModel;
 
-  CategoryProductScreen({@required this.categoryModel});
+  CategoryProductScreen({required this.categoryModel});
 
   @override
   State<CategoryProductScreen> createState() => _CategoryProductScreenState();
@@ -77,7 +76,7 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                                 : 'name',*/
                                 widget.categoryModel.name,
                             isCenter: false,
-                            isElevation: true,
+                            isElevation: true, onBackPressed: (){},
                           ),
                     SizedBox(height: 20),
                     Consumer<CategoryProvider>(
@@ -143,12 +142,12 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                             child: TextField(
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline2
-                                  .copyWith(
+                                  .displayMedium
+                                  !.copyWith(
                                       color: Theme.of(context)
                                           .textTheme
-                                          .bodyText1
-                                          .color,
+                                          .bodyLarge
+                                          !.color,
                                       fontSize: Dimensions.FONT_SIZE_LARGE),
                               cursorColor: Theme.of(context).primaryColor,
                               textInputAction: TextInputAction.search,
@@ -213,11 +212,11 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                               itemCount:
                                   productProvider.categoryProductList.length,
                               shrinkWrap: true,
-                              itemBuilder: (BuildContext context, int index) {
+                              itemBuilder: (BuildContext context, int? index) {
                                 return ProductWidget(
                                     categoryModel: widget.categoryModel,
                                     product: productProvider
-                                        .categoryProductList[index]);
+                                        .categoryProductList[index!]);
                               },
                             ),
                           )
@@ -324,10 +323,10 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
 
 // ignore: must_be_immutable
 /* class CategoryProductScreen extends StatelessWidget {
-  int flag = 0;
+  int? flag = 0;
   final CategoryModel categoryModel;
 
-  CategoryProductScreen({@required this.categoryModel});
+  CategoryProductScreen({required this.categoryModel});
 
   void _loadData(BuildContext context) async {
     if (flag == 0) {
@@ -392,7 +391,7 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                               .length,
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
+                          itemBuilder: (BuildContext context, int? index) {
                             return InkWell(
                               onTap: () {
                                 categoryProvider.setFilterIndex(index);
@@ -513,7 +512,7 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
                               itemCount:
                                   productProvider.categoryProductList.length,
                               shrinkWrap: true,
-                              itemBuilder: (BuildContext context, int index) {
+                              itemBuilder: (BuildContext context, int? index) {
                                 return ProductWidget(
                                     product: productProvider
                                         .categoryProductList[index]);
@@ -618,7 +617,7 @@ class _CategoryProductScreenState extends State<CategoryProductScreen> {
 class ProductShimmer extends StatelessWidget {
   final bool isEnabled;
 
-  ProductShimmer({@required this.isEnabled});
+  ProductShimmer({required this.isEnabled});
 
   @override
   Widget build(BuildContext context) {
