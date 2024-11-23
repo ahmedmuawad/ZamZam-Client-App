@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_grocery/data/model/response/address_model.dart';
 import 'package:flutter_grocery/helper/html_type.dart';
 import 'package:flutter_grocery/helper/responsive_helper.dart';
 import 'package:flutter_grocery/helper/route_helper.dart';
@@ -65,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
       AllCategoryScreen(),
       CartScreen(),
       MyOrderScreen(),
-      AddressScreen(),
+      AddressScreen(addressModel: AddressModel(),),
       CouponScreen(),
       ChatScreen(),
       SettingsScreen(),

@@ -16,20 +16,20 @@ class DeliveryFeeDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double? _deliveryCharge = distance *
+    double? _deliveryCharge = distance! *
         Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .DeliveryManagement
-            .shippingPerKm;
+            .dliv
+            !.shippingPerKm!;
     if (_deliveryCharge <
         Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .DeliveryManagement
-            .minShippingCharge) {
+            .dliv
+            !.minShippingCharge!) {
       _deliveryCharge = Provider.of<SplashProvider>(context, listen: false)
           .configModel
-          .DeliveryManagement
-          .minShippingCharge;
+          .dliv
+          !.minShippingCharge;
     }
 
     return Consumer<OrderProvider>(builder: (context, order, child) {

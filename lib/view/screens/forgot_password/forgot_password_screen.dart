@@ -99,7 +99,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               Provider.of<SplashProvider>(context,
                                           listen: false)
                                       .configModel
-                                      .phoneVerification
+                                      .phoneVerification!
                                   ? Text(
                                       getTranslated('mobile_number', context),
                                       style: poppinsRegular.copyWith(
@@ -116,7 +116,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               Provider.of<SplashProvider>(context,
                                           listen: false)
                                       .configModel
-                                      .phoneVerification
+                                      .phoneVerification!
                                   ? Row(children: [
                                       CodePickerWidget(
                                         onChanged: (CountryCode countryCode) {
@@ -133,6 +133,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                 .textTheme
                                                 .displayLarge
                                                 !.color),
+                                        onInit: (d) {},
+                                        searchStyle: TextStyle(),
+                                        dialogTextStyle: TextStyle(),
+                                        emptySearchBuilder: (context) => Container(),
+                                        showFlagDialog: true,
+                                        flagDecoration: BoxDecoration(),
+                                        builder: (context) => Container(),
+                                        barrierColor: Colors.black,
+                                        backgroundColor: Colors.white,
+                                        boxDecoration: BoxDecoration(),
+                                        comparator: (a, b) => a.name!.compareTo(b.name!),
+                                        countryFilter: [],
+                                        dialogSize: Size(300, 500),
+                                        dialogBackgroundColor: Colors.white,
                                       ),
                                       Expanded(
                                           child: CustomTextField(
@@ -155,7 +169,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               SizedBox(height: 24),
                               !auth.isForgotPasswordLoading
                                   ? SizedBox(
-                                      width: double?.infinity,
+                                      width: double.infinity,
                                       child: CustomButton(
                                         buttonText:
                                             getTranslated('send', context),
@@ -166,7 +180,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   context,
                                                   listen: false)
                                               .configModel
-                                              .phoneVerification) {
+                                              .phoneVerification!) {
                                             String? _phone =
                                                 _countryDialCode! + _email;
                                             if (_email.isEmpty) {

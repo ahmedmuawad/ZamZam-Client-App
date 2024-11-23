@@ -244,8 +244,8 @@ class CodePickerWidgetState extends State<CodePickerWidget> {
       });
     } else {
       showMaterialModalBottomSheet(
-        barrierColor: widget.barrierColor ?? Colors.grey.withOpacity(0.5),
-        backgroundColor: widget.backgroundColor ?? Colors.transparent,
+        barrierColor: widget.barrierColor ,
+        backgroundColor: widget.backgroundColor,
         context: context,
         builder: (context) => Center(
           child: SelectionDialog(

@@ -60,8 +60,8 @@ class _CartScreenState extends State<CartScreen> {
             1;
     bool _kmWiseCharge = Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .DeliveryManagement
-            .status ==
+            .dliv
+            !.status ==
         1;
     print('after kmWise ================================');
     widget._isLogged =

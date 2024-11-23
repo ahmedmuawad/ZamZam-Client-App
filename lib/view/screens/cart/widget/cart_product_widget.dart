@@ -170,7 +170,7 @@ class _CartProductWidgetState extends State<CartProductWidget> {
                               Row(children: [
                                 Expanded(
                                     child: Text(
-                                        '${widget.cart.cartProduct.capacity} ${widget.cart.cartProduct.unit}',
+                                        '${widget.cart.cartProduct!.capacity} ${widget.cart.cartProduct!.unit}',
                                         style: poppinsRegular.copyWith(
                                             fontSize:
                                                 Dimensions.FONT_SIZE_SMALL))),

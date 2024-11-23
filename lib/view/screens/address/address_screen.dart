@@ -25,7 +25,7 @@ class AddressScreen extends StatefulWidget {
 }
 
 class _AddressScreenState extends State<AddressScreen> {
-  bool _isLoggedIn;
+  bool? _isLoggedIn;
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
     _isLoggedIn =
         Provider.of<AuthProvider>(context, listen: false).isLoggedIn();
-    if (_isLoggedIn) {
+    if (_isLoggedIn!) {
       Provider.of<LocationProvider>(context, listen: false)
           .initAddressList(context);
     }
@@ -48,7 +48,7 @@ class _AddressScreenState extends State<AddressScreen> {
           : ResponsiveHelper.isDesktop(context)
               ? MainAppBar()
               : AppBarBase(),
-      body: _isLoggedIn
+      body: _isLoggedIn!
           ? Consumer<LocationProvider>(
               builder: (context, locationProvider, child) {
                 return Column(

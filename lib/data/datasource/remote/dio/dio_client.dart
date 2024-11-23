@@ -10,7 +10,7 @@ class DioClient {
   final LoggingInterceptor? loggingInterceptor;
   final SharedPreferences? sharedPreferences;
 
-  Dio dio;
+  late Dio dio;
   String? token;
 
   DioClient( this.baseUrl,
@@ -20,7 +20,7 @@ class DioClient {
       }) {
     token = sharedPreferences!.getString(AppConstants.TOKEN);
     print(token);
-    dio = dioC ?? Dio();
+    dio = dioC ;
     dio
       ..options.baseUrl = baseUrl!
       ..options.connectTimeout = const Duration(milliseconds: 30000)

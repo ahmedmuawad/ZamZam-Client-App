@@ -19,15 +19,15 @@ class LoggingInterceptor extends InterceptorsWrapper {
 
     String responseAsString = response.data.toString();
 
-    if (responseAsString.length > maxCharactersPerLine) {
-      int? iterations = (responseAsString.length / maxCharactersPerLine).floor();
-      for (int? i = 0; i <= iterations; i++) {
-        int? endingIndex = i * maxCharactersPerLine + maxCharactersPerLine;
+    if (responseAsString.length > maxCharactersPerLine!) {
+      int? iterations = (responseAsString.length / maxCharactersPerLine!).floor();
+      for (int i = 0; i <= iterations; i++) {
+        int? endingIndex = i * maxCharactersPerLine! + maxCharactersPerLine!;
         if (endingIndex > responseAsString.length) {
           endingIndex = responseAsString.length;
         }
         print(
-            responseAsString.substring(i * maxCharactersPerLine, endingIndex));
+            responseAsString.substring(i * maxCharactersPerLine!, endingIndex));
       }
     } else {
       print(response.data);

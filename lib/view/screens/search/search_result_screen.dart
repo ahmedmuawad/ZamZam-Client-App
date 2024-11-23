@@ -10,7 +10,6 @@ import 'package:flutter_grocery/utill/dimensions.dart';
 import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/main_app_bar.dart';
 import 'package:flutter_grocery/view/base/no_data_screen.dart';
-import 'package:flutter_grocery/view/base/product_shimmer.dart';
 import 'package:flutter_grocery/view/base/product_widget.dart';
 import 'package:flutter_grocery/view/screens/search/widget/filter_widget.dart';
 import 'package:provider/provider.dart';

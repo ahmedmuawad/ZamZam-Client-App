@@ -70,7 +70,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
                         children: [
                           SizedBox(height: 30),
                           Center(
-                              child: Image.asset(Images.open_lock!,
+                              child: Image.asset(Images.open_lock,
                                   width: 142,
                                   height: 142,
                                   color: Theme.of(context).primaryColor)),
@@ -78,8 +78,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
                           Center(
                               child: Text(
                             getTranslated(
-                                    'enter_password_to_create', context) ??
-                                '',
+                                    'enter_password_to_create', context) ,
                             textAlign: TextAlign.center,
                             style: poppinsRegular.copyWith(
                                 color: ColorResources.getHintColor(context)),
@@ -94,7 +93,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
 
                                 SizedBox(height: 30),
                                 Text(
-                                  getTranslated('new_password', context) ?? "",
+                                  getTranslated('new_password', context) ,
                                   style: poppinsRegular.copyWith(
                                       color:
                                           ColorResources.getHintColor(context)),
@@ -114,8 +113,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
                                 SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                                 // for confirm password section
                                 Text(
-                                  getTranslated('confirm_password', context) ??
-                                      "",
+                                  getTranslated('confirm_password', context) ,
                                   style: poppinsRegular.copyWith(
                                       color:
                                           ColorResources.getHintColor(context)),
@@ -135,7 +133,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
                                 SizedBox(height: 24),
                                 !auth.isForgotPasswordLoading
                                     ? SizedBox(
-                                        width: double?.infinity,
+                                        width: double.infinity,
                                         child: CustomButton(
                                           buttonText:
                                               getTranslated('save', context),

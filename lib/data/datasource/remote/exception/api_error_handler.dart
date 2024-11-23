@@ -31,20 +31,24 @@ class ApiErrorHandler {
                   errorDescription = error.response!.statusMessage;
                   break;
                 default:
-                  ErrorResponse errorResponse;
+                  ErrorResponse? errorResponse;
                   try {
                     errorResponse = ErrorResponse.fromJson(error.response!.data);
                   }catch(e) {}
-                  if (errorResponse.errors.length > 0)
+                  if (errorResponse!.errors!.length > 0)
                     errorDescription = errorResponse;
                   else
                     errorDescription =
-                    "Failed to load data - status code: ${error.response.statusCode}";
+                    "Failed to load data - status code: ${error.response!.statusCode}";
               }
               break;
             case DioExceptionType.sendTimeout:
               errorDescription = "Send timeout with server";
               break;
+            case DioExceptionType.badCertificate:
+              // TODO: Handle this case.
+            case DioExceptionType.unknown:
+              // TODO: Handle this case.
           }
         } else {
           errorDescription = "Unexpected error occured";

@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 35),
                         Provider.of<SplashProvider>(context, listen: false)
                                 .configModel
-                                .emailVerification
+                                .emailVerification!
                             ? Text(
                                 getTranslated('email', context),
                                 style: poppinsRegular.copyWith(
@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                         Provider.of<SplashProvider>(context, listen: false)
                                 .configModel
-                                .emailVerification
+                                .emailVerification!
                             ? CustomTextField(
                                 hintText: getTranslated('demo_gmail', context),
                                 isShowBorder: true,
@@ -352,7 +352,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   if (!Provider.of<SplashProvider>(context,
                                           listen: false)
                                       .configModel
-                                      .emailVerification) {
+                                      .emailVerification!) {
                                     _email = _countryDialCode! +
                                         _emailController.text.trim();
                                   }
@@ -362,7 +362,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     if (Provider.of<SplashProvider>(context,
                                             listen: false)
                                         .configModel
-                                        .emailVerification) {
+                                        .emailVerification!) {
                                       showCustomSnackBar(
                                           getTranslated(
                                               'enter_email_address', context),
@@ -377,7 +377,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               context,
                                               listen: false)
                                           .configModel
-                                          .emailVerification &&
+                                          .emailVerification! &&
                                       EmailChecker.isNotValid(_email)) {
                                     showCustomSnackBar(
                                         getTranslated(

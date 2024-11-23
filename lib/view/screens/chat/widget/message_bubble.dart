@@ -195,7 +195,7 @@ class MessageBubble extends StatelessWidget {
                                   horizontal: Dimensions.PADDING_SIZE_LARGE,
                                   vertical: Dimensions.PADDING_SIZE_SMALL),
                               child: Text(
-                                chat.reply,
+                                chat.reply!,
                                 style: poppinsRegular.copyWith(
                                     color: Theme.of(context).cardColor),
                               ),

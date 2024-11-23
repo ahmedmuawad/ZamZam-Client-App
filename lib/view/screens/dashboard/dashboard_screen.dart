@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_grocery/data/model/response/address_model.dart';
 import 'package:flutter_grocery/localization/language_constrants.dart';
 import 'package:flutter_grocery/utill/images.dart';
 import 'package:flutter_grocery/view/screens/address/address_screen.dart';
@@ -30,7 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       AllCategoryScreen(),
       CartScreen(),
       MyOrderScreen(),
-      AddressScreen(),
+      AddressScreen(addressModel: AddressModel(),),
       CouponScreen(),
       ChatScreen(),
       SettingsScreen(),

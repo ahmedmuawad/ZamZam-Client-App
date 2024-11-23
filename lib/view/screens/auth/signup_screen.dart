@@ -99,7 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(height: 35),
                         Provider.of<SplashProvider>(context, listen: false)
                                 .configModel
-                                .emailVerification
+                                .emailVerification!
                             ? Text(
                                 getTranslated('email', context),
                                 style: poppinsRegular.copyWith(
@@ -115,7 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                         Provider.of<SplashProvider>(context, listen: false)
                                 .configModel
-                                .emailVerification
+                                .emailVerification!
                             ? CustomTextField(
                                 hintText: getTranslated('demo_gmail', context),
                                 isShowBorder: true,
@@ -214,7 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     if (Provider.of<SplashProvider>(context,
                                             listen: false)
                                         .configModel
-                                        .emailVerification) {
+                                        .emailVerification!) {
                                       showCustomSnackBar(
                                           getTranslated(
                                               'enter_email_address', context),
@@ -229,7 +229,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               context,
                                               listen: false)
                                           .configModel
-                                          .emailVerification &&
+                                          .emailVerification! &&
                                       EmailChecker.isNotValid(_email)) {
                                     showCustomSnackBar(
                                         getTranslated(
@@ -239,7 +239,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     if (Provider.of<SplashProvider>(context,
                                             listen: false)
                                         .configModel
-                                        .emailVerification) {
+                                        .emailVerification!) {
                                       authProvider
                                           .checkEmail(_email)
                                           .then((value) async {
@@ -263,7 +263,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       });
                                     } else {
                                       authProvider
-                                          .checkPhone(_countryDialCode + _email)
+                                          .checkPhone(_countryDialCode! + _email)
                                           .then((value) async {
                                         if (value.isSuccess) {
                                           authProvider.updateEmail(

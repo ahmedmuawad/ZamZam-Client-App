@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:ui';
+import 'package:flutter_grocery/data/model/response/address_model.dart';
 import 'package:flutter_grocery/helper/price_converter.dart';
 import 'package:flutter_grocery/provider/localization_provider.dart';
 import 'package:flutter_grocery/view/base/custom_divider.dart';
@@ -42,7 +43,6 @@ import 'package:flutter_grocery/view/screens/checkout/widget/custom_check_box.da
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-
 
 class CheckoutScreen extends StatefulWidget {
   final double? amount;
@@ -88,7 +88,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           .initAddressList(context);
       _branches = Provider.of<SplashProvider>(context, listen: false)
           .configModel
-          .branches;
+          .branches!;
     }
     _isCashOnDeliveryActive =
         Provider.of<SplashProvider>(context, listen: false)
@@ -106,7 +106,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     bool _kmWiseCharge = Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .DeliveryManagement
+            .dliv!
             .status ==
         1;
     bool _selfPickup = widget.orderType == 'self_pickup';
@@ -116,24 +116,27 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         backgroundColor: Theme.of(context).cardColor,
         appBar: ResponsiveHelper.isDesktop(context)
             ? MainAppBar()
-            : CustomAppBar(title: getTranslated('checkout', context), onBackPressed: (){},),
+            : CustomAppBar(
+                title: getTranslated('checkout', context),
+                onBackPressed: () {},
+              ),
         body: _isLoggedIn!
             ? Consumer<OrderProvider>(
                 builder: (context, order, child) {
                   double? _deliveryCharge = order.distance! *
                       Provider.of<SplashProvider>(context, listen: false)
                           .configModel
-                          .DeliveryManagement
-                          .shippingPerKm;
+                          .dliv!
+                          .shippingPerKm!;
                   if (_deliveryCharge <
                       Provider.of<SplashProvider>(context, listen: false)
                           .configModel
-                          .DeliveryManagement
-                          .minShippingCharge) {
+                          .dliv!
+                          .minShippingCharge!) {
                     _deliveryCharge =
                         Provider.of<SplashProvider>(context, listen: false)
                             .configModel
-                            .DeliveryManagement
+                            .dliv!
                             .minShippingCharge;
                   }
                   if (!_kmWiseCharge || order.distance == -1) {
@@ -336,15 +339,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       Expanded(
                                                           child: SizedBox()),
                                                       TextButton.icon(
-                                                        onPressed: () => Navigator.pushNamed(
-                                                            context,
-                                                            RouteHelper
-                                                                .getAddAddressRoute(
-                                                                    'checkout'),
-                                                            arguments:
-                                                                AddNewAddressScreen(
-                                                                    fromCheckout:
-                                                                        true)),
+                                                        onPressed: () =>
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                RouteHelper
+                                                                    .getAddAddressRoute(
+                                                                        'checkout'),
+                                                                arguments:
+                                                                    AddNewAddressScreen(
+                                                                  fromCheckout:
+                                                                      true,
+                                                                  address:
+                                                                      AddressModel(),
+                                                                )),
                                                         icon: Icon(Icons.add),
                                                         label: Text(
                                                             getTranslated(
@@ -354,7 +361,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       ),
                                                     ]),
                                                   ),
-                                                  address.addressList != null
+                                                  address.addressList.length > 0
                                                       ? address.addressList
                                                                   .length >
                                                               0
@@ -376,9 +383,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 bool _isAvailable = _branches
                                                                             .length ==
                                                                         1 &&
-                                                                    (_branches[0]
-                                                                            .latitude
-                                                                            !.isEmpty);
+                                                                    (_branches[
+                                                                            0]
+                                                                        .latitude!
+                                                                        .isEmpty);
                                                                 if (!_isAvailable) {
                                                                   double?
                                                                       _distance =
@@ -426,12 +434,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                               _isSuccess =
                                                                               await order.getDistanceInMeter(
                                                                             LatLng(
-                                                                              double?.parse(_branches[order.branchIndex!].latitude!),
-                                                                              double?.parse(_branches[order.branchIndex!].longitude!),
+                                                                              double.parse(_branches[order.branchIndex!].latitude!),
+                                                                              double.parse(_branches[order.branchIndex!].longitude!),
                                                                             ),
                                                                             LatLng(
-                                                                              double?.parse(address.addressList[index].latitude!),
-                                                                              double?.parse(address.addressList[index].longitude!),
+                                                                              double.parse(address.addressList[index].latitude!),
+                                                                              double.parse(address.addressList[index].longitude!),
                                                                             ),
                                                                           );
                                                                           Navigator.pop(
@@ -785,9 +793,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                   title: getTranslated(
                                                       'digital_payment',
                                                       context),
-                                                  index: _isCashOnDeliveryActive!
-                                                      ? 1
-                                                      : 0)
+                                                  index:
+                                                      _isCashOnDeliveryActive!
+                                                          ? 1
+                                                          : 0)
                                               : SizedBox(),
 
                                           Padding(
@@ -898,11 +907,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                     .primaryColor,
                                                               )),
                                                           Text(
-                                                            PriceConverter
-                                                                .convertPrice(
-                                                                    context,
-                                                                    widget.amount! +
-                                                                        _deliveryCharge!)!,
+                                                            PriceConverter.convertPrice(
+                                                                context,
+                                                                widget.amount! +
+                                                                    _deliveryCharge!)!,
                                                             style: poppinsMedium.copyWith(
                                                                 fontSize: Dimensions
                                                                     .FONT_SIZE_EXTRA_LARGE,
@@ -941,7 +949,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                         milliseconds: 600),
                                                     backgroundColor:
                                                         Colors.red));
-                                          } else if (order.timeSlots.length == 0) {
+                                          } else if (order.timeSlots.length ==
+                                              0) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                                     content: Text(getTranslated(
@@ -1032,9 +1041,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                               ? 'cash_on_delivery'
                                                               : null
                                                           : null,
-                                                  deliveryDate:
-                                                      order.getDates(context)[
-                                                          order.selectDateSlot!],
+                                                  deliveryDate: order
+                                                          .getDates(context)[
+                                                      order.selectDateSlot!],
                                                   couponDiscountTitle: '',
                                                   orderAmount: widget.amount! +
                                                       _deliveryCharge!,
@@ -1173,8 +1182,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     _mapController!.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(
-        double.parse(_branches[selectedIndex!].latitude ?? '0'),
-        double.parse(_branches[selectedIndex].longitude ?? '0'),
+          double.parse(_branches[selectedIndex!].latitude ?? '0'),
+          double.parse(_branches[selectedIndex].longitude ?? '0'),
         ),
         zoom: 9)));
 
@@ -1187,8 +1196,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     Codec codec = await instantiateImageCodec(data.buffer.asUint8List(),
         targetWidth: width);
     FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ImageByteFormat.png))
-        !.buffer
+    return (await fi.image.toByteData(format: ImageByteFormat.png))!
+        .buffer
         .asUint8List();
   }
 }

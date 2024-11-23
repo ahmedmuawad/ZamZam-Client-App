@@ -43,7 +43,7 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
     Provider.of<LocationProvider>(context, listen: false).setPickData();
     _branches = Provider.of<SplashProvider>(context, listen: false)
         .configModel
-        .branches;
+        .branches!;
   }
 
   @override

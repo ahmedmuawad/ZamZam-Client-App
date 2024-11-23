@@ -84,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               shadowColor: Theme.of(context).primaryColor,
                             ),
                               child: Text(
-                                getTranslated('cancel', context)!,
+                                getTranslated('cancel', context),
                                 style: poppinsRegular.copyWith(color: ColorResources.getTextColor(context))),
                               )
                         ],
@@ -95,14 +95,14 @@ class _SearchScreenState extends State<SearchScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            getTranslated('recent_search', context)!,
+                            getTranslated('recent_search', context),
                             style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context),fontSize: Dimensions.FONT_SIZE_LARGE),
                           ),
                           searchProvider.historyList.length > 0
                               ? TextButton(
                                   onPressed: searchProvider.clearSearchAddress,
                                   child: Text(
-                                    getTranslated('remove_all', context)!,
+                                    getTranslated('remove_all', context),
                                     style: poppinsMedium.copyWith(color: ColorResources.getTextColor(context),fontSize: Dimensions.FONT_SIZE_LARGE),
                                   ))
                               : SizedBox.shrink(),

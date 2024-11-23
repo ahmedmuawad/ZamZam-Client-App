@@ -29,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
               SwitchListTile(
                 value: Provider.of<ThemeProvider>(context).darkTheme,
                 onChanged: (bool isActive) =>Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
-                title: Text(getTranslated('dark_theme', context) ?? '', style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
+                title: Text(getTranslated('dark_theme', context) , style: poppinsRegular.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE)),
               ),
 
               TitleButton(
