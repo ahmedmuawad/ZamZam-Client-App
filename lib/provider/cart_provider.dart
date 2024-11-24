@@ -38,9 +38,9 @@ class CartProvider extends ChangeNotifier {
       BuildContext context, String? token, String? languageCode) async {
     ApiResponse apiResponse =
         await cartRepo.getMyCartDataList(token, languageCode);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _cartApiList = [];
-      apiResponse.response.data.forEach(
+      apiResponse.response!.data.forEach(
           (category) => _cartApiList.add(CartApiModel.fromJson(category)));
     } else {
       ApiChecker.checkApi(context, apiResponse);
@@ -52,7 +52,7 @@ class CartProvider extends ChangeNotifier {
       String? languageCode, int? id, int? quantity) async {
     ApiResponse apiResponse =
         await cartRepo.addToMyCart(token, languageCode, id, quantity);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
     } else {
       //ApiChecker.checkApi(context, apiResponse);
     }
@@ -62,7 +62,7 @@ class CartProvider extends ChangeNotifier {
   Future<void> increamentProduct(
       BuildContext context, String? token, String? languageCode, int? id) async {
     ApiResponse apiResponse = await cartRepo.increment(token, languageCode, id);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
     } else {
       //ApiChecker.checkApi(context, apiResponse);
     }
@@ -72,7 +72,7 @@ class CartProvider extends ChangeNotifier {
   Future<void> decreamentProduct(
       BuildContext context, String? token, String? languageCode, int? id) async {
     ApiResponse apiResponse = await cartRepo.decrement(token, languageCode, id);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
     } else {
       ApiChecker.checkApi(context, apiResponse);
     }
@@ -82,7 +82,7 @@ class CartProvider extends ChangeNotifier {
   Future<void> delete(
       BuildContext context, String? token, String? languageCode, int? id) async {
     ApiResponse apiResponse = await cartRepo.delete(token, languageCode, id);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
     } else {
       //ApiChecker.checkApi(context, apiResponse);
     }
@@ -95,7 +95,7 @@ class CartProvider extends ChangeNotifier {
     _cartList.addAll(cartRepo.getCartList());
     _cartList.forEach((cart) {
       _amount = _amount + (cart.discountedPrice! * cart.quantity!);
-      _amount = double?.parse((_amount).toStringAsFixed(2));
+      _amount = double.parse((_amount).toStringAsFixed(2));
     });
   }
 

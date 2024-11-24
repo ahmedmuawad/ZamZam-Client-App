@@ -45,14 +45,14 @@ class ProductProvider extends ChangeNotifier {
       _offsetList.add(offset);
       ApiResponse apiResponse =
           await productRepo.getPopularProductList(offset, languageCode);
-      if (apiResponse.response.statusCode == 200) {
+      if (apiResponse.response!.statusCode == 200) {
         if (reload) {
           _popularProductList = [];
         }
         _popularProductList
-            .addAll(ProductModel.fromJson(apiResponse.response.data).products!);
+            .addAll(ProductModel.fromJson(apiResponse.response!.data).products!);
         _popularPageSize =
-            ProductModel.fromJson(apiResponse.response.data).totalSize!;
+            ProductModel.fromJson(apiResponse.response!.data).totalSize!;
         _isLoading = false;
         notifyListeners();
       } else {
@@ -71,9 +71,9 @@ class ProductProvider extends ChangeNotifier {
     if (reload) {
       ApiResponse apiResponse =
           await productRepo.getDailyItemList(languageCode);
-      if (apiResponse.response.statusCode == 200) {
+      if (apiResponse.response!.statusCode == 200) {
         _dailyItemList = [];
-        apiResponse.response.data.forEach(
+        apiResponse.response!.data.forEach(
             (dailyItem) => _dailyItemList.add(Product.fromJson(dailyItem)));
       } else {
         ApiChecker.checkApi(context, apiResponse);
@@ -185,12 +185,12 @@ class ProductProvider extends ChangeNotifier {
     _hasData = true;
     ApiResponse apiResponse =
         await productRepo.getBrandOrCategoryProductList(id, languageCode);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _categoryProductList = [];
       _categoryAllProductList = [];
-      apiResponse.response.data.forEach(
+      apiResponse.response!.data.forEach(
           (product) => _categoryProductList.add(Product.fromJson(product)));
-      apiResponse.response.data.forEach(
+      apiResponse.response!.data.forEach(
           (product) => _categoryAllProductList.add(Product.fromJson(product)));
       _hasData = _categoryProductList.length > 1;
       List<Product> _products = [];

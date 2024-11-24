@@ -84,16 +84,16 @@ class SearchProvider with ChangeNotifier {
     notifyListeners();
 
     ApiResponse apiResponse = await searchRepo.getSearchProductList(query);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       if (query.isEmpty) {
         _searchProductList = [];
       } else {
         _searchProductList = [];
         _searchProductList
-            .addAll(ProductModel.fromJson(apiResponse.response.data).products!);
+            .addAll(ProductModel.fromJson(apiResponse.response!.data).products!);
         _filterProductList = [];
         _filterProductList
-            .addAll(ProductModel.fromJson(apiResponse.response.data).products!);
+            .addAll(ProductModel.fromJson(apiResponse.response!.data).products!);
       }
     } else {
       ApiChecker.checkApi(context, apiResponse);

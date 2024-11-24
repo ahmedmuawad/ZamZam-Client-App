@@ -20,9 +20,9 @@ class OnBoardingProvider with ChangeNotifier {
 
   void getBoardingList(BuildContext context) async {
     ApiResponse apiResponse = await onboardingRepo.getOnBoardingList(context);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _onBoardingList.clear();
-      _onBoardingList.addAll(apiResponse.response.data);
+      _onBoardingList.addAll(apiResponse.response!.data);
       notifyListeners();
     } else {
       print(apiResponse.error.toString());

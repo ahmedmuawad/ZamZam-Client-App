@@ -21,9 +21,9 @@ class BannerProvider extends ChangeNotifier {
   Future<void> getBannerList(BuildContext context, bool reload) async {
     if(reload) {
       ApiResponse apiResponse = await bannerRepo.getBannerList();
-      if (apiResponse.response.statusCode == 200) {
+      if (apiResponse.response!.statusCode == 200) {
         _bannerList = [];
-        apiResponse.response.data.forEach((category) {
+        apiResponse.response!.data.forEach((category) {
           BannerModel bannerModel = BannerModel.fromJson(category);
           getProductDetails(context, bannerModel.productId.toString());
                   _bannerList.add(bannerModel);
@@ -42,8 +42,8 @@ class BannerProvider extends ChangeNotifier {
 
   void getProductDetails(BuildContext context, String productID) async {
     ApiResponse apiResponse = await bannerRepo.getProductDetails(productID);
-    if (apiResponse.response.statusCode == 200) {
-      _productList.add(Product.fromJson(apiResponse.response.data));
+    if (apiResponse.response!.statusCode == 200) {
+      _productList.add(Product.fromJson(apiResponse.response!.data));
     } else {
       ApiChecker.checkApi(context, apiResponse);
     }

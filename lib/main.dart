@@ -135,14 +135,14 @@ class _MyAppState extends State<MyApp> {
     return Consumer<SplashProvider>(
       builder: (context, splashProvider, child) {
         return MaterialApp(
-                title: splashProvider.configModel.ecommerceName ?? AppConstants.APP_NAME,
+                title: AppConstants.APP_NAME,
                 initialRoute: ResponsiveHelper.isMobilePhone()
                     ? widget.orderID == null
                         ? RouteHelper.splash
                         : RouteHelper.getOrderDetailsRoute(widget.orderID!)
                     : Provider.of<SplashProvider>(context, listen: false)
                             .configModel
-                            .maintenanceMode
+                            !.maintenanceMode!
                         ? RouteHelper.getMaintenanceRoute()
                         : RouteHelper.menu,
                 onGenerateRoute: RouteHelper.router.generator,

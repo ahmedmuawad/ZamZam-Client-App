@@ -19,16 +19,16 @@ class DeliveryFeeDialog extends StatelessWidget {
     double? _deliveryCharge = distance! *
         Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .dliv
+            !.dliv
             !.shippingPerKm!;
     if (_deliveryCharge <
         Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .dliv
+            !.dliv
             !.minShippingCharge!) {
       _deliveryCharge = Provider.of<SplashProvider>(context, listen: false)
           .configModel
-          .dliv
+          !.dliv
           !.minShippingCharge;
     }
 

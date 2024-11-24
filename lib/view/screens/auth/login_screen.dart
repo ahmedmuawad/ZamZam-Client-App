@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Provider.of<AuthProvider>(context, listen: false).getUserPassword();
     _countryDialCode = CountryCode.fromCountryCode(
             Provider.of<SplashProvider>(context, listen: false)
-                .configModel
+                .configModel!
                 .country!)
         .dialCode;
   }
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         )),
                         SizedBox(height: 35),
                         Provider.of<SplashProvider>(context, listen: false)
-                                .configModel
+                                .configModel!
                                 .emailVerification!
                             ? Text(
                                 getTranslated('email', context),
@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                         Provider.of<SplashProvider>(context, listen: false)
-                                .configModel
+                                .configModel!
                                 .emailVerification!
                             ? CustomTextField(
                                 hintText: getTranslated('demo_gmail', context),
@@ -195,8 +195,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       style: TextStyle(
                                           color: Theme.of(context)
                                               .textTheme
-                                              .displayLarge
-                                              !.color),
+                                              .displayLarge!
+                                              .color),
                                     );
                                   },
                                   barrierColor: Colors.black.withOpacity(0.5),
@@ -281,8 +281,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       getTranslated('remember_me', context),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .displayMedium
-                                          !.copyWith(
+                                          .displayMedium!
+                                          .copyWith(
                                               fontSize: Dimensions
                                                   .FONT_SIZE_EXTRA_SMALL,
                                               color:
@@ -305,8 +305,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   getTranslated('forgot_password', context),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .displayMedium
-                                      !.copyWith(
+                                      .displayMedium!
+                                      .copyWith(
                                           fontSize: Dimensions.FONT_SIZE_SMALL,
                                           color: ColorResources.getHintColor(
                                               context)),
@@ -329,11 +329,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                authProvider.loginErrorMessage ?? "",
+                                authProvider.loginErrorMessage,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .displayMedium
-                                    !.copyWith(
+                                    .displayMedium!
+                                    .copyWith(
                                       fontSize: Dimensions.FONT_SIZE_SMALL,
                                       color: Theme.of(context).primaryColor,
                                     ),
@@ -351,7 +351,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   String? _email = _emailController.text.trim();
                                   if (!Provider.of<SplashProvider>(context,
                                           listen: false)
-                                      .configModel
+                                      .configModel!
                                       .emailVerification!) {
                                     _email = _countryDialCode! +
                                         _emailController.text.trim();
@@ -361,7 +361,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   if (_email.isEmpty) {
                                     if (Provider.of<SplashProvider>(context,
                                             listen: false)
-                                        .configModel
+                                        .configModel!
                                         .emailVerification!) {
                                       showCustomSnackBar(
                                           getTranslated(
@@ -376,7 +376,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } else if (Provider.of<SplashProvider>(
                                               context,
                                               listen: false)
-                                          .configModel
+                                          .configModel!
                                           .emailVerification! &&
                                       EmailChecker.isNotValid(_email)) {
                                     showCustomSnackBar(
@@ -483,8 +483,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: poppinsRegular.copyWith(
                                       color: Theme.of(context)
                                           .textTheme
-                                          .bodyLarge
-                                          !.color)),
+                                          .bodyLarge!
+                                          .color)),
                             ])),
                           ),
                         ),

@@ -40,7 +40,7 @@ class CreateAccountScreen extends StatelessWidget {
     String? _countryDialCode = CountryCode.fromCountryCode(
             Provider.of<SplashProvider>(context, listen: false)
                 .configModel
-                .country!)
+                !.country!)
         .dialCode;
     double? _width = MediaQuery.of(context).size.width;
 
@@ -123,7 +123,7 @@ class CreateAccountScreen extends StatelessWidget {
 
                       Provider.of<SplashProvider>(context, listen: false)
                               .configModel
-                              .emailVerification!
+                              !.emailVerification!
                           ? Text(
                               getTranslated('mobile_number', context),
                               style: poppinsRegular.copyWith(
@@ -137,7 +137,7 @@ class CreateAccountScreen extends StatelessWidget {
                       SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                       Provider.of<SplashProvider>(context, listen: false)
                               .configModel
-                              .emailVerification!
+                              !.emailVerification!
                           ? Row(children: [
                               CodePickerWidget(
                                 onChanged: (CountryCode countryCode) {
@@ -269,7 +269,7 @@ class CreateAccountScreen extends StatelessWidget {
                                 if (Provider.of<SplashProvider>(context,
                                         listen: false)
                                     .configModel
-                                    .emailVerification!) {
+                                    !.emailVerification!) {
                                   if (_firstName.isEmpty) {
                                     showCustomSnackBar(
                                         getTranslated(

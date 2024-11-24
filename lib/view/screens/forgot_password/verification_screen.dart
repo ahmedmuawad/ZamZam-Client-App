@@ -157,7 +157,7 @@ class VerificationScreen extends StatelessWidget {
                                         if (Provider.of<SplashProvider>(context,
                                                 listen: false)
                                             .configModel
-                                            .phoneVerification!) {
+                                            !.phoneVerification!) {
                                           Provider.of<AuthProvider>(context,
                                                   listen: false)
                                               .verifyPhone(emailAddress!.trim())
@@ -193,7 +193,7 @@ class VerificationScreen extends StatelessWidget {
                                             Provider.of<SplashProvider>(context,
                                                         listen: false)
                                                     .configModel
-                                                    .phoneVerification!
+                                                    !.phoneVerification!
                                                 ? emailAddress!.trim()
                                                 : emailAddress;
                                         Provider.of<AuthProvider>(context,

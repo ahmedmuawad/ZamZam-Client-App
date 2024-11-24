@@ -52,9 +52,9 @@ class CategoryProvider extends ChangeNotifier {
       BuildContext context, String? languageCode, bool reload,
       {int? id}) async {
     ApiResponse apiResponse = await categoryRepo.getCategoryList(languageCode);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _categoryList = [];
-      apiResponse.response.data.forEach(
+      apiResponse.response!.data.forEach(
           (category) => _categoryList.add(CategoryModel.fromJson(category)));
       _categorySelectedIndex = 0;
     } else {
@@ -66,9 +66,9 @@ class CategoryProvider extends ChangeNotifier {
   Future<void> getSubCategory(
       BuildContext context, String? languageCode, bool reload) async {
     ApiResponse apiResponse = await categoryRepo.getSubCategory(languageCode);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _subCategoryData = [];
-      apiResponse.response.data.forEach((category) =>
+      apiResponse.response!.data.forEach((category) =>
           _subCategoryData.add(SubCategoryModel.fromJson(category)));
 
 
@@ -81,12 +81,12 @@ class CategoryProvider extends ChangeNotifier {
   Future<void> getSubSubCategory(
       BuildContext context, String? languageCode, bool reload) async {
     ApiResponse apiResponse = await categoryRepo.getSubSubCategory(languageCode);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _ssHomecate = [];
-      apiResponse.response.data.forEach((category) =>
+      apiResponse.response!.data.forEach((category) =>
           _ssHomecate.add(SubSubCategoryHome.fromJson(category)));
       _ssHomeProd = [] ;
-      _ssHomeProd.addAll(SubSubCategoryHome.fromJson(apiResponse.response.data).subSubList);
+      _ssHomeProd.addAll(SubSubCategoryHome.fromJson(apiResponse.response!.data).subSubList);
       _categorySelectedIndex = 0;
     } else {
       ApiChecker.checkApi(context, apiResponse);
@@ -105,12 +105,12 @@ class CategoryProvider extends ChangeNotifier {
 
     ApiResponse apiResponse =
         await categoryRepo.getSubCategoryList(categoryID, languageCode);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _subCategoryList = [];
       _subSubCate = [];
-      apiResponse.response.data.forEach(
+      apiResponse.response!.data.forEach(
           (category) => _subCategoryList.add(CategoryModel.fromJson(category)));
-      apiResponse.response.data.forEach(
+      apiResponse.response!.data.forEach(
               (category) => _subSubCate.add(SubSubCate.fromJson(category)));
       getCategoryProductList(context, categoryID, languageCode);
     } else {
@@ -125,9 +125,9 @@ class CategoryProvider extends ChangeNotifier {
 
     ApiResponse apiResponse =
         await categoryRepo.getCategoryProductList(categoryID, languageCode);
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _categoryProductList = [];
-      apiResponse.response.data.forEach(
+      apiResponse.response!.data.forEach(
           (category) => _categoryProductList.add(Product.fromJson(category)));
       _categoryAllProductList.addAll(_categoryProductList);
     } else {

@@ -33,7 +33,7 @@ class DeliveryOptionButton extends StatelessWidget {
               SizedBox(width: 5),
 
               kmWiseFee ? SizedBox() : Text('(${value == 'delivery' ? PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false)
-                  .configModel.deliveryCharge) : getTranslated('free', context)})', style: poppinsMedium),
+                  .configModel!.deliveryCharge) : getTranslated('free', context)})', style: poppinsMedium),
 
             ],
           ),

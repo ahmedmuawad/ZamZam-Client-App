@@ -35,7 +35,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     _countryDialCode = CountryCode.fromCountryCode(
             Provider.of<SplashProvider>(context, listen: false)
                 .configModel
-                .country!)
+                !.country!)
         .dialCode;
   }
 
@@ -99,7 +99,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               Provider.of<SplashProvider>(context,
                                           listen: false)
                                       .configModel
-                                      .phoneVerification!
+                                      !.phoneVerification!
                                   ? Text(
                                       getTranslated('mobile_number', context),
                                       style: poppinsRegular.copyWith(
@@ -116,7 +116,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               Provider.of<SplashProvider>(context,
                                           listen: false)
                                       .configModel
-                                      .phoneVerification!
+                                      !.phoneVerification!
                                   ? Row(children: [
                                       CodePickerWidget(
                                         onChanged: (CountryCode countryCode) {
@@ -180,7 +180,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                                   context,
                                                   listen: false)
                                               .configModel
-                                              .phoneVerification!) {
+                                              !.phoneVerification!) {
                                             String? _phone =
                                                 _countryDialCode! + _email;
                                             if (_email.isEmpty) {

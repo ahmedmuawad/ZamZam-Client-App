@@ -55,13 +55,13 @@ class _CartScreenState extends State<CartScreen> {
     Provider.of<CouponProvider>(context, listen: false).removeCouponData(false);
     bool _isSelfPickupActive =
         Provider.of<SplashProvider>(context, listen: false)
-                .configModel
+                .configModel!
                 .selfPickup ==
             1;
     bool _kmWiseCharge = Provider.of<SplashProvider>(context, listen: false)
-            .configModel
-            .dliv
-            !.status ==
+            .configModel!
+            .dliv!
+            .status ==
         1;
     print('after kmWise ================================');
     widget._isLogged =
@@ -106,7 +106,7 @@ class _CartScreenState extends State<CartScreen> {
                             !_kmWiseCharge)
                         ? deliveryCharge =
                             Provider.of<SplashProvider>(context, listen: false)
-                                .configModel
+                                .configModel!
                                 .deliveryCharge
                         : deliveryCharge = 0;
                     double _itemPrice = 0;
@@ -755,12 +755,12 @@ class _CartScreenState extends State<CartScreen> {
                                     if (_itemPrice <
                                         Provider.of<SplashProvider>(context,
                                                 listen: false)
-                                            .configModel
+                                            .configModel!
                                             .minimumOrderValue!) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text(
-                                                'Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _itemPrice)} in your cart, please add more item.',
+                                                'Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel!.minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _itemPrice)} in your cart, please add more item.',
                                               ),
                                               backgroundColor: Colors.red));
                                     } else {
@@ -820,7 +820,7 @@ class _CartScreenState extends State<CartScreen> {
                       ? deliveryCharge =
                           Provider.of<SplashProvider>(context, listen: false)
                               .configModel
-                              .deliveryCharge
+                              !.deliveryCharge
                       : deliveryCharge = 0;
                   double _itemPrice = 0;
                   double _discount = 0;
@@ -1507,11 +1507,11 @@ class _CartScreenState extends State<CartScreen> {
                                       Provider.of<SplashProvider>(context,
                                               listen: false)
                                           .configModel
-                                          .minimumOrderValue!) {
+                                        !  .minimumOrderValue!) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                             content: Text(
-                                              'Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel.minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _itemPrice)} in your cart, please add more item.',
+                                              'Minimum order amount is ${PriceConverter.convertPrice(context, Provider.of<SplashProvider>(context, listen: false).configModel!.minimumOrderValue)}, you have ${PriceConverter.convertPrice(context, _itemPrice)} in your cart, please add more item.',
                                             ),
                                             backgroundColor: Colors.red));
                                   } else {

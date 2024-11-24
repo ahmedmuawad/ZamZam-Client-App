@@ -8,7 +8,7 @@ import 'package:flutter_grocery/utill/styles.dart';
 import 'package:flutter_grocery/view/base/main_app_bar.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
-import 'package:universal_html/html.dart' as html;
+
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,9 +18,9 @@ class HtmlViewerScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    String? _data = htmlType == HtmlType.TERMS_AND_CONDITION ? Provider.of<SplashProvider>(context, listen: false).configModel.termsAndConditions
-        : htmlType == HtmlType.ABOUT_US ? Provider.of<SplashProvider>(context, listen: false).configModel.aboutUs
-        : htmlType == HtmlType.PRIVACY_POLICY ? Provider.of<SplashProvider>(context, listen: false).configModel.privacyPolicy : null;
+    String? _data = htmlType == HtmlType.TERMS_AND_CONDITION ? Provider.of<SplashProvider>(context, listen: false).configModel!.termsAndConditions
+        : htmlType == HtmlType.ABOUT_US ? Provider.of<SplashProvider>(context, listen: false).configModel!.aboutUs
+        : htmlType == HtmlType.PRIVACY_POLICY ? Provider.of<SplashProvider>(context, listen: false).configModel!.privacyPolicy : null;
 
     if(_data!.isNotEmpty) {
       _data = _data.replaceAll('href=', 'target="_blank" href=');

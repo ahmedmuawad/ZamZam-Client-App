@@ -29,8 +29,8 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     ApiResponse apiResponse = await authRepo.registration(signUpModel);
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      Map map = apiResponse.response.data;
+    if (apiResponse.response!.statusCode == 200) {
+      Map map = apiResponse.response!.data;
       String token = map["token"];
       authRepo.saveUserToken(token);
       await authRepo.updateToken();
@@ -41,7 +41,7 @@ class AuthProvider with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        errorMessage = errorResponse.errors[0].message!;
+        errorMessage = errorResponse.errors![0].message!;
       }
       print(errorMessage);
       _registrationErrorMessage = errorMessage;
@@ -63,8 +63,8 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     ApiResponse apiResponse = await authRepo.login(email: email, password: password);
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      Map map = apiResponse.response.data;
+    if (apiResponse.response!.statusCode == 200) {
+      Map map = apiResponse.response!.data;
       String token = map["token"];
       authRepo.saveUserToken(token);
       await authRepo.updateToken();
@@ -97,8 +97,8 @@ class AuthProvider with ChangeNotifier {
     _isForgotPasswordLoading = false;
     notifyListeners();
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      responseModel = ResponseModel(true, apiResponse.response.data["message"]);
+    if (apiResponse.response!.statusCode == 200) {
+      responseModel = ResponseModel(true, apiResponse.response!.data["message"]);
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
@@ -106,8 +106,8 @@ class AuthProvider with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
-        errorMessage = errorResponse.errors[0].message!;
+        print(errorResponse.errors![0].message);
+        errorMessage = errorResponse.errors![0].message!;
       }
       responseModel = ResponseModel(false, errorMessage);
     }
@@ -122,8 +122,8 @@ class AuthProvider with ChangeNotifier {
     _isForgotPasswordLoading = false;
     notifyListeners();
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      responseModel = ResponseModel(true, apiResponse.response.data["message"]);
+    if (apiResponse.response!.statusCode == 200) {
+      responseModel = ResponseModel(true, apiResponse.response!.data["message"]);
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
@@ -131,8 +131,8 @@ class AuthProvider with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
-        errorMessage = errorResponse.errors[0].message!;
+        print(errorResponse.errors![0].message);
+        errorMessage = errorResponse.errors![0].message!;
       }
       responseModel = ResponseModel(false, errorMessage);
     }
@@ -141,7 +141,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> updateToken() async {
     ApiResponse apiResponse = await authRepo.updateToken();
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
 
     } else {
       String errorMessage;
@@ -178,8 +178,8 @@ class AuthProvider with ChangeNotifier {
     _isPhoneNumberVerificationButtonLoading = false;
     notifyListeners();
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      responseModel = ResponseModel(true, apiResponse.response.data["token"]);
+    if (apiResponse.response!.statusCode == 200) {
+      responseModel = ResponseModel(true, apiResponse.response!.data["token"]);
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
@@ -187,8 +187,8 @@ class AuthProvider with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
-        errorMessage = errorResponse.errors[0].message!;
+        print(errorResponse.errors![0].message);
+        errorMessage = errorResponse.errors![0].message!;
       }
       responseModel = ResponseModel(false, errorMessage);
       _verificationMsg = errorMessage;
@@ -204,8 +204,8 @@ class AuthProvider with ChangeNotifier {
     _isPhoneNumberVerificationButtonLoading = false;
     notifyListeners();
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      responseModel = ResponseModel(true, apiResponse.response.data["message"]);
+    if (apiResponse.response!.statusCode == 200) {
+      responseModel = ResponseModel(true, apiResponse.response!.data["message"]);
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
@@ -213,8 +213,8 @@ class AuthProvider with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
-        errorMessage = errorResponse.errors[0].message!;
+        print(errorResponse.errors![0].message);
+        errorMessage = errorResponse.errors![0].message!;
       }
       responseModel = ResponseModel(false, errorMessage);
     }
@@ -229,8 +229,8 @@ class AuthProvider with ChangeNotifier {
     _isPhoneNumberVerificationButtonLoading = false;
     notifyListeners();
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      responseModel = ResponseModel(true, apiResponse.response.data["message"]);
+    if (apiResponse.response!.statusCode == 200) {
+      responseModel = ResponseModel(true, apiResponse.response!.data["message"]);
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
@@ -238,8 +238,8 @@ class AuthProvider with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
-        errorMessage = errorResponse.errors[0].message!;
+        print(errorResponse.errors![0].message);
+        errorMessage = errorResponse.errors![0].message!;
       }
       responseModel = ResponseModel(false, errorMessage);
       _verificationMsg = errorMessage;
@@ -259,8 +259,8 @@ class AuthProvider with ChangeNotifier {
     _isPhoneNumberVerificationButtonLoading = false;
     notifyListeners();
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      responseModel = ResponseModel(true, apiResponse.response.data["token"]);
+    if (apiResponse.response!.statusCode == 200) {
+      responseModel = ResponseModel(true, apiResponse.response!.data["token"]);
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
@@ -268,8 +268,8 @@ class AuthProvider with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
-        errorMessage = errorResponse.errors[0].message!;
+        print(errorResponse.errors![0].message);
+        errorMessage = errorResponse.errors![0].message!;
       }
       responseModel = ResponseModel(false, errorMessage);
       _verificationMsg = errorMessage;
@@ -286,8 +286,8 @@ class AuthProvider with ChangeNotifier {
     _isPhoneNumberVerificationButtonLoading = false;
     notifyListeners();
     ResponseModel responseModel;
-    if (apiResponse.response.statusCode == 200) {
-      responseModel = ResponseModel(true, apiResponse.response.data["message"]);
+    if (apiResponse.response!.statusCode == 200) {
+      responseModel = ResponseModel(true, apiResponse.response!.data["message"]);
     } else {
       String errorMessage;
       if (apiResponse.error is String) {
@@ -295,8 +295,8 @@ class AuthProvider with ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
-        errorMessage = errorResponse.errors[0].message!;
+        print(errorResponse.errors![0].message);
+        errorMessage = errorResponse.errors![0].message!;
       }
       responseModel = ResponseModel(false, errorMessage);
       _verificationMsg = errorMessage;

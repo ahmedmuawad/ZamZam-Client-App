@@ -133,7 +133,7 @@ class CouponScreen extends StatelessWidget {
                                                               height: Dimensions
                                                                   .PADDING_SIZE_EXTRA_SMALL),
                                                           Text(
-                                                            '${coupon.couponList[index].discount}${coupon.couponList[index].discountType == 'percent' ? '%' : Provider.of<SplashProvider>(context, listen: false).configModel.currencySymbol} off',
+                                                            '${coupon.couponList[index].discount}${coupon.couponList[index].discountType == 'percent' ? '%' : Provider.of<SplashProvider>(context, listen: false).configModel!.currencySymbol} off',
                                                             style: poppinsSemiBold
                                                                 .copyWith(
                                                                     color: Colors

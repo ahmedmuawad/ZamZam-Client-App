@@ -88,17 +88,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           .initAddressList(context);
       _branches = Provider.of<SplashProvider>(context, listen: false)
           .configModel
-          .branches!;
+          !.branches!;
     }
     _isCashOnDeliveryActive =
         Provider.of<SplashProvider>(context, listen: false)
                 .configModel
-                .cashOnDelivery ==
+               ! .cashOnDelivery ==
             'true';
     _isDigitalPaymentActive =
         Provider.of<SplashProvider>(context, listen: false)
                 .configModel
-                .digitalPayment ==
+                !.digitalPayment ==
             'true';
   }
 
@@ -106,7 +106,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     bool _kmWiseCharge = Provider.of<SplashProvider>(context, listen: false)
             .configModel
-            .dliv!
+           ! .dliv!
             .status ==
         1;
     bool _selfPickup = widget.orderType == 'self_pickup';
@@ -126,17 +126,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   double? _deliveryCharge = order.distance! *
                       Provider.of<SplashProvider>(context, listen: false)
                           .configModel
-                          .dliv!
+                          !.dliv!
                           .shippingPerKm!;
                   if (_deliveryCharge <
                       Provider.of<SplashProvider>(context, listen: false)
                           .configModel
-                          .dliv!
+                         ! .dliv!
                           .minShippingCharge!) {
                     _deliveryCharge =
                         Provider.of<SplashProvider>(context, listen: false)
                             .configModel
-                            .dliv!
+                           ! .dliv!
                             .minShippingCharge;
                   }
                   if (!_kmWiseCharge || order.distance == -1) {
@@ -1117,7 +1117,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               : 0,
           deliveryCharge: Provider.of<SplashProvider>(context, listen: false)
               .configModel
-              .deliveryCharge,
+              !.deliveryCharge,
           createdAt: DateConverter.localDateToIsoString(DateTime.now()),
           updatedAt: DateConverter.localDateToIsoString(DateTime.now()),
         );

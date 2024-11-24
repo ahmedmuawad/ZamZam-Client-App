@@ -68,10 +68,10 @@ class OrderProvider extends ChangeNotifier {
 
   Future<void> getOrderList(BuildContext context) async {
     ApiResponse apiResponse = await orderRepo.getOrderList();
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _runningOrderList = [];
       _historyOrderList = [];
-      apiResponse.response.data.forEach((order) {
+      apiResponse.response!.data.forEach((order) {
         OrderModel orderModel = OrderModel.fromJson(order);
         if (orderModel.orderStatus == 'pending' ||
             orderModel.orderStatus == 'processing' ||
@@ -92,10 +92,10 @@ class OrderProvider extends ChangeNotifier {
   Future<void> initializeTimeSlot(BuildContext context) async {
     _distance = -1;
     ApiResponse apiResponse = await orderRepo.getTimeSlot();
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _timeSlots = [];
       _allTimeSlots = [];
-      apiResponse.response.data.forEach((timeSlot) {
+      apiResponse.response!.data.forEach((timeSlot) {
         _timeSlots.add(TimeSlotModel.fromJson(timeSlot));
         _allTimeSlots.add(TimeSlotModel.fromJson(timeSlot));
       });
@@ -161,9 +161,9 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
     ApiResponse apiResponse = await orderRepo.getOrderDetails(orderID);
     _isLoading = false;
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _orderDetails = [];
-      apiResponse.response.data.forEach((orderDetail) =>
+      apiResponse.response!.data.forEach((orderDetail) =>
           _orderDetails.add(OrderDetailsModel.fromJson(orderDetail)));
       _orderDetails.forEach((element) {
         subTotal += double.parse(element.productDetails.price.toString());
@@ -181,8 +181,8 @@ class OrderProvider extends ChangeNotifier {
       String? orderID, String? token, BuildContext context) async {
     ApiResponse apiResponse = await orderRepo.getOrderBalance(orderID, token);
     _isLoading = false;
-    if (apiResponse.response.statusCode == 200) {
-      _balance = GetOrderBalance.fromJson(apiResponse.response.data).balance;
+    if (apiResponse.response!.statusCode == 200) {
+      _balance = GetOrderBalance.fromJson(apiResponse.response!.data).balance;
 
       print('Balance ======================================= $_balance');
     } else {
@@ -203,8 +203,8 @@ class OrderProvider extends ChangeNotifier {
 
   Future<void> getDeliveryManData(String? orderID, BuildContext context) async {
     ApiResponse apiResponse = await orderRepo.getDeliveryManData(orderID);
-    if (apiResponse.response.statusCode == 200) {
-      _deliveryManModel = DeliveryManModel.fromJson(apiResponse.response.data);
+    if (apiResponse.response!.statusCode == 200) {
+      _deliveryManModel = DeliveryManModel.fromJson(apiResponse.response!.data);
     } else {
       ApiChecker.checkApi(context, apiResponse);
     }
@@ -231,9 +231,9 @@ class OrderProvider extends ChangeNotifier {
     print(placeOrderBody.toJson());
     ApiResponse apiResponse = await orderRepo.placeOrder(placeOrderBody);
     _isLoading = false;
-    if (apiResponse.response.statusCode == 200) {
-      String? message = apiResponse.response.data['message'];
-      String? orderID = apiResponse.response.data['order_id'].toString();
+    if (apiResponse.response!.statusCode == 200) {
+      String? message = apiResponse.response!.data['message'];
+      String? orderID = apiResponse.response!.data['order_id'].toString();
       callback(true, message, orderID);
       print('-------- Order placed successfully $orderID ----------');
     } else if (apiResponse.error is String?) {
@@ -247,8 +247,8 @@ class OrderProvider extends ChangeNotifier {
         errorMessage = apiResponse.error.toString();
       } else {
         ErrorResponse errorResponse = apiResponse.error;
-        print(errorResponse.errors[0].message);
-        errorMessage = errorResponse.errors[0].message;
+        print(errorResponse.errors![0].message);
+        errorMessage = errorResponse.errors![0].message;
       }
       callback(false, errorMessage, '-1');
     }
@@ -276,7 +276,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
     ApiResponse apiResponse = await orderRepo.cancelOrder(orderID);
     _isLoading = false;
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       if (fromOrder) {
         OrderModel? orderModel;
         _runningOrderList.forEach((order) {
@@ -287,7 +287,7 @@ class OrderProvider extends ChangeNotifier {
         _runningOrderList.remove(orderModel);
       }
       _showCancelled = true;
-      callback(apiResponse.response.data['message'], true, orderID);
+      callback(apiResponse.response!.data['message'], true, orderID);
     } else {
       print(apiResponse.error.errors[0].message);
       callback(apiResponse.error.errors[0].message, false, '-1');
@@ -318,7 +318,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
     ApiResponse apiResponse = await orderRepo.updatePaymentMethod(orderID);
     _isLoading = false;
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       if (fromOrder) {
         int orderIndex = 0;
         for (int index = 0; index < _runningOrderList.length; index++) {
@@ -330,7 +330,7 @@ class OrderProvider extends ChangeNotifier {
         _runningOrderList[orderIndex].paymentMethod = 'cash_on_delivery';
             }
       _trackModel.paymentMethod = 'cash_on_delivery';
-      callback(apiResponse.response.data['message'], true);
+      callback(apiResponse.response!.data['message'], true);
     } else {
       print(apiResponse.error.errors[0].message);
       callback(apiResponse.error.errors[0].message, false);
@@ -384,7 +384,7 @@ class OrderProvider extends ChangeNotifier {
 
     ApiResponse response = await orderRepo.submitReview(reviewBody);
     ResponseModel responseModel;
-    if (response.response.statusCode == 200) {
+    if (response.response!.statusCode == 200) {
       _submitList[index] = true;
       responseModel = ResponseModel(true, 'Review submitted successfully');
       notifyListeners();
@@ -407,7 +407,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
     ApiResponse response = await orderRepo.submitDeliveryManReview(reviewBody);
     ResponseModel responseModel;
-    if (response.response.statusCode == 200) {
+    if (response.response!.statusCode == 200) {
       _deliveryManRating = 0;
       responseModel = ResponseModel(true, 'Review submitted successfully');
       notifyListeners();
@@ -432,10 +432,10 @@ class OrderProvider extends ChangeNotifier {
     ApiResponse response =
         await orderRepo.getDistanceInMeter(originLatLng, destinationLatLng);
     try {
-      if (response.response.statusCode == 200 &&
-          response.response.data['status'] == 'OK') {
+      if (response.response!.statusCode == 200 &&
+          response.response!.data['status'] == 'OK') {
         _isSuccess = true;
-        _distance = DistanceModel.fromJson(response.response.data)
+        _distance = DistanceModel.fromJson(response.response!.data)
                 .rows[0]
                 .elements[0]
                 .distance!

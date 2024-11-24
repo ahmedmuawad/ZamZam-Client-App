@@ -13,13 +13,13 @@ class PriceConverter {
   
       bool _isLeft = Provider.of<SplashProvider>(context, listen: false)
               .configModel
-              .currencySymbolPosition ==
+              !.currencySymbolPosition ==
           'left';
       return _isLeft
-          ? '${Provider.of<SplashProvider>(context, listen: false).configModel.currencySymbol} '
+          ? '${Provider.of<SplashProvider>(context, listen: false).configModel!.currencySymbol} '
               '${(price)!.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}'
           : '${(price)!.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}'
-              ' ${Provider.of<SplashProvider>(context, listen: false).configModel.currencySymbol}';
+              ' ${Provider.of<SplashProvider>(context, listen: false).configModel!.currencySymbol}';
 
   }
 
@@ -47,6 +47,6 @@ class PriceConverter {
 
   static String? percentageCalculation(BuildContext context, String? price,
       double? discount, String? discountType) {
-    return '$discount${discountType == 'percent' ? '%' : '${Provider.of<SplashProvider>(context, listen: false).configModel.currencySymbol}'} OFF';
+    return '$discount${discountType == 'percent' ? '%' : '${Provider.of<SplashProvider>(context, listen: false).configModel!.currencySymbol}'} OFF';
   }
 }

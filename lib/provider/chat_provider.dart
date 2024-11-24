@@ -26,11 +26,11 @@ class ChatProvider extends ChangeNotifier {
     _chatList = [];
     _file = null;
     ApiResponse apiResponse = await chatRepo.getChatList();
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _chatList = [];
       _showDate = [];
       _dateList = [];
-      List<dynamic> _chats = apiResponse.response.data[0].reversed.toList();
+      List<dynamic> _chats = apiResponse.response!.data[0].reversed.toList();
       _chats.forEach((chat) {
         ChatModel chatModel = ChatModel.fromJson(chat);
         DateTime _originalDateTime = DateConverter.isoStringToLocalDate(chatModel.createdAt);

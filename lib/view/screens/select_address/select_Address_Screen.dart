@@ -43,7 +43,7 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
     Provider.of<LocationProvider>(context, listen: false).setPickData();
     _branches = Provider.of<SplashProvider>(context, listen: false)
         .configModel
-        .branches!;
+        !.branches!;
   }
 
   @override
@@ -73,7 +73,7 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
       appBar: ResponsiveHelper.isDesktop(context)
           ? MainAppBar()
           : CustomAppBar(
-              title: getTranslated('select_delivery_address', context) ?? '',
+              title: getTranslated('select_delivery_address', context) ,
               isCenter: true, onBackPressed: () => Navigator.of(context).pop(),),
       body: Center(
         child: Container(
@@ -167,7 +167,7 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                               Dimensions.PADDING_SIZE_LARGE),
                           child: CustomButton(
                             buttonText:
-                                getTranslated('select_location', context) ?? '',
+                                getTranslated('select_location', context) ,
                             onPressed: () {
                               if (!_isAvailable) {
                                 double? _distance = Geolocator.distanceBetween(

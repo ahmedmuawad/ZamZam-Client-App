@@ -26,9 +26,9 @@ class CouponProvider extends ChangeNotifier {
 
   Future<void> getCouponList(BuildContext context) async {
     ApiResponse apiResponse = await couponRepo.getCouponList();
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _couponList = [];
-      apiResponse.response.data.forEach((category) => _couponList.add(CouponModel.fromJson(category)));
+      apiResponse.response!.data.forEach((category) => _couponList.add(CouponModel.fromJson(category)));
     } else {
       ApiChecker.checkApi(context, apiResponse);
     }
@@ -39,8 +39,8 @@ class CouponProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     ApiResponse apiResponse = await couponRepo.applyCoupon(coupon);
-    if (apiResponse.response.statusCode == 200) {
-      _coupon = CouponModel.fromJson(apiResponse.response.data);
+    if (apiResponse.response!.statusCode == 200) {
+      _coupon = CouponModel.fromJson(apiResponse.response!.data);
       _code = _coupon!.code;
       if (_coupon!.minPurchase! <= order!) {
         if (_coupon!.discountType == 'percent') {

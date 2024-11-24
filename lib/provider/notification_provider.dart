@@ -13,9 +13,9 @@ class NotificationProvider extends ChangeNotifier {
 
   Future<void> initNotificationList(BuildContext context) async {
     ApiResponse apiResponse = await notificationRepo.getNotificationList();
-    if (apiResponse.response.statusCode == 200) {
+    if (apiResponse.response!.statusCode == 200) {
       _notificationList = [];
-      apiResponse.response.data.forEach((notificatioModel) => _notificationList.add(NotificationModel.fromJson(notificatioModel)));
+      apiResponse.response!.data.forEach((notificatioModel) => _notificationList.add(NotificationModel.fromJson(notificatioModel)));
     } else {
       ApiChecker.checkApi(context, apiResponse);
     }

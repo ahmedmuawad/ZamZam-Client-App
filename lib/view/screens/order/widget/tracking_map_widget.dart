@@ -40,7 +40,7 @@ class _TrackingMapWidgetState extends State<TrackingMapWidget> {
     super.initState();
 
     LatLng? _branch;
-    for(Branches branch in Provider.of<SplashProvider>(context, listen: false).configModel.branches) {
+    for(Branches branch in Provider.of<SplashProvider>(context, listen: false).configModel!.branches!) {
       if(branch.id == widget.branchID) {
         _branch = LatLng(double.parse(branch.latitude!), double.parse(branch.longitude!));
         break;
